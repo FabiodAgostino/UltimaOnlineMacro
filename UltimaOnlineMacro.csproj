@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
+    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
+    <PackageReference Include="InputSimulator" Version="1.0.4" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+	  <Content Include="Assets\Images\Pickaxe.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+  </ItemGroup>
+
+</Project>
