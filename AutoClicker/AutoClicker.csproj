@@ -10,15 +10,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Models\ImageTemplate.cs" />
-    <Compile Include="Models\Pg.cs" />
-    <Compile Include="Models\Pickaxe.cs" />
-    <Compile Include="Models\Regions.cs" />
-    <Compile Include="Models\TMWindow.cs" />
+    <Compile Include="Const\KeyboardMouseConst.cs" />
+    <Compile Include="Models\System\ArrowCombination.cs" />
+    <Compile Include="Models\System\ImageTemplate.cs" />
+    <Compile Include="Models\System\SavedImageTemplate.cs" />
+    <Compile Include="Models\TM\Pg.cs" />
+    <Compile Include="Models\TM\Pickaxe.cs" />
+    <Compile Include="Models\System\Regions.cs" />
+    <Compile Include="Models\System\TMWindow.cs" />
+    <Compile Include="Service\AutoClickerLogger.cs" />
     <Compile Include="Service\ExtensionMethod\Image.cs" />
     <Compile Include="Service\PostMessageService.cs" />
     <Compile Include="Service\ProcessService.cs" />
+    <Compile Include="Service\ReadLogTMService.cs" />
     <Compile Include="Service\SendInputService.cs" />
+    <Compile Include="Utils\User32DLL.cs" />
   </ItemGroup>
 
   <ItemGroup>

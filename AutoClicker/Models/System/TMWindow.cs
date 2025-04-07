@@ -1,8 +1,8 @@
-﻿namespace AutoClicker.Models
+﻿namespace AutoClicker.Models.System
 {
     public class TMWindow
     {
         public string Title { get; set; }
-        public IntPtr Hwnd { get; set; }
+        public nint Hwnd { get; set; }
     }
 }

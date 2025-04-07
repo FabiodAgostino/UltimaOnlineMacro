@@ -1,6 +1,7 @@
-﻿using System.Drawing;
+﻿using AutoClicker.Models.TM;
+using System.Drawing;
 
-namespace UltimaOnlineMacro.Models
+namespace AutoClicker.Models.System
 {
     public class Regions
     {
@@ -12,16 +13,16 @@ namespace UltimaOnlineMacro.Models
 
         public string HaveValue()
         {
-            if(BackpackRegion == Rectangle.Empty)
+            if (BackpackRegion == Rectangle.Empty)
                 return "Seleziona la regione dello zaino";
             if (PaperdollRegion == Rectangle.Empty)
                 return "Seleziona la regione del paperdoll";
-            if(MuloRegion == Rectangle.Empty)
+            if (MuloRegion == Rectangle.Empty)
                 return "Seleziona la regione dello zaino del mulo";
-            if(Pickaxe is null || !Pickaxe.IsFound)
+            if (Pickaxe is null || !Pickaxe.IsFound)
                 return "Nessun piccone presente nello zaino";
 
-            return String.Empty;
+            return string.Empty;
         }
 
     }

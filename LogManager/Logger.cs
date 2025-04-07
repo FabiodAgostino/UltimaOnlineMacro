@@ -14,9 +14,15 @@ namespace LogManager
         public void Serilog(string message, bool err)
         {
             if(err)
+            {
                 Log.Error(message);
+                Console.Error.WriteLine(message);
+            }
             else
+            {
+                Console.WriteLine(message);
                 Log.Debug(message);
+            }
         }
 
     }

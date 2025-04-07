@@ -3,7 +3,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Drawing;
 
-namespace AutoClicker.Models
+namespace AutoClicker.Models.System
 {
     public class ImageTemplate
     {

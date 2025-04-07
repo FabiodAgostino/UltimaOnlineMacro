@@ -1,4 +1,4 @@
-﻿using AutoClicker.Models;
+﻿using AutoClicker.Models.System;
 using System.Runtime.InteropServices;
 using System.Text;
 

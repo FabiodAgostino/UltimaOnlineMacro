@@ -10,14 +10,14 @@
 // 4. L'utente può interrompere la macro cliccando "Ferma Macro".
 // 5. L'app utilizza un hook di sistema per rilevare i clic del mouse ovunque sullo schermo.
 
-using AutoClicker.Models;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
-using UltimaOnlineMacro.Models;
 using Point = System.Drawing.Point;
 using UltimaOnlineMacro.Service;
 using Serilog;
+using AutoClicker.Models.TM;
+using AutoClicker.Models.System;
 
 namespace UltimaOnlineMacro
 {
@@ -27,27 +27,15 @@ namespace UltimaOnlineMacro
         private IntPtr _hookID = IntPtr.Zero;
 
         // Coordinate della regione dello zaino e della posizione target nel gioco
-        private Regions Region = new Regions();
+        private Regions Regions = new Regions();
         private Pg Pg = new Pg();
-        private Point targetPosition; // Posizione dove il piccone deve essere trascinato
-        private CancellationTokenSource _cts; // Token per annullare l'esecuzione della macro
-        private Point selectionStart;
-
-        ImageTemplate ImageTemplatePickaxe = new ImageTemplate("Pickaxe.png");
         public Logger LogManager;
 
         public MainWindow()
         {
+            SavedImageTemplate.Initialize();
             InitializeComponent();
             LogManager = new(txtLog);
-        }
-
-        private void WearPickaxe()
-        {
-            var pickaxe = new Pickaxe(Region.BackpackRegion, ImageTemplatePickaxe);
-            //SetCursorPos(pickaxe.X, pickaxe.Y);
-            //DoubleClick(pickaxe.X, pickaxe.Y);
-            Pg.PickaxeInHand = pickaxe;
         }
 
         #region Callback
@@ -59,7 +47,7 @@ namespace UltimaOnlineMacro
                 LogManager.Loggin($"Regione zaino selezionata: {Region.BackpackRegion}");
                 try
                 {
-                    var pickaxe = new Pickaxe(region, ImageTemplatePickaxe);
+                    var pickaxe = new Pickaxe(region, SavedImageTemplate.ImageTemplatePickaxe);
                     Pg.PickaxeInBackpack = pickaxe;
 
                     if (pickaxe.IsFound)
@@ -80,27 +68,6 @@ namespace UltimaOnlineMacro
             {
                 Region.PaperdollRegion = region;
                 LogManager.Loggin($"Regione paperdoll selezionata: {Region.PaperdollRegion}");
-                try
-                {
-                    var pickaxePaperdoll = new Pickaxe(region, ImageTemplatePickaxe);
-                    if (pickaxePaperdoll.X == 0 && pickaxePaperdoll.Y == 0) //Se il paperdoll non ha il piccone
-                    {
-                        LogManager.Loggin($"Il paperdoll non utilizza il piccone.");
-                        if (!Region.PaperdollRegion.IsEmpty && !Region.PaperdollRegion.IsEmpty)
-                        {
-                            WearPickaxe();
-                        }
-                        else
-                        {
-                            LogManager.Loggin($"Seleziona una regione per lo zaino.");
-                        }
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    LogManager.Loggin($"Errore: {e.Message}");
-                }
             }
         }
 
@@ -150,20 +117,18 @@ namespace UltimaOnlineMacro
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            string haveValue = Region.HaveValue();
+            string haveValue = Regions.HaveValue();
             if (!String.IsNullOrEmpty(haveValue))
             {
                 LogManager.Loggin(haveValue);
                 return;
             }
-
-            LogManager.Loggin("RUN");
-
-
+            Pg.Work(Regions);
 
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
+            Pg.RunWork = false;
         }
 
         private void SelectBackpackMulo_Click(object sender, RoutedEventArgs e)

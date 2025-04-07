@@ -2,15 +2,17 @@
 using Emgu.CV;
 using System.Drawing;
 using System.IO;
-using AutoClicker.Models;
 using AutoClicker.Service.ExtensionMethod;
+using AutoClicker.Models.System;
+using LogManager;
+using AutoClicker.Service;
 
-namespace UltimaOnlineMacro.Models
+namespace AutoClicker.Models.TM
 {
     public class Pickaxe
     {
         public int Y { get; set; }
-        public int X { get; set; } 
+        public int X { get; set; }
         public bool IsFound { get; set; }
         public Pickaxe(Rectangle region, ImageTemplate imageTemplate)
         {
@@ -19,7 +21,7 @@ namespace UltimaOnlineMacro.Models
 
         public void GetPosition(Rectangle region, ImageTemplate imageTemplate)
         {
-           
+            var logger = new AutoClickerLogger();
             var screenImage = region.CaptureRegion();
 
             // Esegui il template matching
@@ -35,11 +37,10 @@ namespace UltimaOnlineMacro.Models
 
                 CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
 
-
                 if (maxVal > 0.8) // Imposta una soglia di somiglianza appropriata
                 {
                     Point picconePosition = maxLoc;
-                    //LogManager.Log($"Piccone trovato a: {picconePosition}");
+                    logger.Loggin($"Piccone trovato a: {picconePosition}");
 
                     X = region.X + picconePosition.X + imageTemplate.Image.Width / 2;
                     Y = region.Y + picconePosition.Y + imageTemplate.Image.Height / 2;
@@ -48,7 +49,7 @@ namespace UltimaOnlineMacro.Models
                 else
                 {
                     IsFound = false;
-                    //LogManager.Log("Piccone non trovato.");
+                    logger.Loggin("Piccone non trovato.");
                 }
             }
         }
