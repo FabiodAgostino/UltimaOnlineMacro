@@ -2,9 +2,8 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using System.Drawing;
-using UltimaOnlineMacro.ExtensionMethod;
 using WindowsInput;
-
+using AutoClicker.Service.ExtensionMethod;
 namespace UltimaOnlineMacro
 {
     public static class AutomationHelper

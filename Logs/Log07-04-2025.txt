@@ -1,0 +1,2 @@
+2025-04-07 14:23:35.724 +02:00 [DBG] Inizio selezione Piccone: 153;519
+2025-04-07 14:23:36.206 +02:00 [DBG] Regione zaino selezionata: {X=153,Y=519,Width=374,Height=313}

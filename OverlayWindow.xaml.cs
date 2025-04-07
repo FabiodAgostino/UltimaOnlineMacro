@@ -1,14 +1,12 @@
-﻿using System;
-using System.Drawing;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using UltimaOnlineMacro.ExtensionMethod;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using Pen = System.Windows.Media.Pen;
 using Point = System.Windows.Point;
 using Rectangle = System.Drawing.Rectangle;
+using UltimaOnlineMacro.Service;
 
 namespace UltimaOnlineMacro
 {
@@ -19,9 +17,11 @@ namespace UltimaOnlineMacro
         private bool isSelecting = false;
         Rect SelectionRect { get; set; }
         private string suffix { get; set; }
+        public Logger LogManager { get; }
 
-        public OverlayWindow(string suffix)
+        public OverlayWindow(string suffix, Logger logManager)
         {
+            LogManager = logManager;
             InitializeComponent();
 
             // Finestra senza bordi e trasparente
@@ -56,6 +56,7 @@ namespace UltimaOnlineMacro
             this.MouseMove += OverlayWindow_MouseMove;
             this.MouseLeftButtonUp += OverlayWindow_MouseLeftButtonUp;
             this.suffix = suffix;
+            this.LogManager = LogManager;
 
             // IMPORTANTE: Non bloccare completamente gli eventi ma permettili per questa window
             // Evita di usare PreviewMouseDown/Up/Move qui in quanto potrebbero interferire
@@ -70,7 +71,7 @@ namespace UltimaOnlineMacro
             this.CaptureMouse(); // IMPORTANTE: cattura il mouse per ricevere tutti gli eventi anche fuori dalla finestra
             this.InvalidateVisual(); // Aggiorna la visualizzazione
 
-            LogManager.Log($"Inizio selezione {suffix}: " + selectionStart.ToString());
+            LogManager.Loggin($"Inizio selezione {suffix}: " + selectionStart.ToString());
             e.Handled = true;
         }
 

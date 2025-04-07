@@ -10,13 +10,48 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AutoClicker\**" />
+    <Compile Remove="LogManager\**" />
+    <Compile Remove="Logs\**" />
+    <Compile Remove="UltimaOnlineMacroConsole\**" />
+    <Compile Remove="UltimOnlineMacroConsole\**" />
+    <EmbeddedResource Remove="AutoClicker\**" />
+    <EmbeddedResource Remove="LogManager\**" />
+    <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="UltimaOnlineMacroConsole\**" />
+    <EmbeddedResource Remove="UltimOnlineMacroConsole\**" />
+    <None Remove="AutoClicker\**" />
+    <None Remove="LogManager\**" />
+    <None Remove="Logs\**" />
+    <None Remove="UltimaOnlineMacroConsole\**" />
+    <None Remove="UltimOnlineMacroConsole\**" />
+    <Page Remove="AutoClicker\**" />
+    <Page Remove="LogManager\**" />
+    <Page Remove="Logs\**" />
+    <Page Remove="UltimaOnlineMacroConsole\**" />
+    <Page Remove="UltimOnlineMacroConsole\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".dockerignore" />
+    <None Remove=".gitattributes" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
     <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
     <PackageReference Include="InputSimulator" Version="1.0.4" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
 	  <Content Include="Assets\Images\Pickaxe.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="AutoClicker\AutoClicker.csproj" />
+    <ProjectReference Include="LogManager\LogManager.csproj" />
   </ItemGroup>
 
 </Project>

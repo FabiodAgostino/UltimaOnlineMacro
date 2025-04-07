@@ -10,28 +10,21 @@
 // 4. L'utente può interrompere la macro cliccando "Ferma Macro".
 // 5. L'app utilizza un hook di sistema per rilevare i clic del mouse ovunque sullo schermo.
 
-using Emgu.CV.Structure;
-using Emgu.CV;
-using System.Diagnostics;
+using AutoClicker.Models;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows;
-using UltimaOnlineMacro.ExtensionMethod;
-using Point = System.Drawing.Point;
-using System.IO;
-using Emgu.CV.Reg;
-using Emgu.CV.Util;
-using System.Drawing.Imaging;
-using static UltimaOnlineMacro.UtilityClass;
-using UltimaOnlineMacro.Models;
 using System.Windows.Input;
+using UltimaOnlineMacro.Models;
+using Point = System.Drawing.Point;
+using UltimaOnlineMacro.Service;
+using Serilog;
+
 namespace UltimaOnlineMacro
 {
     public partial class MainWindow : Window
     {
         // ID dell'hook per intercettare gli eventi del mouse
         private IntPtr _hookID = IntPtr.Zero;
-        private LowLevelMouseProc _proc; // Delegato che gestisce gli eventi mouse
 
         // Coordinate della regione dello zaino e della posizione target nel gioco
         private Regions Region = new Regions();
@@ -41,17 +34,19 @@ namespace UltimaOnlineMacro
         private Point selectionStart;
 
         ImageTemplate ImageTemplatePickaxe = new ImageTemplate("Pickaxe.png");
+        public Logger LogManager;
+
         public MainWindow()
         {
             InitializeComponent();
-            LogManager.Initialize(txtLog);
+            LogManager = new(txtLog);
         }
 
         private void WearPickaxe()
         {
             var pickaxe = new Pickaxe(Region.BackpackRegion, ImageTemplatePickaxe);
-            SetCursorPos(pickaxe.X, pickaxe.Y);
-            DoubleClick(pickaxe.X, pickaxe.Y);
+            //SetCursorPos(pickaxe.X, pickaxe.Y);
+            //DoubleClick(pickaxe.X, pickaxe.Y);
             Pg.PickaxeInHand = pickaxe;
         }
 
@@ -61,7 +56,7 @@ namespace UltimaOnlineMacro
             if (Region.BackpackRegion != region)
             {
                 Region.BackpackRegion = region;
-                LogManager.Log($"Regione zaino selezionata: {Region.BackpackRegion}");
+                LogManager.Loggin($"Regione zaino selezionata: {Region.BackpackRegion}");
                 try
                 {
                     var pickaxe = new Pickaxe(region, ImageTemplatePickaxe);
@@ -74,7 +69,7 @@ namespace UltimaOnlineMacro
                 }
                 catch (Exception e)
                 {
-                    LogManager.Log($"Errore: {e.Message}");
+                    LogManager.Loggin($"Errore: {e.Message}");
                 }
             }
         }
@@ -84,27 +79,27 @@ namespace UltimaOnlineMacro
             if (Region.PaperdollRegion != region)
             {
                 Region.PaperdollRegion = region;
-                LogManager.Log($"Regione paperdoll selezionata: {Region.PaperdollRegion}");
+                LogManager.Loggin($"Regione paperdoll selezionata: {Region.PaperdollRegion}");
                 try
                 {
                     var pickaxePaperdoll = new Pickaxe(region, ImageTemplatePickaxe);
                     if (pickaxePaperdoll.X == 0 && pickaxePaperdoll.Y == 0) //Se il paperdoll non ha il piccone
                     {
-                        LogManager.Log($"Il paperdoll non utilizza il piccone.");
+                        LogManager.Loggin($"Il paperdoll non utilizza il piccone.");
                         if (!Region.PaperdollRegion.IsEmpty && !Region.PaperdollRegion.IsEmpty)
                         {
                             WearPickaxe();
                         }
                         else
                         {
-                            LogManager.Log($"Seleziona una regione per lo zaino.");
+                            LogManager.Loggin($"Seleziona una regione per lo zaino.");
                         }
                     }
 
                 }
                 catch (Exception e)
                 {
-                    LogManager.Log($"Errore: {e.Message}");
+                    LogManager.Loggin($"Errore: {e.Message}");
                 }
             }
         }
@@ -114,7 +109,7 @@ namespace UltimaOnlineMacro
             if (Region.MuloRegion != region)
             {
                 Region.MuloRegion = region;
-                LogManager.Log($"Regione zaino mulo selezionata: {Region.MuloRegion}");
+                LogManager.Loggin($"Regione zaino mulo selezionata: {Region.MuloRegion}");
             }
         }
         #endregion
@@ -142,14 +137,14 @@ namespace UltimaOnlineMacro
         #region ClickEvent
         private void SelectBackpackRegion_Click(object sender, RoutedEventArgs e)
         {
-            OverlayWindow overlay = new OverlayWindow("Piccone");
+            OverlayWindow overlay = new OverlayWindow("Piccone", LogManager);
             overlay.Show();
         }
 
 
         private void SelectPaperdoll_Click(object sender, RoutedEventArgs e)
         {
-            OverlayWindow overlay = new OverlayWindow("Paperdoll");
+            OverlayWindow overlay = new OverlayWindow("Paperdoll", LogManager);
             overlay.Show();
         }
 
@@ -158,11 +153,11 @@ namespace UltimaOnlineMacro
             string haveValue = Region.HaveValue();
             if (!String.IsNullOrEmpty(haveValue))
             {
-                LogManager.Log(haveValue);
+                LogManager.Loggin(haveValue);
                 return;
             }
 
-            LogManager.Log("RUN");
+            LogManager.Loggin("RUN");
 
 
 
@@ -173,9 +168,11 @@ namespace UltimaOnlineMacro
 
         private void SelectBackpackMulo_Click(object sender, RoutedEventArgs e)
         {
-            OverlayWindow overlay = new OverlayWindow("Mulo");
+            OverlayWindow overlay = new OverlayWindow("Mulo", LogManager);
             overlay.Show();
         }
         #endregion
+
     }
+
 }
