@@ -25,7 +25,7 @@ namespace AutoClicker.Service.ExtensionMethod
             return img;
         }
 
-        public static Image<Gray, float> CaptureRegion(this Rectangle region)
+        public static Image<Bgr, byte> CaptureRegion(this Rectangle region)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace AutoClicker.Service.ExtensionMethod
                 }
 
                 // Creazione di Image<Gray, float> con lo stesso formato del Bitmap
-                Image<Gray, float> image = new Image<Gray, float>(region.Width, region.Height);
+                Image<Bgr, byte> image = new Image<Bgr, byte>(region.Width, region.Height);
 
                 // Copia dei dati del Bitmap nei pixel dell'immagine
                 for (int y = 0; y < region.Height; y++)
@@ -48,7 +48,7 @@ namespace AutoClicker.Service.ExtensionMethod
                         // Calcola la luminanza come media dei valori R, G e B (per scala di grigi)
                         float grayValue = (pixelColor.R + pixelColor.G + pixelColor.B) / 3f;
                         // Imposta il valore nel Image<Gray, float>
-                        image[y, x] = new Gray(grayValue);
+                        image[y, x] = new Bgr(pixelColor);
                     }
                 }
 
@@ -59,5 +59,7 @@ namespace AutoClicker.Service.ExtensionMethod
                 throw ex;
             }
         }
+
+
     }
 }

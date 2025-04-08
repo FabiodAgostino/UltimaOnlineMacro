@@ -8,7 +8,8 @@ namespace AutoClicker.Models.System
     public class ImageTemplate
     {
         public Bitmap Image { get; set; }
-        public Image<Gray, float> Template { get; set; }
+        public Image<Bgr, byte> Template { get; set; }
+        public string Name { get; set; }
 
         public ImageTemplate(string path)
         {
@@ -19,7 +20,8 @@ namespace AutoClicker.Models.System
         {
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", path);
             Image = new Bitmap(imagePath);
-            Template = Image.BitmapToImage().Convert<Gray, float>();
+            Template = Image.BitmapToImage().Convert<Bgr, byte>();
+            Name = path;
         }
 
     }

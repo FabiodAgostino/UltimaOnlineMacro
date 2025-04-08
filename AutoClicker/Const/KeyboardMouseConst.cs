@@ -12,11 +12,17 @@ namespace AutoClicker.Const
         public const uint WM_LBUTTONUP = 0x0202;
         public const uint WM_MOUSEMOVE = 0x0200;
 
+        // Costanti per mouse input
+        public const int WH_MOUSE_LL = 14;
+
+        // Costanti per mouse_event
+
         // Codici tasti freccia
         public const int VK_LEFT = 0x25;    // Freccia sinistra
         public const int VK_UP = 0x26;      // Freccia su
         public const int VK_RIGHT = 0x27;   // Freccia destra
         public const int VK_DOWN = 0x28;    // Freccia giù
+        public const int VK_F10 = 0x79;  // 121 in decimale
 
         // Codici tasti modificatori per combinazioni
         public const int VK_SHIFT = 0x10;   // Tasto Shift
@@ -37,6 +43,13 @@ namespace AutoClicker.Const
 
         public const int WH_KEYBOARD_LL = 13;
 
+        public const int WM_SYSKEYDOWN = 0x0104;
+        public const int WM_SYSKEYUP = 0x0105;
+
+        public const int SM_CXSCREEN = 0;
+        public const int SM_CYSCREEN = 1;
+
+        public const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
 
         public static readonly int[] ArrowKeys = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 

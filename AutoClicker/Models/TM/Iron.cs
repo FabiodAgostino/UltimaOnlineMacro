@@ -1,20 +1,18 @@
-﻿using Emgu.CV.Structure;
-using Emgu.CV;
-using System.Drawing;
-using System.IO;
-using AutoClicker.Service.ExtensionMethod;
-using AutoClicker.Models.System;
-using LogManager;
+﻿using AutoClicker.Models.System;
 using AutoClicker.Service;
+using AutoClicker.Service.ExtensionMethod;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using System.Drawing;
 
 namespace AutoClicker.Models.TM
 {
-    public class Pickaxe
+    public class Iron
     {
         public int Y { get; set; }
         public int X { get; set; }
         public bool IsFound { get; set; }
-        public Pickaxe(Rectangle region, ImageTemplate imageTemplate)
+        public Iron(Rectangle region, ImageTemplate imageTemplate)
         {
             GetPosition(region, imageTemplate);
         }
@@ -40,9 +38,9 @@ namespace AutoClicker.Models.TM
                 CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
 
                 logger.Loggin($"MaxVal ottenuto: {maxVal}");
-                grayScreen.Save("debug_screen.png");
-                grayTemplate.Save("debug_template.png");
-                if (maxVal > 0.8) // Soglia standard
+                grayScreen.Save("debug_screen_iron.png");
+                grayTemplate.Save("debug_template_iron.png");
+                if (maxVal > 0.5) // Soglia standard
                 {
                     Point pos = maxLoc;
                     logger.Loggin($"Oggetto trovato a: {pos}");
@@ -58,6 +56,5 @@ namespace AutoClicker.Models.TM
                 }
             }
         }
-
     }
 }

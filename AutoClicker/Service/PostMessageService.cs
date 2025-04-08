@@ -28,8 +28,10 @@ namespace AutoClicker.Service
             // Tempo di inizio
             DateTime endTime = DateTime.Now.AddSeconds(3);
             // Continua a inviare il tasto destro per 3 secondi
-            while (DateTime.Now < endTime)
+            int i = 100;
+            while (i<100)
             {
+                i++;
                 // Invia pressione tasto
                 User32DLL.PostMessage(ProcessService.TheMiracleWindow.Hwnd, KeyboardMouseConst.WM_KEYDOWN, (IntPtr)KeyboardMouseConst.VK_RIGHT, IntPtr.Zero);
                 // Piccola pausa tra i messaggi per non sovraccaricarlo

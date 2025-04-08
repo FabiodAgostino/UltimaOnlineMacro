@@ -19,7 +19,9 @@ namespace AutoClicker.Utils
         [DllImport("user32.dll")]
         public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
-       
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
 
         [DllImport("user32.dll")]
         public static extern bool UnhookWindowsHookEx(IntPtr hInstance);
@@ -30,6 +32,36 @@ namespace AutoClicker.Utils
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(ref POINT lpPoint);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn,
+          IntPtr hMod, uint dwThreadId);
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [DllImport("user32.dll")]
+        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, IntPtr dwExtraInfo);
+
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(int vKey);
+
+        [DllImport("user32.dll")]
+        public static extern nint SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn,
+            nint hMod, uint dwThreadId);
+
+        public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        public delegate nint LowLevelMouseProc(int nCode, nint wParam, nint lParam);
+
+        public static LowLevelMouseProc captureProc;
 
 
         [StructLayout(LayoutKind.Sequential)]
@@ -56,6 +88,17 @@ namespace AutoClicker.Utils
             public MOUSEINPUT mi;
         }
 
+        // Struttura per l'hook del mouse a basso livello
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MSLLHOOKSTRUCT
+        {
+            public POINT pt;
+            public uint mouseData;
+            public uint flags;
+            public uint time;
+            public nint dwExtraInfo;
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct KEYBDINPUT
         {
@@ -73,6 +116,18 @@ namespace AutoClicker.Utils
             public int dy;
             public uint mouseData;
             public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+
+        // Struttura per l'hook della tastiera a basso livello
+        [StructLayout(LayoutKind.Sequential)]
+        public struct KBDLLHOOKSTRUCT
+        {
+            public uint vkCode;
+            public uint scanCode;
+            public uint flags;
             public uint time;
             public IntPtr dwExtraInfo;
         }

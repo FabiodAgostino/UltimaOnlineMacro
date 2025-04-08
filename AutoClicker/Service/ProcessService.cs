@@ -33,8 +33,8 @@ namespace AutoClicker.Service
                     break;
                 }
             }
-
-            throw new Exception("Nessuna finestra TM trovata");
+            if(TheMiracleWindow==null)
+                throw new Exception("Nessuna finestra TM trovata");
         }
     }
 }

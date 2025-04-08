@@ -122,6 +122,9 @@ namespace UltimaOnlineMacro
                             case "Mulo":
                                 mainWindow.SetBackpackMuloRegion(selectedRegion);
                                 break;
+                            case "status":
+                                mainWindow.SetBarStatus(selectedRegion);
+                                break;
                         }
                     });
                 }

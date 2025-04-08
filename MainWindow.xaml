@@ -40,6 +40,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
         <!-- Stile per i pulsanti della barra titolo -->
         <Style x:Key="TitleBarButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -73,12 +74,11 @@
     <Border CornerRadius="10" Background="#FF2D2D30" BorderBrush="#FF007ACC" BorderThickness="2">
         <Grid>
             <Grid.RowDefinitions>
-                <!-- Barra titolo -->
                 <RowDefinition Height="40"/>
-                <!-- Area contenuto -->
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <!-- Barra titolo personalizzata -->
+
+            <!-- Barra titolo -->
             <Grid Grid.Row="0" Background="#FF1E1E1E" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <DockPanel LastChildFill="True">
                     <TextBlock Text="UltimaOnlineMacro - Rotiniel Tools" 
@@ -90,31 +90,81 @@
                 </DockPanel>
             </Grid>
 
-            <!-- Contenuto principale -->
-            <Grid Grid.Row="1" Margin="10">
-                <StackPanel>
-                    <!-- Bottoni ingranditi posizionati in alto -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,20">
-                        <Button Name="btnSelectBackpack" Content="Seleziona Zaino" Width="170" Height="50"
-                                Click="SelectBackpackRegion_Click" Style="{StaticResource MyButtonStyle}"/>
-                        <Button Name="btnSelectPaperdoll" Content="Seleziona Paperdoll" Width="170" Height="50"
-                                Click="SelectPaperdoll_Click" Style="{StaticResource MyButtonStyle}"/>
-                        <Button Name="btnSelectBackpackMulo" Content="Seleziona Zaino mulo" Width="170" Height="50"
-                            Click="SelectBackpackMulo_Click" Style="{StaticResource MyButtonStyle}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,20">
-                        <Button Name="btnRun" Content="RUN" Width="100" Height="50"
-                            Click="Run_Click" Style="{StaticResource MyButtonStyle}" Background="Green"/>
-                        <Button Name="btnStop" Content="STOP" Width="100" Height="50"
-                            Click="Stop_Click" Style="{StaticResource MyButtonStyle}" Background="Red"/>
-                    </StackPanel>
+            <!-- Contenuto con schede -->
+            <TabControl Grid.Row="1" Margin="10" Background="#FF2D2D30" Foreground="White">
+                <!-- Scheda principale -->
+                <TabItem Header="Macro Principale">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                                <Button Name="btnRun" Content="RUN" Width="100" Height="50"
+                                        Click="Run_Click" Style="{StaticResource MyButtonStyle}" Background="Green"/>
+                                <Button Name="btnStop" Content="STOP" Width="100" Height="50"
+                                        Click="Stop_Click" Style="{StaticResource MyButtonStyle}" Background="Red"/>
+                            </StackPanel>
 
-                    <!-- TextBox per il log -->
-                    <TextBox Name="txtLog" Width="400" Height="150" IsReadOnly="True"
-                             TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                             Background="#FF1E1E1E" Foreground="White" BorderThickness="1" Margin="10"/>
-                </StackPanel>
-            </Grid>
+                            <TextBox Name="txtLog" Width="400" Height="150" IsReadOnly="True"
+                                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                     Background="#FF1E1E1E" Foreground="White" BorderThickness="1" Margin="10"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Seconda scheda -->
+                <TabItem Header="Regions">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Prima colonna -->
+                        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,20">
+                            <Button Name="btnSelectBackpack" Content="Seleziona Zaino" Width="170" Height="50"
+                    Click="SelectBackpackRegion_Click" Style="{StaticResource MyButtonStyle}"/>
+                            <Button Name="btnSelectPaperdoll" Content="Seleziona Paperdoll" Width="170" Height="50"
+                    Click="SelectPaperdoll_Click" Style="{StaticResource MyButtonStyle}"/>
+                            <Button Name="btnSelectBackpackMulo" Content="Seleziona Zaino mulo" Width="170" Height="50"
+                    Click="SelectBackpackMulo_Click" Style="{StaticResource MyButtonStyle}"/>
+                            <Button Name="btnSelectStatus" Content="Seleziona barra status" Width="170" Height="50"
+                                Click="SelectBarStatus_Click" Style="{StaticResource MyButtonStyle}"/>
+                        </StackPanel>
+
+                        <!-- Seconda colonna -->
+                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,20">
+                            <Button Name="btnSelectFood" Content="Seleziona Cibo" Width="170" Height="50"
+                    Click="SelectFood_Click" Style="{StaticResource MyButtonStyle}"/>
+                            <Button Name="btnSelectWater" Content="Seleziona Acqua" Width="170" Height="50"
+                    Click="SelectWater_Click" Style="{StaticResource MyButtonStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Settings">
+                    <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Border BorderBrush="Black" BorderThickness="2" Padding="10">
+                            <TextBlock Text="Generalmente contenuto dentro The Miracle\Data\Client\JournalLogs" Foreground="White"/>
+                        </Border>
+                        <Button Content="Seleziona Journal TM" Click="SelectFile_Click" Width="200" Height="40" Margin="0,10"/>
+                        <TextBlock Name="SelectedFilePathText" Margin="0,10" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkGreen"/>
+
+                        <Button Name="btnStopSound" Content="Stop beep" Width="170" Height="50"
+                            Click="StopBeep_Click" Style="{StaticResource MyButtonStyle}"/>
+                    </StackPanel>
+                </TabItem>
+                
+                <TabItem Header="Test">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                                <Button Name="btnTestSendInput" Content="Test SendInput" Width="170" Height="50"
+                            Click="TestSendInput_Click" Style="{StaticResource MyButtonStyle}" Background="#FF9C27B0"/>
+                                <Button Name="btnTestPostMessage" Content="Test PostMessage" Width="170" Height="50"
+                            Click="TestPostMessage_Click" Style="{StaticResource MyButtonStyle}" Background="#FFFF9800"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
         </Grid>
     </Border>
 </Window>
