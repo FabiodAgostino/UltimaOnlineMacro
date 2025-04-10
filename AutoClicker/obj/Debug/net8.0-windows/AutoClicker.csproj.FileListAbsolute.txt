@@ -1,0 +1,12 @@
+C:\Users\fabio.dagostino\Documents\net8.0-windows\AutoClicker.deps.json
+C:\Users\fabio.dagostino\Documents\net8.0-windows\AutoClicker.dll
+C:\Users\fabio.dagostino\Documents\net8.0-windows\AutoClicker.pdb
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClicker.csproj.AssemblyReference.cache
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClicker.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClicker.csproj.CoreCompileInputs.cache
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClicker.sourcelink.json
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClic.41C0E4FB.Up2Date
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClicker.dll
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\refint\AutoClicker.dll
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\AutoClicker.pdb
+C:\Users\fabio.dagostino\Documents\GitHub\UltimaOnlineMacro\AutoClicker\obj\Debug\net8.0-windows\ref\AutoClicker.dll

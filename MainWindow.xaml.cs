@@ -14,10 +14,15 @@ using AutoClicker.Models.System;
 using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using AutoClicker.Utils;
+using Microsoft.ML;
+using System;
 using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using UltimaOnlineMacro.Service;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace UltimaOnlineMacro
 {
@@ -27,7 +32,7 @@ namespace UltimaOnlineMacro
         private Pg Pg = new Pg();
         public Logger LogManager;
         private TimerUltima timerUltima;
-
+        MLContext MlContext;
         public MainWindow()
         {
             SavedImageTemplate.Initialize();
@@ -37,7 +42,7 @@ namespace UltimaOnlineMacro
             cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
             cmbKey.SelectedIndex = 0;
             SetTimerUltima();
-          
+            ReadMuloDetector();
         }
 
       
@@ -286,6 +291,20 @@ namespace UltimaOnlineMacro
                     });
                 }
             });
+        }
+
+        private void ReadMuloDetector()
+        {
+            MlContext = new MLContext();
+
+            string modelPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloDetector.zip");
+
+            ITransformer trainedModel;
+            DataViewSchema modelSchema;
+            using (var stream = new FileStream(modelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                trainedModel = MlContext.Model.Load(stream, out modelSchema);
+            }
         }
 
         private void CheckMacroButtons()
