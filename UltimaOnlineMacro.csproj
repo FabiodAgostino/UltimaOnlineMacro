@@ -47,7 +47,7 @@
     <PackageReference Include="MouseKeyHook" Version="5.7.1" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
 	  <Content Include="Assets\Images\Pickaxe.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
@@ -63,8 +63,10 @@
 	  <Content Include="Assets\Images\iron.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
+	  <Content Include="Assets\Images\Mulo\mulo1.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="AutoClicker\AutoClicker.csproj" />
     <ProjectReference Include="LogManager\LogManager.csproj" />

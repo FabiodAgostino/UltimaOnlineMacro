@@ -19,7 +19,13 @@ namespace AutoClicker.Library
             processService = new ProcessService();
         }
 
-        public void SimulateDoubleClick100Times(int x, int y)
+        public void MoveMouse(int x, int y)
+        {
+            Thread.Sleep(1000);
+            SetCursorPos(x, y);
+        }
+
+        public void SimulateDoubleClick10Times(int x, int y)
         {
             Logger.Loggin($"Inizializzazione simulazione doppio clic alle coordinate ({x}, {y})...");
             var tm = processService.TheMiracleWindow;
@@ -27,16 +33,12 @@ namespace AutoClicker.Library
 
             try
             {
-                // Attiva la finestra del gioco
                 SetForegroundWindow(hWnd);
-                Thread.Sleep(500); // Attendi che la finestra sia in primo piano
 
-                // Installa un hook a basso livello per poter monitorare gli eventi mouse
                 InstallMouseHook();
 
                 Logger.Loggin("Hook mouse a basso livello inizializzato correttamente");
 
-                // Sposta il cursore alla posizione specificata
                 SetCursorPos(x, y);
                 Logger.Loggin($"Cursore posizionato alle coordinate ({x}, {y})");
 
@@ -46,22 +48,16 @@ namespace AutoClicker.Library
                 {
                     Logger.Loggin($"Simulazione doppio clic #{i + 1}");
 
-                    // Primo clic - Pressione
                     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, nint.Zero);
                     Thread.Sleep(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
 
-                    // Primo clic - Rilascio
                     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, nint.Zero);
                     Thread.Sleep(random.Next(10, 40)); // Attesa tra il primo e il secondo clic del doppio clic
 
-                    // Secondo clic - Pressione
                     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, nint.Zero);
                     Thread.Sleep(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
 
-                    // Secondo clic - Rilascio
                     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, nint.Zero);
-
-                    // Pausa tra doppi clic consecutivi
                     Thread.Sleep(random.Next(100, 300));
                 }
 
@@ -88,7 +84,7 @@ namespace AutoClicker.Library
             POINT currentPos = new POINT();
             if (GetCursorPos(ref currentPos))
             {
-                SimulateDoubleClick100Times(currentPos.X, currentPos.Y);
+                //SimulateDoubleClick100Times(currentPos.X, currentPos.Y);
             }
             else
             {

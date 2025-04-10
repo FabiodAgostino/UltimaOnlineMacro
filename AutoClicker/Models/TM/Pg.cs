@@ -9,7 +9,7 @@ namespace AutoClicker.Models.TM
     {
         public Pickaxe? PickaxeInBackpack { get; set; }
         public Pickaxe? PickaxeInHand { get; set; }
-       
+        public List<Keys> Macro {  get; set; }
         public string PathJuornalLog { get; set; }
         public User32DLL.POINT FoodXY { get; set; }
         public User32DLL.POINT WaterXY { get; set; }
@@ -100,24 +100,25 @@ namespace AutoClicker.Models.TM
 
             if(status.Stone)
             {
-                while(true)
+                var muloRegion = _regions.GetMuloRegion();
+                while (true)
                 {
                     var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
                     if (iron.X == 0 && iron.Y == 0)
                         break;
-                    _sendInputService.DragAndDrop(iron.X, iron.Y, _regions.MuloRegion.X, _regions.MuloRegion.Y);
+                    _sendInputService.DragAndDrop(iron.X, iron.Y, muloRegion.X, muloRegion.Y);
                 }
             }
 
             if (status.Move)
-                _sendInputService.RandomizedWalk();
+                _sendInputService.MoveRandomly(8);
 
             if (status.Stamina)
                 Thread.Sleep(50000);
             else
-                Thread.Sleep(10000);
+                Thread.Sleep(5200);
 
-            _sendInputService.SimulateF10Press();
+            _sendInputService.RunMacro(Macro);
 
         }
 

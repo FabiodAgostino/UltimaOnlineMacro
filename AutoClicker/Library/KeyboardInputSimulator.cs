@@ -1,8 +1,11 @@
-﻿using AutoClicker.Service;
+﻿using AutoClicker.Const;
+using AutoClicker.Service;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static AutoClicker.Const.KeyboardMouseConst;
 using static AutoClicker.Utils.User32DLL;
+using System.Windows.Forms;
+
 namespace AutoClicker.Library
 {
     public class KeyboardInputSimulator
@@ -18,9 +21,7 @@ namespace AutoClicker.Library
             processService = new ProcessService();
         }
 
-
-
-        public void SimulateRightArrowFor30Times()
+        public void Move(byte tasto)
         {
             Logger.Loggin("Inizializzazione simulazione freccia destra con hook a basso livello...");
             var tm = processService.TheMiracleWindow;
@@ -28,34 +29,17 @@ namespace AutoClicker.Library
 
             try
             {
-                // Attiva la finestra del gioco
-                SetForegroundWindow(hWnd);
-                Thread.Sleep(500); // Attendi che la finestra sia in primo piano
-
-                // Installa un hook a basso livello per poter intercettare e studiare l'input di tastiera
                 InstallKeyboardHook();
 
                 Logger.Loggin("Hook a basso livello inizializzato correttamente");
 
                 Random random = new Random();
 
-                for (int i = 0; i < 30; i++)
-                {
-                    Logger.Loggin($"Simulazione pressione freccia destra #{i + 1}");
+                keybd_event(tasto, 0, KEYEVENTF_EXTENDEDKEY, nint.Zero);
+                Thread.Sleep(random.Next(50, 150));
 
-                    // Simula una pressione della freccia destra a basso livello
-                    // La freccia destra è un tasto esteso, quindi usiamo il flag KEYEVENTF_EXTENDEDKEY
-                    keybd_event(VK_RIGHT, 0, KEYEVENTF_EXTENDEDKEY, nint.Zero);
-
-                    // Attendi un tempo casuale tra pressione e rilascio
-                    Thread.Sleep(random.Next(50, 150));
-
-                    // Simula un rilascio della freccia destra a basso livello
-                    keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY, nint.Zero);
-
-                    // Piccola pausa tra le pressioni per simulare comportamento umano
-                    Thread.Sleep(random.Next(50, 150));
-                }
+                keybd_event(tasto, 0, KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY, nint.Zero);
+                Thread.Sleep(random.Next(50, 150));
 
                 Logger.Loggin("Simulazione completata con successo - 30 pressioni della freccia destra eseguite");
             }
@@ -73,13 +57,10 @@ namespace AutoClicker.Library
                 }
             }
         }
-
         private void InstallKeyboardHook()
         {
-            // Ottieni il modulo corrente per l'hook
             var moduleHandle = GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
 
-            // Installa un hook che ci permetterà di studiare i messaggi di tastiera nel sistema
             LowLevelKeyboardProc proc = HookCallback;
             hookID = SetWindowsHookEx(WH_KEYBOARD_LL, proc, moduleHandle, 0);
 
@@ -92,15 +73,12 @@ namespace AutoClicker.Library
 
         private nint HookCallback(int nCode, nint wParam, nint lParam)
         {
-            // Questo è solo per monitoraggio, non blocchiamo o modifichiamo gli eventi
             if (nCode >= 0)
             {
                 var keyInfo = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
 
-                // Logga gli eventi di tastiera per debug
                 if ((int)wParam == WM_KEYDOWN || (int)wParam == WM_SYSKEYDOWN)
                 {
-                    // Non logghiamo tutto o rischieremmo di riempire i log
                     if (keyInfo.vkCode == VK_RIGHT)
                     {
                         Logger.Loggin($"HOOK: Tasto freccia destra rilevato (VK:{keyInfo.vkCode}, SC:{keyInfo.scanCode}, FL:{keyInfo.flags})");
@@ -112,60 +90,80 @@ namespace AutoClicker.Library
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
 
-        public void SimulateF10Press(int times = 1)
+        public void SimulateButtonPressMacro(int tasto, int times = 1)
         {
-            Logger.Loggin("Inizializzazione simulazione tasto F10...");
-            var tm = processService.TheMiracleWindow;
-            var hWnd = tm.Hwnd;
+            IntPtr tastoPtr = (IntPtr)tasto;
+            var processService = new ProcessService();
+            var hWnd = processService.TheMiracleWindow.Hwnd;
 
             try
             {
-                // Attiva la finestra del gioco (come nel metodo originale)
-                SetForegroundWindow(hWnd);
-                Thread.Sleep(500);
-
-                // Installa l'hook esattamente come fai nel metodo originale
-                InstallKeyboardHook();
-
-                Logger.Loggin("Hook a basso livello inizializzato correttamente");
-
                 Random random = new Random();
 
-                // Utilizza la stessa costante VK_F10 che è definita nel tuo contesto
-                // Assumo che sia importata da KeyboardMouseConst
                 for (int i = 0; i < times; i++)
                 {
-                    Logger.Loggin($"Simulazione pressione F10 #{i + 1}");
+                    uint scanCode = MapVirtualKey((uint)tasto, 0);
 
-                    // Usa lo stesso pattern del metodo della freccia destra
-                    // Ma con il codice per F10 (0x79 / 121)
-                    keybd_event(VK_F10, 0, KEYEVENTF_EXTENDEDKEY, nint.Zero);  // Niente flag KEYEVENTF_EXTENDEDKEY qui perché F10 non è un tasto esteso
+                    IntPtr lParamDown = (IntPtr)((scanCode << 16) | 0x00000001);
+                    IntPtr lParamUp = (IntPtr)((scanCode << 16) | 0xC0000001);
 
-                    // Stesso timing random che funziona per le frecce
-                    Thread.Sleep(random.Next(50, 150));
-
-                    // Rilascio del tasto
-                    keybd_event(VK_F10, 0, KEYEVENTF_KEYUP, nint.Zero);
-
-                    // Stessa pausa tra le pressioni
-                    Thread.Sleep(random.Next(50, 150));
+                    PostMessage(hWnd, WM_KEYDOWN, tastoPtr, lParamDown);
+                    Thread.Sleep(random.Next(40, 100));
+                    PostMessage(hWnd, WM_KEYUP, tastoPtr, lParamUp);
+                    if (i < times - 1)
+                        Thread.Sleep(random.Next(100, 300));
                 }
 
-                Logger.Loggin($"Simulazione completata con successo - {times} pressioni di F10 eseguite");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Loggin($"Errore durante la simulazione: {e.Message}", true);
-            }
-            finally
-            {
-                // Rimuovi l'hook come nel metodo originale
-                if (hookID != nint.Zero)
-                {
-                    UnhookWindowsHookEx(hookID);
-                    Logger.Loggin("Hook a basso livello rimosso");
-                }
             }
         }
+
+        public void SimulateMacroWithModifiers(List<Keys> keys, int times = 1)
+        {
+            var processService = new ProcessService();
+            var hWnd = processService.TheMiracleWindow.Hwnd;
+
+            var modifiers = keys.Where(k => ModifierKeys.Contains(k)).ToList();
+            var actionKey = keys.FirstOrDefault(k => !ModifierKeys.Contains(k));
+
+            if (actionKey == Keys.None)
+                return;
+
+            Random random = new Random();
+
+            for (int i = 0; i < times; i++)
+            {
+                // Premi i modificatori prima
+                foreach (var mod in modifiers)
+                {
+                    uint scan = MapVirtualKey((uint)mod, 0);
+                    IntPtr lParamDown = (IntPtr)((scan << 16) | 0x00000001);
+                    PostMessage(hWnd, WM_KEYDOWN, (IntPtr)mod, lParamDown);
+                }
+
+                // Premi il tasto azione
+                uint scanCode = MapVirtualKey((uint)actionKey, 0);
+                IntPtr lParamDownAction = (IntPtr)((scanCode << 16) | 0x00000001);
+                IntPtr lParamUpAction = (IntPtr)((scanCode << 16) | 0xC0000001);
+
+                PostMessage(hWnd, WM_KEYDOWN, (IntPtr)actionKey, lParamDownAction);
+                Thread.Sleep(random.Next(40, 100));
+                PostMessage(hWnd, WM_KEYUP, (IntPtr)actionKey, lParamUpAction);
+
+                // Rilascia i modificatori dopo
+                foreach (var mod in modifiers)
+                {
+                    uint scan = MapVirtualKey((uint)mod, 0);
+                    IntPtr lParamUp = (IntPtr)((scan << 16) | 0xC0000001);
+                    PostMessage(hWnd, WM_KEYUP, (IntPtr)mod, lParamUp);
+                }
+
+                if (i < times - 1)
+                    Thread.Sleep(random.Next(100, 300));
+            }
+        }
+
     }
 }

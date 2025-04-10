@@ -55,8 +55,26 @@ namespace AutoClicker.Utils
         public static extern short GetAsyncKeyState(int vKey);
 
         [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+        [DllImport("user32.dll")]
+        public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("kernel32.dll")]
+        public static extern uint GetCurrentThreadId();
+
+        [DllImport("user32.dll")]
         public static extern nint SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn,
             nint hMod, uint dwThreadId);
+
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
         public delegate nint LowLevelMouseProc(int nCode, nint wParam, nint lParam);
@@ -75,19 +93,19 @@ namespace AutoClicker.Utils
         [StructLayout(LayoutKind.Sequential)]
         public struct INPUT
         {
-            public int type;
-            public INPUTUNION union;
+            public int Type;
+            public INPUTUNION Union;
         }
-
         [StructLayout(LayoutKind.Explicit)]
         public struct INPUTUNION
         {
             [FieldOffset(0)]
-            public KEYBDINPUT ki;
+            public KEYBDINPUT Keyboard;
             [FieldOffset(0)]
-            public MOUSEINPUT mi;
+            public MOUSEINPUT Mouse;
+            [FieldOffset(0)]
+            public HARDWAREINPUT Hardware;
         }
-
         // Struttura per l'hook del mouse a basso livello
         [StructLayout(LayoutKind.Sequential)]
         public struct MSLLHOOKSTRUCT
@@ -130,6 +148,26 @@ namespace AutoClicker.Utils
             public uint flags;
             public uint time;
             public IntPtr dwExtraInfo;
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        public struct InputUnion
+        {
+            [FieldOffset(0)]
+            public MOUSEINPUT Mouse;
+            [FieldOffset(0)]
+            public KEYBDINPUT Keyboard;
+            [FieldOffset(0)]
+            public HARDWAREINPUT Hardware;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct HARDWAREINPUT
+        {
+            public int uMsg;
+            public short wParamL;
+            public short wParamH;
         }
     }
 }

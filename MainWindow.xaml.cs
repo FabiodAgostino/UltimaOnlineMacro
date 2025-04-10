@@ -10,41 +10,37 @@
 // 4. L'utente può interrompere la macro cliccando "Ferma Macro".
 // 5. L'app utilizza un hook di sistema per rilevare i clic del mouse ovunque sullo schermo.
 
+using AutoClicker.Models.System;
+using AutoClicker.Models.TM;
+using AutoClicker.Service;
+using AutoClicker.Utils;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
-using Point = System.Drawing.Point;
 using UltimaOnlineMacro.Service;
-using Serilog;
-using AutoClicker.Models.TM;
-using AutoClicker.Models.System;
-using AutoClicker.Service;
-using AutoClicker.Library;
-using static Emgu.Util.Platform;
-using Microsoft.Win32;
-using AutoClicker.Service.ExtensionMethod;
-using Gma.System.MouseKeyHook;
-using System.Windows.Forms;
 
 namespace UltimaOnlineMacro
 {
     public partial class MainWindow : Window
     {
-        private IKeyboardMouseEvents _globalHook;
-
-        // Coordinate della regione dello zaino e della posizione target nel gioco
         private Regions Regions = new Regions();
         private Pg Pg = new Pg();
         public Logger LogManager;
+        private TimerUltima timerUltima;
 
         public MainWindow()
         {
             SavedImageTemplate.Initialize();
             InitializeComponent();
             LogManager = new(txtLog);
-            _globalHook = Hook.GlobalEvents();
-            _globalHook.KeyDown += GlobalHook_KeyDown;
+
+            cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
+            cmbKey.SelectedIndex = 0;
+            SetTimerUltima();
+          
         }
+
+      
 
 
         #region Callback
@@ -100,21 +96,22 @@ namespace UltimaOnlineMacro
 
         public void SetBackpackMuloRegion(Rectangle region)
         {
-            if (Regions.MuloRegion != region)
-            {
-                // Calcola metà larghezza e metà altezza
-                int newWidth = region.Width / 2;
-                int newHeight = region.Height / 2;
+            //if (Regions.MuloRegion != region)
+            //{
+            //    // Calcola metà larghezza e metà altezza
+            //    int newWidth = region.Width / 2;
+            //    int newHeight = region.Height / 2;
 
-                // Calcola le nuove coordinate per centrare il rettangolo
-                int newX = region.X + (region.Width - newWidth);
-                int newY = region.Y + (region.Height - newHeight);
+            //    // Calcola le nuove coordinate per centrare il rettangolo
+            //    int newX = region.X + (region.Width - newWidth);
+            //    int newY = region.Y + (region.Height - newHeight);
 
-                // Crea la nuova regione centrata
-                Rectangle centeredRegion = new Rectangle(newX, newY, newWidth, newHeight);
-                Regions.MuloRegion = centeredRegion;
-                LogManager.Loggin($"Regione zaino mulo selezionata: {Regions.MuloRegion}");
-            }
+            //    // Crea la nuova regione centrata
+            //    Rectangle centeredRegion = new Rectangle(newX, newY, newWidth, newHeight);
+            //    Regions.MuloRegion = centeredRegion;
+            //    LogManager.Loggin($"Regione zaino mulo selezionata: {Regions.MuloRegion}");
+            //    btnSelectBackpackMulo.Background = System.Windows.Media.Brushes.Gray;
+            //}
         }
         #endregion
 
@@ -125,20 +122,24 @@ namespace UltimaOnlineMacro
             this.WindowState = WindowState.Minimized;
         }
 
-        private void TestSendInput_Click(object sender, RoutedEventArgs e)
+        private void TestKeyboard_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
             Thread.Sleep(1000);
-            var service = new MouseInputSimulator();
-            service.SimulateDoubleClick100Times(300,500);
+            var service = new SendInputService();
+            service.TestKeyboard();
+            this.WindowState = WindowState.Normal;
+            this.Activate();
         }
 
-        private void TestPostMessage_Click(object sender, RoutedEventArgs e)
+        private void TestMouse_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
             Thread.Sleep(1000);
-            var service = new PostMessageService();
-            service.SimulateRightArrowFor3Seconds();
+            var service = new SendInputService();
+            service.TestMouse();
+            this.WindowState = WindowState.Normal;
+            this.Activate();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -178,27 +179,33 @@ namespace UltimaOnlineMacro
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            string haveValue = Regions.HaveValue();
-            if (!String.IsNullOrEmpty(haveValue))
-            {
-                LogManager.Loggin(haveValue);
-                return;
-            }
-            string isReady = Pg.IsReady();
-            if (!String.IsNullOrEmpty(isReady))
-            {
-                LogManager.Loggin(isReady);
-                return;
-            }
+            //string haveValue = Regions.HaveValue();
+            //if (!String.IsNullOrEmpty(haveValue))
+            //{
+            //    LogManager.Loggin(haveValue);
+            //    return;
+            //}
+            //string isReady = Pg.IsReady();
+            //if (!String.IsNullOrEmpty(isReady))
+            //{
+            //    LogManager.Loggin(isReady);
+            //    return;
+            //}
 
-            btnRun.Background = System.Windows.Media.Brushes.Gray;
-            btnStop.Background = System.Windows.Media.Brushes.Red;
-            Pg.RunWork = true;
-            Pg.Work(Regions);
+            //timerUltima.Start();
+            //CheckMacroButtons();
 
+            //btnRun.Background = System.Windows.Media.Brushes.Gray;
+            //btnStop.Background = System.Windows.Media.Brushes.Red;
+            //Pg.RunWork = true;
+            //Pg.Work(Regions);
+            Regions region = new Regions();
+            region.GetMuloRegion();
+            
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
+            timerUltima.Stop();
             Pg.RunWork = false;
             btnRun.Background = System.Windows.Media.Brushes.Green;
             btnStop.Background = System.Windows.Media.Brushes.Red;
@@ -265,28 +272,50 @@ namespace UltimaOnlineMacro
 
         #endregion
 
-
-        #region EscMethod
-        private void GlobalHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        public void SetTimerUltima()
         {
-            if (e.KeyCode == Keys.Escape)
+            timerUltima = new TimerUltima(text => {
+                if (Dispatcher.CheckAccess())
+                {
+                    lblElapsed.Text = text;
+                }
+                else
+                {
+                    Dispatcher.Invoke(() => {
+                        lblElapsed.Text = text;
+                    });
+                }
+            });
+        }
+
+        private void CheckMacroButtons()
+        {
+            System.Windows.Forms.Keys modifiers = System.Windows.Forms.Keys.None;
+            if (chkCtrl.IsChecked == true)
+                modifiers |= System.Windows.Forms.Keys.ControlKey;
+            if (chkShift.IsChecked == true)
+                modifiers |= System.Windows.Forms.Keys.Shift;
+            if (chkAlt.IsChecked == true)
+                modifiers |= System.Windows.Forms.Keys.Alt;
+
+            string selectedKey = cmbKey.SelectedItem as string;
+            if (string.IsNullOrEmpty(selectedKey))
             {
-                Pg.RunWork = false;
-                this.WindowState = WindowState.Normal;
-                this.Activate();
-                btnRun.Background = System.Windows.Media.Brushes.Green;
-                btnStop.Background = System.Windows.Media.Brushes.Red;
-                LogManager.Loggin("Stop!");
+                return;
+            }
+
+            System.Windows.Forms.Keys key;
+            if (Enum.TryParse(selectedKey, out key))
+            {
+                Pg.Macro = new();
+                Pg.Macro.Add(key);
+                if (modifiers != System.Windows.Forms.Keys.None)
+                    Pg.Macro.Add(modifiers);
+            }
+            else
+            {
             }
         }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            _globalHook.KeyDown -= GlobalHook_KeyDown;
-            _globalHook.Dispose();
-            base.OnClosed(e);
-        }
-        #endregion
 
     }
 

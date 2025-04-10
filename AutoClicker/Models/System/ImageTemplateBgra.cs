@@ -4,13 +4,13 @@ using Emgu.CV.Structure;
 
 namespace AutoClicker.Models.System
 {
-    public class ImageTemplate
+    public class ImageTemplateBgra
     {
         public Bitmap Image { get; set; }
-        public Image<Bgr, byte> Template { get; set; }
+        public Image<Bgra, byte> Template { get; set; }
         public string Name { get; set; }
 
-        public ImageTemplate(string path)
+        public ImageTemplateBgra(string path)
         {
             CreateImage(path);
         }
@@ -19,9 +19,8 @@ namespace AutoClicker.Models.System
         {
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", path);
             Image = new Bitmap(imagePath);
-            Template = Image.BitmapToImage().Convert<Bgr, byte>();
+            Template = Image.ToImage<Bgra, byte>();
             Name = path;
         }
-
     }
 }

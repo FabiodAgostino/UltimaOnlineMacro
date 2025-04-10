@@ -1,7 +1,7 @@
 ﻿<Window x:Class="UltimaOnlineMacro.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="UltimaOnlineMacro - Rotiniel Tools" Height="500" Width="600"
+        Title="UltimaOnlineMacro - Rotiniel Tools" Height="650" Width="600"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
         AllowsTransparency="True"
@@ -82,7 +82,7 @@
             <Grid Grid.Row="0" Background="#FF1E1E1E" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <DockPanel LastChildFill="True">
                     <TextBlock Text="UltimaOnlineMacro - Rotiniel Tools" 
-                               Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0" />
+                               Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="0,0,10,0">
                         <Button x:Name="MinimizeButton" Content="_" Click="MinimizeButton_Click" Style="{StaticResource TitleBarButtonStyle}" />
                         <Button x:Name="CloseButton" Content="X" Click="CloseButton_Click" Style="{StaticResource TitleBarButtonStyle}" />
@@ -92,53 +92,128 @@
 
             <!-- Contenuto con schede -->
             <TabControl Grid.Row="1" Margin="10" Background="#FF2D2D30" Foreground="White">
-                <!-- Scheda principale -->
+                <!-- Scheda Macro Principale (modificata) -->
                 <TabItem Header="Macro Principale">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="10">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                                <Button Name="btnRun" Content="RUN" Width="100" Height="50"
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <!-- Pannello Impostazioni Macro -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Sezione RUN/STOP e Log -->
+                            <RowDefinition Height="*"/>
+                            <!-- Footer informativo -->
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Pannello Impostazioni Macro -->
+                        <Border Grid.Row="0" CornerRadius="8" Background="#FF3E3E42" Padding="10" Margin="0,0,0,10" BorderBrush="#FF007ACC" BorderThickness="1">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Impostazioni Macro" 
+                                           Foreground="White" FontSize="18" FontWeight="Bold" 
+                                           Margin="0,0,0,10" HorizontalAlignment="Center"/>
+                                <!-- Selezione Tasto e Modificatori -->
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Vertical">
+                                        <TextBlock Text="Tasto" Foreground="White" FontWeight="SemiBold" Margin="30,0,0,5"/>
+                                        <ComboBox Name="cmbKey" Width="150" Height="30" 
+                                                  Background="#FF2D2D30" Foreground="Black" FontSize="14" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <CheckBox Name="chkCtrl" Content="Ctrl" Foreground="White" Margin="5,0" />
+                                        <CheckBox Name="chkAlt" Content="Alt" Foreground="White" Margin="5,0" />
+                                        <CheckBox Name="chkShift" Content="Shift" Foreground="White" Margin="5,0" />
+                                    </StackPanel>
+                                </Grid>
+                                <!-- Delay ed Esecuzioni -->
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Vertical" Margin="5">
+                                        <TextBlock Text="Delay (ms):" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                        <StackPanel>
+                                            <Slider Name="sldDelay" Minimum="2000" Maximum="10000" Value="4000" 
+                                                TickFrequency="50" IsSnapToTickEnabled="True"/>
+                                            <TextBlock Text="{Binding ElementName=sldDelay, Path=Value, StringFormat={}{0:0} ms}" Foreground="white"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
+                                        <TextBlock Text="Esecuzioni" Foreground="White" FontWeight="SemiBold" Margin="95,0,10,5"/>
+                                        <TextBox Name="txtRuns" Width="60" Height="30" Text="1" 
+                                                 Background="#FF2D2D30" Foreground="White" FontSize="14"/>
+                                    </StackPanel>
+                                </Grid>
+                                <!-- Contatori e pulsante Reset -->
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
+                                        <TextBlock Text="Esecuzioni:" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                        <TextBlock Name="lblRunCount" Text="0" Foreground="Lime" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
+                                        <TextBlock Text="Tempo:" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                        <TextBlock Name="lblElapsed" Text="00:00:00" Foreground="Lime" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Sezione RUN/STOP e Log -->
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                <Button Name="btnRun" Content="START" Width="150" Height="50" 
                                         Click="Run_Click" Style="{StaticResource MyButtonStyle}" Background="Green"/>
-                                <Button Name="btnStop" Content="STOP" Width="100" Height="50"
+                                <Button Name="btnStop" Content="STOP" Width="150" Height="50"
                                         Click="Stop_Click" Style="{StaticResource MyButtonStyle}" Background="Red"/>
                             </StackPanel>
+                            <TextBox Grid.Row="1" Name="txtLog" Margin="10" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                     Background="#FF1E1E1E" Foreground="White" BorderThickness="1" FontFamily="Consolas" FontSize="14"/>
+                        </Grid>
 
-                            <TextBox Name="txtLog" Width="400" Height="150" IsReadOnly="True"
-                                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                                     Background="#FF1E1E1E" Foreground="White" BorderThickness="1" Margin="10"/>
-                        </StackPanel>
-                    </ScrollViewer>
+                        <!-- Footer informativo -->
+                        <TextBlock Grid.Row="2" Text="UltimaOnlineMacro - Rotiniel Tools" HorizontalAlignment="Center" Foreground="Gray" Margin="5"/>
+                    </Grid>
                 </TabItem>
 
-                <!-- Seconda scheda -->
+                <!-- Scheda Regions -->
                 <TabItem Header="Regions">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-
-                        <!-- Prima colonna -->
-                        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,20">
+                        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20">
                             <Button Name="btnSelectBackpack" Content="Seleziona Zaino" Width="170" Height="50"
-                    Click="SelectBackpackRegion_Click" Style="{StaticResource MyButtonStyle}"/>
+                                    Click="SelectBackpackRegion_Click" Style="{StaticResource MyButtonStyle}"/>
                             <Button Name="btnSelectPaperdoll" Content="Seleziona Paperdoll" Width="170" Height="50"
-                    Click="SelectPaperdoll_Click" Style="{StaticResource MyButtonStyle}"/>
+                                    Click="SelectPaperdoll_Click" Style="{StaticResource MyButtonStyle}"/>
                             <Button Name="btnSelectBackpackMulo" Content="Seleziona Zaino mulo" Width="170" Height="50"
-                    Click="SelectBackpackMulo_Click" Style="{StaticResource MyButtonStyle}"/>
+                                    Click="SelectBackpackMulo_Click" Style="{StaticResource MyButtonStyle}"/>
                             <Button Name="btnSelectStatus" Content="Seleziona barra status" Width="170" Height="50"
-                                Click="SelectBarStatus_Click" Style="{StaticResource MyButtonStyle}"/>
+                                    Click="SelectBarStatus_Click" Style="{StaticResource MyButtonStyle}"/>
                         </StackPanel>
-
-                        <!-- Seconda colonna -->
-                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20,0,20">
+                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20">
                             <Button Name="btnSelectFood" Content="Seleziona Cibo" Width="170" Height="50"
-                    Click="SelectFood_Click" Style="{StaticResource MyButtonStyle}"/>
+                                    Click="SelectFood_Click" Style="{StaticResource MyButtonStyle}"/>
                             <Button Name="btnSelectWater" Content="Seleziona Acqua" Width="170" Height="50"
-                    Click="SelectWater_Click" Style="{StaticResource MyButtonStyle}"/>
+                                    Click="SelectWater_Click" Style="{StaticResource MyButtonStyle}"/>
                         </StackPanel>
                     </Grid>
                 </TabItem>
+
+                <!-- Scheda Settings -->
                 <TabItem Header="Settings">
                     <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <Border BorderBrush="Black" BorderThickness="2" Padding="10">
@@ -146,20 +221,20 @@
                         </Border>
                         <Button Content="Seleziona Journal TM" Click="SelectFile_Click" Width="200" Height="40" Margin="0,10"/>
                         <TextBlock Name="SelectedFilePathText" Margin="0,10" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkGreen"/>
-
                         <Button Name="btnStopSound" Content="Stop beep" Width="170" Height="50"
-                            Click="StopBeep_Click" Style="{StaticResource MyButtonStyle}"/>
+                                Click="StopBeep_Click" Style="{StaticResource MyButtonStyle}"/>
                     </StackPanel>
                 </TabItem>
-                
+
+                <!-- Scheda Test -->
                 <TabItem Header="Test">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="10">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                                <Button Name="btnTestSendInput" Content="Test SendInput" Width="170" Height="50"
-                            Click="TestSendInput_Click" Style="{StaticResource MyButtonStyle}" Background="#FF9C27B0"/>
-                                <Button Name="btnTestPostMessage" Content="Test PostMessage" Width="170" Height="50"
-                            Click="TestPostMessage_Click" Style="{StaticResource MyButtonStyle}" Background="#FFFF9800"/>
+                                <Button Name="btnTestMouseInput" Content="Test Mouse" Width="170" Height="50"
+                                        Click="TestMouse_Click" Style="{StaticResource MyButtonStyle}" Background="#FF9C27B0"/>
+                                <Button Name="btnTestKeyboardMessage" Content="Test Tastiera" Width="170" Height="50"
+                                        Click="TestKeyboard_Click" Style="{StaticResource MyButtonStyle}" Background="#FFFF9800"/>
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
