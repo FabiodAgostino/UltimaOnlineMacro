@@ -119,12 +119,6 @@ namespace UltimaOnlineMacro
                             case "Paperdoll":
                                 mainWindow.PaperdollHavePickaxe(selectedRegion);
                                 break;
-                            case "Mulo":
-                                mainWindow.SetBackpackMuloRegion(selectedRegion);
-                                break;
-                            case "status":
-                                mainWindow.SetBarStatus(selectedRegion);
-                                break;
                         }
                     });
                 }

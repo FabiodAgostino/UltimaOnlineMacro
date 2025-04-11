@@ -7,7 +7,7 @@ namespace AutoClicker.Utils
     public class TimerUltima
     {
         private System.Timers.Timer timer;
-        private DateTime startTime;
+        private DateTime startTime = DateTime.Now;
         private bool isRunning = false;
         private Action<string> updateLabelAction; // Azione per aggiornare il testo
         private ILogger logger;
@@ -15,7 +15,6 @@ namespace AutoClicker.Utils
         public event EventHandler<TimeSpan> OnTimerUpdate;
         public TimeSpan ElapsedTime { get; private set; }
 
-        // Costruttore che accetta un'azione per aggiornare l'UI
         public TimerUltima(Action<string> updateLabelAction)
         {
             this.updateLabelAction = updateLabelAction;
@@ -32,7 +31,6 @@ namespace AutoClicker.Utils
         {
             if (!isRunning)
             {
-                startTime = DateTime.Now;
                 timer.Start();
                 isRunning = true;
             }
@@ -47,22 +45,6 @@ namespace AutoClicker.Utils
             }
         }
 
-        public void Reset()
-        {
-            Stop();
-            ElapsedTime = TimeSpan.Zero;
-            UpdateLabel();
-        }
-
-        public TimeSpan GetCurrentElapsedTime()
-        {
-            if (isRunning)
-            {
-                return DateTime.Now - startTime;
-            }
-            return ElapsedTime;
-        }
-
         public string GetFormattedTime()
         {
             return ElapsedTime.ToString(@"hh\:mm\:ss\.fff");
@@ -72,14 +54,10 @@ namespace AutoClicker.Utils
         {
             ElapsedTime = DateTime.Now - startTime;
 
-            // Dato che siamo in un thread diverso dal thread UI,
-            // dobbiamo stare attenti a come aggiorniamo l'UI
             try
             {
-                // Lasciamo che chi utilizza la classe gestisca il cross-threading
                 UpdateLabel();
 
-                // Notifica ascoltatori dell'evento
                 var handler = OnTimerUpdate;
                 if (handler != null)
                 {
@@ -98,7 +76,6 @@ namespace AutoClicker.Utils
 
         private void UpdateLabel()
         {
-            // Lasciamo che l'azione fornita dall'esterno si occupi del cross-threading se necessario
             updateLabelAction?.Invoke(GetFormattedTime());
         }
 

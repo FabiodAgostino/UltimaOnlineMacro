@@ -17,20 +17,25 @@
     <Compile Include="Models\System\ImageTemplateBgra.cs" />
     <Compile Include="Models\System\SavedImageTemplate.cs" />
     <Compile Include="Models\TM\Iron.cs" />
+    <Compile Include="Models\TM\Macro.cs" />
+    <Compile Include="Models\TM\MuloImageData.cs" />
+    <Compile Include="Models\TM\MuloPrediction.cs" />
     <Compile Include="Models\TM\Pg.cs" />
     <Compile Include="Models\TM\Pickaxe.cs" />
     <Compile Include="Models\System\Regions.cs" />
     <Compile Include="Models\System\TMWindow.cs" />
     <Compile Include="Models\TM\Status.cs" />
     <Compile Include="Service\AutoClickerLogger.cs" />
+    <Compile Include="Service\DetectorService.cs" />
     <Compile Include="Service\ExtensionMethod\Image.cs" />
     <Compile Include="Library\MouseInputSimulator.cs" />
     <Compile Include="Service\ExtensionMethod\Key.cs" />
-    <Compile Include="Service\PostMessageService.cs" />
     <Compile Include="Service\ProcessService.cs" />
     <Compile Include="Service\ReadLogTMService.cs" />
     <Compile Include="Service\SendInputService.cs" />
     <Compile Include="Library\KeyboardInputSimulator.cs" />
+    <Compile Include="Service\TesserActService.cs" />
+    <Compile Include="Service\TestService.cs" />
     <Compile Include="Utils\TimerUltima.cs" />
     <Compile Include="Utils\User32DLL.cs" />
   </ItemGroup>
@@ -45,6 +50,8 @@
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
     <PackageReference Include="System.Windows.Extensions" Version="9.0.3" />
+    <PackageReference Include="Tesseract" Version="4.1.1" />
+    <PackageReference Include="Tesseract.Drawing" Version="4.1.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,3 +1,7 @@
+C:\Users\fabio.dagostino\Documents\net8.0-windows\x86\leptonica-1.80.0.dll
+C:\Users\fabio.dagostino\Documents\net8.0-windows\x86\tesseract41.dll
+C:\Users\fabio.dagostino\Documents\net8.0-windows\x64\leptonica-1.80.0.dll
+C:\Users\fabio.dagostino\Documents\net8.0-windows\x64\tesseract41.dll
 C:\Users\fabio.dagostino\Documents\net8.0-windows\AutoClicker.deps.json
 C:\Users\fabio.dagostino\Documents\net8.0-windows\AutoClicker.dll
 C:\Users\fabio.dagostino\Documents\net8.0-windows\AutoClicker.pdb

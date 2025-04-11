@@ -22,34 +22,32 @@ namespace AutoClicker.Service
 
         /// Simula la pressione prolungata del tasto freccia destra per 3 secondi
         /// </summary>
-        public void TestMouse()
+        public async Task TestMouse()
         {
-            MouseInputSimulator.SimulateDoubleClick10Times(100,400);
+            await MouseInputSimulator.SimulateDoubleClick10Times(100,400);
         }
 
-        public void TestKeyboard()
+        public async Task TestKeyboard()
         {
             for (int i = 0; i < 10; i++)
             {
-                KeyboardInputSimulator.Move(KeyboardMouseConst.VK_LEFT);
+                await KeyboardInputSimulator.Move(KeyboardMouseConst.VK_LEFT);
             }
         }
 
 
-        /// <summary>
-        /// Esegue un'operazione di click, trascinamento e rilascio tra due punti
-        /// </summary>
-        /// <param name="startX">Coordinata X iniziale</param>
-        /// <param name="startY">Coordinata Y iniziale</param>
-        /// <param name="endX">Coordinata X finale</param>
-        /// <param name="endY">Coordinata Y finale</param>
-        /// <param name="duration">Durata del trascinamento in millisecondi</param>
-        /// <param name="installHook">Se true, installa un hook di tastiera durante l'operazione</param>
-        public bool DragAndDrop(int startX, int startY, int endX, int endY, int duration = 500, bool installHook = false)
+        public async Task<bool> DragAndDrop(int startX, int startY, int endX, int endY, int duration = 500, bool installHook = false)
         {
-            return MouseInputSimulator.DragAndDrop(startX, startY, endX, endY);
+            return await MouseInputSimulator.DragAndDrop(startX, startY, endX, endY);
         }
 
+        public async Task<bool> DragAndDropIron(int startX, int startY, int endX, int endY)
+        {
+            await KeyboardInputSimulator.ClickUnclickShift();
+            var success = await MouseInputSimulator.DragAndDrop(startX, startY, endX, endY,150);
+            await KeyboardInputSimulator.ClickUnclickShift(false);
+            return success;
+        }
       
 
         public Task<POINT> BeginCaptureAsync()
@@ -57,7 +55,7 @@ namespace AutoClicker.Service
             return MouseInputSimulator.BeginCaptureAsync();
         }
 
-        public void MoveRandomly(int numberOfSteps)
+        public async Task MoveRandomly(int numberOfSteps)
         {
             try
             {
@@ -67,9 +65,9 @@ namespace AutoClicker.Service
                 for (int i = 0; i < numberOfSteps/2; i++)
                 {
                     byte direction = ArrowKeys[random.Next(ArrowKeys.Length)];
-                    KeyboardInputSimulator.Move(direction);
-                    KeyboardInputSimulator.Move(direction);
-                    KeyboardInputSimulator.Move(direction);
+                    await KeyboardInputSimulator.Move(direction);
+                    await KeyboardInputSimulator.Move(direction);
+                    await KeyboardInputSimulator.Move(direction);
 
                 }
             }
@@ -79,9 +77,9 @@ namespace AutoClicker.Service
             }
         }
 
-        public void RunMacro(List<Keys> keys)
+        public async Task RunMacro(List<Keys> keys)
         {
-            KeyboardInputSimulator.SimulateMacroWithModifiers(keys);
+            await KeyboardInputSimulator.SimulateMacroWithModifiers(keys);
         }
 
     }

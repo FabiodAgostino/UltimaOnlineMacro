@@ -14,11 +14,14 @@ using AutoClicker.Models.System;
 using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using AutoClicker.Utils;
+using AutoCliecker.Service;
 using Microsoft.ML;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using UltimaOnlineMacro.Service;
@@ -32,7 +35,7 @@ namespace UltimaOnlineMacro
         private Pg Pg = new Pg();
         public Logger LogManager;
         private TimerUltima timerUltima;
-        MLContext MlContext;
+        private bool initializeMacro { get; set; } = true;
         public MainWindow()
         {
             SavedImageTemplate.Initialize();
@@ -43,6 +46,7 @@ namespace UltimaOnlineMacro
             cmbKey.SelectedIndex = 0;
             SetTimerUltima();
             ReadMuloDetector();
+            ReadTessdata();
         }
 
       
@@ -74,9 +78,6 @@ namespace UltimaOnlineMacro
                 }
             }
         }
-        public void SetBarStatus(Rectangle region)
-        {
-        }
         public void PaperdollHavePickaxe(Rectangle region)
         {
             // Calcola metà larghezza e metà altezza
@@ -99,25 +100,6 @@ namespace UltimaOnlineMacro
             }
         }
 
-        public void SetBackpackMuloRegion(Rectangle region)
-        {
-            //if (Regions.MuloRegion != region)
-            //{
-            //    // Calcola metà larghezza e metà altezza
-            //    int newWidth = region.Width / 2;
-            //    int newHeight = region.Height / 2;
-
-            //    // Calcola le nuove coordinate per centrare il rettangolo
-            //    int newX = region.X + (region.Width - newWidth);
-            //    int newY = region.Y + (region.Height - newHeight);
-
-            //    // Crea la nuova regione centrata
-            //    Rectangle centeredRegion = new Rectangle(newX, newY, newWidth, newHeight);
-            //    Regions.MuloRegion = centeredRegion;
-            //    LogManager.Loggin($"Regione zaino mulo selezionata: {Regions.MuloRegion}");
-            //    btnSelectBackpackMulo.Background = System.Windows.Media.Brushes.Gray;
-            //}
-        }
         #endregion
 
 
@@ -127,22 +109,22 @@ namespace UltimaOnlineMacro
             this.WindowState = WindowState.Minimized;
         }
 
-        private void TestKeyboard_Click(object sender, RoutedEventArgs e)
+        private async void TestKeyboard_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
             var service = new SendInputService();
-            service.TestKeyboard();
+            await service.TestKeyboard();
             this.WindowState = WindowState.Normal;
             this.Activate();
         }
 
-        private void TestMouse_Click(object sender, RoutedEventArgs e)
+        private async void TestMouse_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
             var service = new SendInputService();
-            service.TestMouse();
+            await service.TestMouse();
             this.WindowState = WindowState.Normal;
             this.Activate();
         }
@@ -182,46 +164,43 @@ namespace UltimaOnlineMacro
             Pg.StopBeep();
         }
 
-        private void Run_Click(object sender, RoutedEventArgs e)
+        private async void Run_Click(object sender, RoutedEventArgs e)
         {
-            //string haveValue = Regions.HaveValue();
-            //if (!String.IsNullOrEmpty(haveValue))
-            //{
-            //    LogManager.Loggin(haveValue);
-            //    return;
-            //}
-            //string isReady = Pg.IsReady();
-            //if (!String.IsNullOrEmpty(isReady))
-            //{
-            //    LogManager.Loggin(isReady);
-            //    return;
-            //}
+            btnRun.Background = System.Windows.Media.Brushes.Gray;
+            btnStop.Background = System.Windows.Media.Brushes.Red;
+            if (!Debugger.IsAttached)
+            {
+                string haveValue = Regions.HaveValue();
+                if (!String.IsNullOrEmpty(haveValue))
+                {
+                    LogManager.Loggin(haveValue);
+                    return;
+                }
+                string isReady = Pg.IsReady();
+                if (!String.IsNullOrEmpty(isReady))
+                {
+                    LogManager.Loggin(isReady);
+                    return;
+                }
+            }
+            timerUltima.Start();
+            CheckMacroButtons();
+            LogManager.Loggin("Run!");
+            await Pg.Work(Regions);
 
-            //timerUltima.Start();
-            //CheckMacroButtons();
 
-            //btnRun.Background = System.Windows.Media.Brushes.Gray;
-            //btnStop.Background = System.Windows.Media.Brushes.Red;
-            //Pg.RunWork = true;
-            //Pg.Work(Regions);
-            Regions region = new Regions();
-            region.GetMuloRegion();
-            
+
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
             timerUltima.Stop();
+            Pg.Stop();
             Pg.RunWork = false;
             btnRun.Background = System.Windows.Media.Brushes.Green;
             btnStop.Background = System.Windows.Media.Brushes.Red;
             LogManager.Loggin("Stop!");
         }
 
-        private void SelectBackpackMulo_Click(object sender, RoutedEventArgs e)
-        {
-            OverlayWindow overlay = new OverlayWindow("Mulo", LogManager);
-            overlay.Show();
-        }
 
         private async void SelectWater_Click(object sender, RoutedEventArgs e)
         {
@@ -239,14 +218,6 @@ namespace UltimaOnlineMacro
             this.WindowState = WindowState.Normal;
             this.Activate();
             btnSelectWater.Background = System.Windows.Media.Brushes.Gray;
-        }
-
-        private void SelectBarStatus_Click(object sender, RoutedEventArgs e)
-        {
-            OverlayWindow overlay = new OverlayWindow("status", LogManager);
-            overlay.Show();
-
-          
         }
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
@@ -295,16 +266,18 @@ namespace UltimaOnlineMacro
 
         private void ReadMuloDetector()
         {
-            MlContext = new MLContext();
-
             string modelPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloDetector.zip");
+            if (File.Exists(modelPath))
+                Pg.DetectorService = new MuloDetectorService(modelPath);
+            else
+                LogManager.Loggin("MuloDetector non inizializzato, non trovo il il file.");
+        }
 
-            ITransformer trainedModel;
-            DataViewSchema modelSchema;
-            using (var stream = new FileStream(modelPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                trainedModel = MlContext.Model.Load(stream, out modelSchema);
-            }
+        private void ReadTessdata()
+        {
+            string modelPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "tessdata", "eng.traineddata");
+            if (!File.Exists(modelPath))
+                LogManager.Loggin("Non trovo il file tessdata.");
         }
 
         private void CheckMacroButtons()
@@ -317,25 +290,29 @@ namespace UltimaOnlineMacro
             if (chkAlt.IsChecked == true)
                 modifiers |= System.Windows.Forms.Keys.Alt;
 
-            string selectedKey = cmbKey.SelectedItem as string;
+            string? selectedKey = cmbKey.SelectedItem as string;
             if (string.IsNullOrEmpty(selectedKey))
             {
                 return;
             }
 
             System.Windows.Forms.Keys key;
+            var delay = sldDelay.Value;
             if (Enum.TryParse(selectedKey, out key))
             {
-                Pg.Macro = new();
-                Pg.Macro.Add(key);
+                var macroKeys = new List<Keys>();
+                macroKeys.Add(key);
                 if (modifiers != System.Windows.Forms.Keys.None)
-                    Pg.Macro.Add(modifiers);
+                    macroKeys.Add(modifiers);
+                if(Pg.Macro== null || (Pg.Macro.Delay!=delay || Pg.Macro.MacroKeys.All(x=> !macroKeys.Contains(x))))
+                    Pg.Macro = new Macro(macroKeys, delay, (int repetitions) => { txtRuns.Text = repetitions.ToString(); });
+
             }
             else
             {
             }
+            initializeMacro = false;
         }
-
     }
 
 }

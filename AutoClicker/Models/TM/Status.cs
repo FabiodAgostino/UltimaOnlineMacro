@@ -10,4 +10,10 @@
         public string Error { get; set; }
         public bool Macrocheck { get; set; }
     }
+
+    public class StatusBar
+    {
+        public (int value, int max) Stamina { get; set; }
+        public (int value, int max) Stone { get; set; }
+    }
 }

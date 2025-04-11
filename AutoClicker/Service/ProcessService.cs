@@ -1,4 +1,5 @@
 ﻿using AutoClicker.Models.System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using static AutoClicker.Const.KeyboardMouseConst;
@@ -20,22 +21,24 @@ namespace AutoClicker.Service
             SetTMWindow();
         }
 
-        public void SetTMWindow()
+        public async Task SetTMWindow()
         {
             IntPtr hwnd = IntPtr.Zero;
             StringBuilder windowText = new StringBuilder(256);
+            GetModuleHandleProcess();
 
-            while ((hwnd = FindWindowExA(IntPtr.Zero, hwnd, null, null)) != IntPtr.Zero)
+            while ((hwnd = FindWindowExA(IntPtr.Zero, hwnd, string.Empty, string.Empty)) != IntPtr.Zero)
             {
                 GetWindowTextA(hwnd, windowText, windowText.Capacity);
                 if (windowText.ToString().Contains("ClassicUO") && windowText.ToString().Contains("TM Client"))
                 {
-                    TheMiracleWindow = new TMWindow() { Title = windowText.ToString(), Hwnd = hwnd };
+                    TheMiracleWindow.Title = windowText.ToString();
+                    TheMiracleWindow.Hwnd = hwnd;
                     break;
                 }
             }
-            if(TheMiracleWindow != null)
-                FocusWindowReliably(TheMiracleWindow.Hwnd);
+            if (TheMiracleWindow != null)
+                await FocusWindowReliably(TheMiracleWindow.Hwnd);
 
         }
 
@@ -43,7 +46,7 @@ namespace AutoClicker.Service
         /// Porta una finestra in primo piano in modo affidabile usando tecniche
         /// riscontrate in MacroUO
         /// </summary>
-        private void FocusWindowReliably(IntPtr hWnd)
+        private async Task FocusWindowReliably(IntPtr hWnd)
         {
             // Ottiene l'ID del thread corrente
             uint currentThreadId = GetCurrentThreadId();
@@ -67,7 +70,7 @@ namespace AutoClicker.Service
                 SetForegroundWindow(hWnd);
 
                 // Breve pausa per consentire alla finestra di ottenere il focus
-                Thread.Sleep(100);
+                await Task.Delay(100);
 
                 // Secondo tentativo per assicurarsi che la finestra abbia il focus
                 SetForegroundWindow(hWnd);
@@ -80,6 +83,21 @@ namespace AutoClicker.Service
                     AttachThreadInput(currentThreadId, targetThreadId, false);
                 }
             }
+        }
+
+        public void GetModuleHandleProcess()
+        {
+            var process = Process.GetCurrentProcess();
+            if (process != null && process.MainModule != null)
+            {
+                var moduleName = process.MainModule.ModuleName;
+                if (TheMiracleWindow == null)
+                    TheMiracleWindow = new();
+
+                TheMiracleWindow.ModuleHandle = GetModuleHandle(moduleName);
+            }
+            else
+                throw new Exception("Process non valido");
         }
     }
 }

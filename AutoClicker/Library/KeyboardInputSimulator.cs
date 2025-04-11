@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using static AutoClicker.Const.KeyboardMouseConst;
 using static AutoClicker.Utils.User32DLL;
 using System.Windows.Forms;
+using AutoClicker.Service.ExtensionMethod;
 
 namespace AutoClicker.Library
 {
@@ -21,7 +22,7 @@ namespace AutoClicker.Library
             processService = new ProcessService();
         }
 
-        public void Move(byte tasto)
+        public async Task Move(byte tasto)
         {
             Logger.Loggin("Inizializzazione simulazione freccia destra con hook a basso livello...");
             var tm = processService.TheMiracleWindow;
@@ -36,10 +37,10 @@ namespace AutoClicker.Library
                 Random random = new Random();
 
                 keybd_event(tasto, 0, KEYEVENTF_EXTENDEDKEY, nint.Zero);
-                Thread.Sleep(random.Next(50, 150));
+                await Task.Delay(random.Next(50, 150));
 
                 keybd_event(tasto, 0, KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY, nint.Zero);
-                Thread.Sleep(random.Next(50, 150));
+                await Task.Delay(random.Next(50, 150));
 
                 Logger.Loggin("Simulazione completata con successo - 30 pressioni della freccia destra eseguite");
             }
@@ -59,10 +60,9 @@ namespace AutoClicker.Library
         }
         private void InstallKeyboardHook()
         {
-            var moduleHandle = GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
 
             LowLevelKeyboardProc proc = HookCallback;
-            hookID = SetWindowsHookEx(WH_KEYBOARD_LL, proc, moduleHandle, 0);
+            hookID = SetWindowsHookEx(WH_KEYBOARD_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
 
             if (hookID == nint.Zero)
             {
@@ -90,7 +90,7 @@ namespace AutoClicker.Library
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
 
-        public void SimulateButtonPressMacro(int tasto, int times = 1)
+        public async Task SimulateButtonPressMacro(int tasto, int times = 1)
         {
             IntPtr tastoPtr = (IntPtr)tasto;
             var processService = new ProcessService();
@@ -108,10 +108,10 @@ namespace AutoClicker.Library
                     IntPtr lParamUp = (IntPtr)((scanCode << 16) | 0xC0000001);
 
                     PostMessage(hWnd, WM_KEYDOWN, tastoPtr, lParamDown);
-                    Thread.Sleep(random.Next(40, 100));
+                    await Task.Delay(random.Next(40, 100));
                     PostMessage(hWnd, WM_KEYUP, tastoPtr, lParamUp);
                     if (i < times - 1)
-                        Thread.Sleep(random.Next(100, 300));
+                        await Task.Delay(random.Next(100, 300));
                 }
 
             }
@@ -120,11 +120,28 @@ namespace AutoClicker.Library
             }
         }
 
-        public void SimulateMacroWithModifiers(List<Keys> keys, int times = 1)
+        public async Task ClickUnclickShift(bool click = true)
         {
-            var processService = new ProcessService();
             var hWnd = processService.TheMiracleWindow.Hwnd;
 
+            uint scan = MapVirtualKey((uint)Keys.ShiftKey, 0);
+
+            if (click)
+            {
+                // Premi il tasto Shift
+                IntPtr lParamDown = (IntPtr)((scan << 16) | 0x00000001);
+                PostMessage(hWnd, WM_KEYDOWN, (IntPtr)Keys.ShiftKey, lParamDown);
+            }
+            else
+            {
+                IntPtr lParamUp = (IntPtr)((scan << 16) | 0xC0000001);
+                PostMessage(hWnd, WM_KEYUP, (IntPtr)Keys.ShiftKey, lParamUp);
+            }
+        }
+
+        public async Task SimulateMacroWithModifiers(List<Keys> keys, int times = 1)
+        {
+            var hWnd = processService.TheMiracleWindow.Hwnd;
             var modifiers = keys.Where(k => ModifierKeys.Contains(k)).ToList();
             var actionKey = keys.FirstOrDefault(k => !ModifierKeys.Contains(k));
 
@@ -149,7 +166,7 @@ namespace AutoClicker.Library
                 IntPtr lParamUpAction = (IntPtr)((scanCode << 16) | 0xC0000001);
 
                 PostMessage(hWnd, WM_KEYDOWN, (IntPtr)actionKey, lParamDownAction);
-                Thread.Sleep(random.Next(40, 100));
+                await Task.Delay(random.Next(40, 100));
                 PostMessage(hWnd, WM_KEYUP, (IntPtr)actionKey, lParamUpAction);
 
                 // Rilascia i modificatori dopo
@@ -161,7 +178,7 @@ namespace AutoClicker.Library
                 }
 
                 if (i < times - 1)
-                    Thread.Sleep(random.Next(100, 300));
+                    await Task.Delay(random.Next(100, 300));
             }
         }
 

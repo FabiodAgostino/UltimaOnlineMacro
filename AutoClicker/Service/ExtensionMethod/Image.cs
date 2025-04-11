@@ -98,8 +98,13 @@ namespace AutoClicker.Service.ExtensionMethod
 
         public static (Bitmap bitmap, Rectangle rectangle) CaptureCenterScreenshot(int halfWidth = 100, int halfHeight = 100)
         {
-            // Ottieni le dimensioni dello schermo primario
-            Rectangle screenBounds = Screen.PrimaryScreen.Bounds;
+            Rectangle? screen = null;
+            if (Screen.PrimaryScreen != null)
+                screen = Screen.PrimaryScreen.Bounds;
+            else
+                throw new Exception("Non trovo le dimensioni dello schermo primario");
+
+            Rectangle screenBounds = screen.Value;
 
             // Calcola il centro dello schermo
             int centerX = screenBounds.X + screenBounds.Width / 2;

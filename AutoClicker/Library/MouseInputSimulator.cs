@@ -19,13 +19,13 @@ namespace AutoClicker.Library
             processService = new ProcessService();
         }
 
-        public void MoveMouse(int x, int y)
+        public async Task MoveMouse(int x, int y)
         {
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
             SetCursorPos(x, y);
         }
 
-        public void SimulateDoubleClick10Times(int x, int y)
+        public async Task SimulateDoubleClick10Times(int x, int y)
         {
             Logger.Loggin($"Inizializzazione simulazione doppio clic alle coordinate ({x}, {y})...");
             var tm = processService.TheMiracleWindow;
@@ -49,16 +49,16 @@ namespace AutoClicker.Library
                     Logger.Loggin($"Simulazione doppio clic #{i + 1}");
 
                     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, nint.Zero);
-                    Thread.Sleep(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
+                    await Task.Delay(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
 
                     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, nint.Zero);
-                    Thread.Sleep(random.Next(10, 40)); // Attesa tra il primo e il secondo clic del doppio clic
+                    await Task.Delay(random.Next(10, 40)); // Attesa tra il primo e il secondo clic del doppio clic
 
                     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, nint.Zero);
-                    Thread.Sleep(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
+                    await Task.Delay(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
 
                     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, nint.Zero);
-                    Thread.Sleep(random.Next(100, 300));
+                    await Task.Delay(random.Next(100, 300));
                 }
 
                 Logger.Loggin("Simulazione completata con successo - 100 doppi clic eseguiti");
@@ -78,28 +78,12 @@ namespace AutoClicker.Library
             }
         }
 
-        // Overload che usa la posizione corrente del mouse
-        public void SimulateDoubleClick100TimesAtCurrentPosition()
-        {
-            POINT currentPos = new POINT();
-            if (GetCursorPos(ref currentPos))
-            {
-                //SimulateDoubleClick100Times(currentPos.X, currentPos.Y);
-            }
-            else
-            {
-                Logger.Loggin("Impossibile ottenere la posizione corrente del cursore", true);
-            }
-        }
-
         private void InstallMouseHook()
         {
-            // Ottieni il modulo corrente per l'hook
-            var moduleHandle = GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
 
             // Installa un hook che ci permetterà di studiare i messaggi del mouse nel sistema
             LowLevelMouseProc proc = HookCallback;
-            hookID = SetWindowsHookEx(WH_MOUSE_LL, proc, moduleHandle, 0);
+            hookID = SetWindowsHookEx(WH_MOUSE_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
 
             if (hookID == nint.Zero)
             {
@@ -126,7 +110,7 @@ namespace AutoClicker.Library
             return CallNextHookEx(hookID, nCode, wParam, lParam);
         }
 
-        public bool DragAndDrop(int startX, int startY, int endX, int endY, int duration = 500)
+        public async Task<bool> DragAndDrop(int startX, int startY, int endX, int endY, int duration = 500)
         {
             Logger.Loggin($"Esecuzione drag and drop a basso livello da ({startX},{startY}) a ({endX},{endY})");
             bool success = true;
@@ -135,26 +119,24 @@ namespace AutoClicker.Library
             var tm = processService.TheMiracleWindow;
             var hWnd = tm.Hwnd;
             SetForegroundWindow(hWnd);
-            Thread.Sleep(200); // Attendi che la finestra sia in primo piano
+            await Task.Delay(200); // Attendi che la finestra sia in primo piano
 
-            // Ottieni il modulo corrente per eventuali hook
-            var moduleHandle = GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
 
            
             try
             {
                 // Installa anche un hook per il mouse per monitoraggio
                 LowLevelMouseProc mouseProc = HookCallback;
-                IntPtr mouseHookID = SetWindowsHookEx(WH_MOUSE_LL, mouseProc, moduleHandle, 0);
+                IntPtr mouseHookID = SetWindowsHookEx(WH_MOUSE_LL, mouseProc, processService.TheMiracleWindow.ModuleHandle, 0);
 
                 // Posiziona il cursore al punto iniziale
                 SetCursorPos(startX, startY);
-                Thread.Sleep(100);
+                await Task.Delay(100);
 
                 // Esegui click sinistro down con API a basso livello
                 Logger.Loggin($"Pressione pulsante sinistro alle coordinate ({startX},{startY})");
                 mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, IntPtr.Zero);
-                Thread.Sleep(100);
+                await Task.Delay(100);
 
                 // Calcola intervalli per il movimento
                 int steps = Math.Max(1, duration / 10); // Un movimento ogni 10ms
@@ -168,12 +150,12 @@ namespace AutoClicker.Library
                     SetCursorPos(curX, curY);
 
                     // Piccola attesa tra i movimenti
-                    Thread.Sleep(10);
+                    await Task.Delay(10);
                 }
 
                 // Assicurati che il cursore sia esattamente alla posizione finale
                 SetCursorPos(endX, endY);
-                Thread.Sleep(50);
+                await Task.Delay(50);
 
                 // Esegui rilascio click sinistro con API a basso livello
                 Logger.Loggin($"Rilascio pulsante sinistro alle coordinate ({endX},{endY})");
@@ -227,8 +209,7 @@ namespace AutoClicker.Library
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             };
 
-            var moduleHandle = GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
-            hookID = SetWindowsHookEx(WH_MOUSE_LL, captureProc, moduleHandle, 0);
+            hookID = SetWindowsHookEx(WH_MOUSE_LL, captureProc, processService.TheMiracleWindow.ModuleHandle, 0);
 
             if (hookID == IntPtr.Zero)
             {

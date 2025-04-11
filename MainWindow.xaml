@@ -95,6 +95,10 @@
                 <!-- Scheda Macro Principale (modificata) -->
                 <TabItem Header="Macro Principale">
                     <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="113*"/>
+                            <ColumnDefinition Width="437*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <!-- Pannello Impostazioni Macro -->
                             <RowDefinition Height="Auto"/>
@@ -105,7 +109,7 @@
                         </Grid.RowDefinitions>
 
                         <!-- Pannello Impostazioni Macro -->
-                        <Border Grid.Row="0" CornerRadius="8" Background="#FF3E3E42" Padding="10" Margin="0,0,0,10" BorderBrush="#FF007ACC" BorderThickness="1">
+                        <Border Grid.Row="0" CornerRadius="8" Background="#FF3E3E42" Padding="10" Margin="0,0,0,10" BorderBrush="#FF007ACC" BorderThickness="1" Grid.ColumnSpan="2">
                             <StackPanel Orientation="Vertical">
                                 <TextBlock Text="Impostazioni Macro" 
                                            Foreground="White" FontSize="18" FontWeight="Bold" 
@@ -142,9 +146,9 @@
                                         </StackPanel>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="Esecuzioni" Foreground="White" FontWeight="SemiBold" Margin="95,0,10,5"/>
-                                        <TextBox Name="txtRuns" Width="60" Height="30" Text="1" 
-                                                 Background="#FF2D2D30" Foreground="White" FontSize="14"/>
+                                        <TextBlock Text="Esecuzioni" Foreground="White" FontWeight="SemiBold" Margin="95,0,10,5"  />
+                                        <TextBox Name="txtRuns" Width="60" Height="30" Text="0" 
+                                                 Background="#FF2D2D30" Foreground="White" FontSize="14" IsReadOnly="true"/>
                                     </StackPanel>
                                 </Grid>
                                 <!-- Contatori e pulsante Reset -->
@@ -167,7 +171,7 @@
                         </Border>
 
                         <!-- Sezione RUN/STOP e Log -->
-                        <Grid Grid.Row="1">
+                        <Grid Grid.ColumnSpan="2" Margin="0,249,0,0" Grid.RowSpan="2">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
@@ -183,7 +187,7 @@
                         </Grid>
 
                         <!-- Footer informativo -->
-                        <TextBlock Grid.Row="2" Text="UltimaOnlineMacro - Rotiniel Tools" HorizontalAlignment="Center" Foreground="Gray" Margin="5"/>
+                        <TextBlock Grid.Row="2" Text="UltimaOnlineMacro - Rotiniel Tools" HorizontalAlignment="Left" Foreground="Gray" Margin="70,5,0,5" Grid.Column="1"/>
                     </Grid>
                 </TabItem>
 
@@ -199,10 +203,6 @@
                                     Click="SelectBackpackRegion_Click" Style="{StaticResource MyButtonStyle}"/>
                             <Button Name="btnSelectPaperdoll" Content="Seleziona Paperdoll" Width="170" Height="50"
                                     Click="SelectPaperdoll_Click" Style="{StaticResource MyButtonStyle}"/>
-                            <Button Name="btnSelectBackpackMulo" Content="Seleziona Zaino mulo" Width="170" Height="50"
-                                    Click="SelectBackpackMulo_Click" Style="{StaticResource MyButtonStyle}"/>
-                            <Button Name="btnSelectStatus" Content="Seleziona barra status" Width="170" Height="50"
-                                    Click="SelectBarStatus_Click" Style="{StaticResource MyButtonStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20">
                             <Button Name="btnSelectFood" Content="Seleziona Cibo" Width="170" Height="50"

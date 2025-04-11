@@ -2,6 +2,7 @@
 using AutoClicker.Models.System;
 using AutoClicker.Service;
 using AutoClicker.Utils;
+using AutoCliecker.Service;
 
 namespace AutoClicker.Models.TM
 {
@@ -9,18 +10,23 @@ namespace AutoClicker.Models.TM
     {
         public Pickaxe? PickaxeInBackpack { get; set; }
         public Pickaxe? PickaxeInHand { get; set; }
-        public List<Keys> Macro {  get; set; }
         public string PathJuornalLog { get; set; }
-        public User32DLL.POINT FoodXY { get; set; }
-        public User32DLL.POINT WaterXY { get; set; }
+        public Macro Macro;
         private readonly SendInputService _sendInputService = new();
         public bool RunWork { get; set; } = true;
         private AutoClickerLogger _logger = new AutoClickerLogger();
         private ReadLogTMService _readLogTMService;
         private Regions _regions;
+        private TesserActService _tesserActService;
+        public Status StatusForced { get; set; } = new();
+        public MuloDetectorService DetectorService { get; set; }
         public Pg()
         {
             _readLogTMService = new(this);
+            _tesserActService = new TesserActService();
+
+            // Registra l'evento di aggiornamento
+            _tesserActService.StatusUpdated += OnStatusUpdated;
         }
 
         public Pg(Pickaxe pickaxeInBackpack, Pickaxe pickaxeInHand)
@@ -30,12 +36,12 @@ namespace AutoClicker.Models.TM
             _readLogTMService = new(this);
         }
 
-        public void WearPickaxe()
+        public async Task WearPickaxe()
         {
             if (!PaperdollHavePickaxeInHand(_regions))
             {
                 var pickaxeBackpack = new Pickaxe(_regions.BackpackRegion, SavedImageTemplate.ImageTemplatePickaxe);
-                _sendInputService.DragAndDrop(pickaxeBackpack.X, pickaxeBackpack.Y, _regions.PaperdollPickaxeRegion.X, _regions.PaperdollPickaxeRegion.Y);
+                await _sendInputService.DragAndDrop(pickaxeBackpack.X, pickaxeBackpack.Y, _regions.PaperdollPickaxeRegion.X, _regions.PaperdollPickaxeRegion.Y);
 
                 //controllo per vedere se adesso ha il piccone in mano
                 if (!PaperdollHavePickaxeInHand(_regions))
@@ -68,19 +74,28 @@ namespace AutoClicker.Models.TM
             return havePickaxe;
         }
 
-        public void Work(Regions regions)
+        public async Task Work(Regions regions, bool enableRunWork=true)
         {
+            _tesserActService.StartMonitoring(_regions.BackpackRegion, 10000);
+
             _regions = regions;
-            WearPickaxe();
+            await WearPickaxe();
+            RunWork = enableRunWork;
             while (RunWork)
             {
                 var status = _readLogTMService.ReadRecentLogs(this.PathJuornalLog);
-                Actions(status);
+                await Actions(new Status());
             }
         }
 
-        public async Task SetWater() => WaterXY = (await _sendInputService.BeginCaptureAsync());
-        public async Task SetFood() => FoodXY = (await _sendInputService.BeginCaptureAsync());
+        public void Stop()
+        {
+            _tesserActService.StatusUpdated -= OnStatusUpdated;
+            _tesserActService.StopMonitoring();
+        }
+
+        public async Task SetWater() => _regions.WaterXY = (await _sendInputService.BeginCaptureAsync());
+        public async Task SetFood() => _regions.FoodXY = (await _sendInputService.BeginCaptureAsync());
 
         public string IsReady()
         {
@@ -93,37 +108,50 @@ namespace AutoClicker.Models.TM
         public void StopBeep() => _readLogTMService.StopSound();
 
 
-        public void Actions(Status status)
+        public async Task Actions(Status status)
         {
             if (status.PickaxeBroke)
-                WearPickaxe();
+                await WearPickaxe();
 
-            if(status.Stone)
+            if (status.Stone || StatusForced.Stone)
             {
-                var muloRegion = _regions.GetMuloRegion();
+                StatusForced.Stone = false;
+                var point = DetectorService.DetectMuloPrecise();
                 while (true)
                 {
                     var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
                     if (iron.X == 0 && iron.Y == 0)
                         break;
-                    _sendInputService.DragAndDrop(iron.X, iron.Y, muloRegion.X, muloRegion.Y);
+                    await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
                 }
             }
 
             if (status.Move)
-                _sendInputService.MoveRandomly(8);
+                await _sendInputService.MoveRandomly(8);
 
-            if (status.Stamina)
-                Thread.Sleep(50000);
+            if (status.Stamina || StatusForced.Stamina)
+            {
+                StatusForced.Stamina = false;
+                await Task.Delay(50000);
+            }
             else
-                Thread.Sleep(5200);
+                await Task.Delay((int)Macro.Delay);
 
-            _sendInputService.RunMacro(Macro);
-
+            await _sendInputService.RunMacro(Macro.MacroKeys);
+            Macro.UpdateRepetitionsMethod();
         }
 
+        private void OnStatusUpdated(object sender, StatusBar status)
+        {
+            if (status.Stone.value + 50 >= status.Stone.max)
+                StatusForced.Stone = true;
+            else
+                StatusForced.Stone = false;
 
-
-
+            if(status.Stamina.value<10)
+                StatusForced.Stamina = true;
+            else
+                StatusForced.Stamina = false;
+        }
     }
 }
