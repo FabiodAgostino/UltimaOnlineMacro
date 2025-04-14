@@ -84,7 +84,7 @@ namespace AutoClicker.Models.TM
             while (RunWork)
             {
                 var status = _readLogTMService.ReadRecentLogs(this.PathJuornalLog);
-                await Actions(new Status());
+                await Actions(status);
             }
         }
 

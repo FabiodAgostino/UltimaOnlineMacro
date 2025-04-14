@@ -32,25 +32,20 @@ namespace UltimaOnlineMacro
     public partial class MainWindow : Window
     {
         private Regions Regions = new Regions();
-        private Pg Pg = new Pg();
+        public Pg Pg = new Pg();
         public Logger LogManager;
-        private TimerUltima timerUltima;
-        private bool initializeMacro { get; set; } = true;
+        private MainWindowService _mainWindowService;
         public MainWindow()
         {
-            SavedImageTemplate.Initialize();
             InitializeComponent();
             LogManager = new(txtLog);
-
+            SavedImageTemplate.Initialize();
             cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
             cmbKey.SelectedIndex = 0;
-            SetTimerUltima();
-            ReadMuloDetector();
-            ReadTessdata();
+            _mainWindowService = new MainWindowService(this);
+            _mainWindowService.ReadFilesConfiguration();
         }
-
       
-
 
         #region Callback
         public void SetBackpackRegion(Rectangle region)
@@ -183,8 +178,8 @@ namespace UltimaOnlineMacro
                     return;
                 }
             }
-            timerUltima.Start();
-            CheckMacroButtons();
+            _mainWindowService.TimerUltima.Start();
+            _mainWindowService.CheckMacroButtons();
             LogManager.Loggin("Run!");
             await Pg.Work(Regions);
 
@@ -193,7 +188,7 @@ namespace UltimaOnlineMacro
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
-            timerUltima.Stop();
+            _mainWindowService.TimerUltima.Stop();
             Pg.Stop();
             Pg.RunWork = false;
             btnRun.Background = System.Windows.Media.Brushes.Green;
@@ -248,71 +243,7 @@ namespace UltimaOnlineMacro
 
         #endregion
 
-        public void SetTimerUltima()
-        {
-            timerUltima = new TimerUltima(text => {
-                if (Dispatcher.CheckAccess())
-                {
-                    lblElapsed.Text = text;
-                }
-                else
-                {
-                    Dispatcher.Invoke(() => {
-                        lblElapsed.Text = text;
-                    });
-                }
-            });
-        }
-
-        private void ReadMuloDetector()
-        {
-            string modelPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloDetector.zip");
-            if (File.Exists(modelPath))
-                Pg.DetectorService = new MuloDetectorService(modelPath);
-            else
-                LogManager.Loggin("MuloDetector non inizializzato, non trovo il il file.");
-        }
-
-        private void ReadTessdata()
-        {
-            string modelPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "tessdata", "eng.traineddata");
-            if (!File.Exists(modelPath))
-                LogManager.Loggin("Non trovo il file tessdata.");
-        }
-
-        private void CheckMacroButtons()
-        {
-            System.Windows.Forms.Keys modifiers = System.Windows.Forms.Keys.None;
-            if (chkCtrl.IsChecked == true)
-                modifiers |= System.Windows.Forms.Keys.ControlKey;
-            if (chkShift.IsChecked == true)
-                modifiers |= System.Windows.Forms.Keys.Shift;
-            if (chkAlt.IsChecked == true)
-                modifiers |= System.Windows.Forms.Keys.Alt;
-
-            string? selectedKey = cmbKey.SelectedItem as string;
-            if (string.IsNullOrEmpty(selectedKey))
-            {
-                return;
-            }
-
-            System.Windows.Forms.Keys key;
-            var delay = sldDelay.Value;
-            if (Enum.TryParse(selectedKey, out key))
-            {
-                var macroKeys = new List<Keys>();
-                macroKeys.Add(key);
-                if (modifiers != System.Windows.Forms.Keys.None)
-                    macroKeys.Add(modifiers);
-                if(Pg.Macro== null || (Pg.Macro.Delay!=delay || Pg.Macro.MacroKeys.All(x=> !macroKeys.Contains(x))))
-                    Pg.Macro = new Macro(macroKeys, delay, (int repetitions) => { txtRuns.Text = repetitions.ToString(); });
-
-            }
-            else
-            {
-            }
-            initializeMacro = false;
-        }
+      
     }
 
 }

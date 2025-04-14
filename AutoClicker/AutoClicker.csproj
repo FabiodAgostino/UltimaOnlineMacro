@@ -8,6 +8,8 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<UseWindowsForms>true</UseWindowsForms>
+		<RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
   <ItemGroup>

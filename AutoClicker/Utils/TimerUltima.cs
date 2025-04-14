@@ -11,6 +11,7 @@ namespace AutoClicker.Utils
         private bool isRunning = false;
         private Action<string> updateLabelAction; // Azione per aggiornare il testo
         private ILogger logger;
+        private TimeSpan accumulatedTime = TimeSpan.Zero;
 
         public event EventHandler<TimeSpan> OnTimerUpdate;
         public TimeSpan ElapsedTime { get; private set; }
@@ -31,6 +32,7 @@ namespace AutoClicker.Utils
         {
             if (!isRunning)
             {
+                startTime = DateTime.Now;
                 timer.Start();
                 isRunning = true;
             }
@@ -41,6 +43,7 @@ namespace AutoClicker.Utils
             if (isRunning)
             {
                 timer.Stop();
+                accumulatedTime += DateTime.Now - startTime;
                 isRunning = false;
             }
         }
@@ -52,7 +55,7 @@ namespace AutoClicker.Utils
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            ElapsedTime = DateTime.Now - startTime;
+            ElapsedTime = accumulatedTime + (DateTime.Now - startTime);
 
             try
             {

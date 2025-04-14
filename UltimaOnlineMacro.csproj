@@ -1,79 +1,76 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-	  <UseWPF>true</UseWPF>
-    <Platforms>AnyCPU;x64</Platforms>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<Platforms>AnyCPU;x64</Platforms>
+		<PublishSingleFile>true</PublishSingleFile>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<UseAppHost>true</UseAppHost>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="AutoClicker\**" />
-    <Compile Remove="LogManager\**" />
-    <Compile Remove="Logs\**" />
-    <Compile Remove="tessdata\**" />
-    <Compile Remove="tessdata_fast-main\**" />
-    <Compile Remove="UltimaOnlineMacroConsole\**" />
-    <Compile Remove="UltimOnlineMacroConsole\**" />
-    <EmbeddedResource Remove="AutoClicker\**" />
-    <EmbeddedResource Remove="LogManager\**" />
-    <EmbeddedResource Remove="Logs\**" />
-    <EmbeddedResource Remove="tessdata\**" />
-    <EmbeddedResource Remove="tessdata_fast-main\**" />
-    <EmbeddedResource Remove="UltimaOnlineMacroConsole\**" />
-    <EmbeddedResource Remove="UltimOnlineMacroConsole\**" />
-    <None Remove="AutoClicker\**" />
-    <None Remove="LogManager\**" />
-    <None Remove="Logs\**" />
-    <None Remove="tessdata\**" />
-    <None Remove="tessdata_fast-main\**" />
-    <None Remove="UltimaOnlineMacroConsole\**" />
-    <None Remove="UltimOnlineMacroConsole\**" />
-    <Page Remove="AutoClicker\**" />
-    <Page Remove="LogManager\**" />
-    <Page Remove="Logs\**" />
-    <Page Remove="tessdata\**" />
-    <Page Remove="tessdata_fast-main\**" />
-    <Page Remove="UltimaOnlineMacroConsole\**" />
-    <Page Remove="UltimOnlineMacroConsole\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="AutoClicker\**" />
+		<Compile Remove="LogManager\**" />
+		<Compile Remove="Logs\**" />
+		<Compile Remove="tessdata\**" />
+		<Compile Remove="tessdata_fast-main\**" />
+		<EmbeddedResource Remove="AutoClicker\**" />
+		<EmbeddedResource Remove="LogManager\**" />
+		<EmbeddedResource Remove="Logs\**" />
+		<EmbeddedResource Remove="tessdata\**" />
+		<EmbeddedResource Remove="tessdata_fast-main\**" />
+		<None Remove="AutoClicker\**" />
+		<None Remove="LogManager\**" />
+		<None Remove="Logs\**" />
+		<None Remove="tessdata\**" />
+		<None Remove="tessdata_fast-main\**" />
+		<Page Remove="AutoClicker\**" />
+		<Page Remove="LogManager\**" />
+		<Page Remove="Logs\**" />
+		<Page Remove="tessdata\**" />
+		<Page Remove="tessdata_fast-main\**" />
 
-  <ItemGroup>
-    <None Remove=".dockerignore" />
-    <None Remove=".gitattributes" />
-  </ItemGroup>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
-    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
-    <PackageReference Include="MouseKeyHook" Version="5.7.1" />
-    <PackageReference Include="Serilog" Version="4.2.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
-	  <Content Include="Assets\Images\Pickaxe.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Assets\Images\Pickaxe2.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Assets\Images\PaperdollWithPickaxe.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Assets\Sounds\beep.wav">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Assets\Images\iron.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-	  <Content Include="Assets\Images\Mulo\mulo1.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="AutoClicker\AutoClicker.csproj" />
-    <ProjectReference Include="LogManager\LogManager.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove=".dockerignore" />
+		<None Remove=".gitattributes" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
+		<PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
+		<PackageReference Include="MouseKeyHook" Version="5.7.1" />
+		<PackageReference Include="Serilog" Version="4.2.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+		<Content Include="Assets\Images\Pickaxe.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\Pickaxe2.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\PaperdollWithPickaxe.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Sounds\beep.wav">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\iron.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\Mulo\mulo1.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="AutoClicker\AutoClicker.csproj" />
+		<ProjectReference Include="LogManager\LogManager.csproj" />
+	</ItemGroup>
 
 </Project>

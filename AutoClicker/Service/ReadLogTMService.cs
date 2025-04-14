@@ -7,6 +7,7 @@ namespace AutoClicker.Service
 {
     public class ReadLogTMService
     {
+        private DateTime lastMacrocheckDateTime = new DateTime();
         private Pg _pg;
         private string _beepSound = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Sounds", "Beep.wav");
         private SoundPlayer _playerBeep;
@@ -35,13 +36,22 @@ namespace AutoClicker.Service
             try
             {
                 var lastMinute = DateTime.Now.AddMinutes(-1);
-
+                var last2Minute = DateTime.Now.AddMinutes(-2);
                 foreach (var line in lines.AsEnumerable().Reverse())
                 {
                     var timestampMatch = Regex.Match(line, @"\[(\d{2}/\d{2}/\d{4} \d{2}:\d{2})\]");
                     if (timestampMatch.Success)
                     {
                         var timestamp = DateTime.ParseExact(timestampMatch.Groups[1].Value, "MM/dd/yyyy HH:mm", null);
+                        if (timestamp >= last2Minute && (line.Contains("macrocheck") || line.Contains("antimacro")))
+                        {
+                            if(lastMacrocheckDateTime!=timestamp)
+                            {
+                                status.Macrocheck = true;
+                                _playerBeep.PlayLooping();
+                            }
+                            lastMacrocheckDateTime = timestamp;
+                        }
 
                         if (timestamp >= lastMinute)
                         {
@@ -62,11 +72,7 @@ namespace AutoClicker.Service
                                 status.Stone = true;
                             }
 
-                            if (line.Contains("macrocheck"))
-                            {
-                                status.Macrocheck = true;
-                                _playerBeep.PlayLooping(); // Riproduce il suono in lo
-                            }
+                          
                         }
                         else
                         {

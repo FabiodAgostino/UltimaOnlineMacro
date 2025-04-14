@@ -59,3 +59,5 @@
 2025-04-11 16:32:41.828 +02:00 [DBG] MuloDetector non inizializzato, non trovo il il file.
 2025-04-11 16:33:44.299 +02:00 [DBG] MuloDetector non inizializzato, non trovo il il file.
 2025-04-11 16:33:44.328 +02:00 [DBG] Non trovo il file tessdata.
+2025-04-11 17:41:33.806 +02:00 [DBG] MuloDetector non inizializzato, non trovo il il file.
+2025-04-11 17:41:33.821 +02:00 [DBG] Non trovo il file tessdata.
