@@ -14,7 +14,7 @@ namespace AutoClicker.Service
         // Token per la cancellazione del task periodico
         private CancellationTokenSource _cancellationTokenSource;
         // L'ultimo stato rilevato
-        private StatusBar _lastStatusBar;
+        public StatusBar _lastStatusBar;
         // Lock object per l'accesso thread-safe
         private readonly object _lockObject = new object();
         // Evento che notifica quando lo stato viene aggiornato

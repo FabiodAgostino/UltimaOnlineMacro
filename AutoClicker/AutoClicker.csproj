@@ -20,6 +20,7 @@
     <Compile Include="Models\System\SavedImageTemplate.cs" />
     <Compile Include="Models\TM\Iron.cs" />
     <Compile Include="Models\TM\Macro.cs" />
+    <Compile Include="Models\TM\Mulo.cs" />
     <Compile Include="Models\TM\MuloImageData.cs" />
     <Compile Include="Models\TM\MuloPrediction.cs" />
     <Compile Include="Models\TM\Pg.cs" />

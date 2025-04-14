@@ -159,8 +159,8 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
-                                        <TextBlock Text="Esecuzioni:" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                        <TextBlock Name="lblRunCount" Text="0" Foreground="Lime" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                        <CheckBox Name="chkMuloDaSoma" Content="Mulo da Soma" IsChecked="True" Foreground="White"/>
+                                        <CheckBox Name="chkLamaPortatore" Content="Lama portatore" IsChecked="False" Foreground="White"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
                                         <TextBlock Text="Tempo:" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>

@@ -94,5 +94,17 @@ namespace UltimaOnlineMacro.Service
             }
             _initializeMacro = false;
         }
+
+        public void SetMuli()
+        {
+            if(_pg.Muli.Count == 0)
+            {
+                if (_mainWindow.chkMuloDaSoma.IsChecked.HasValue && _mainWindow.chkMuloDaSoma.IsChecked.Value)
+                    _pg.Muli.Add(new Mulo(MuloType.MULO_DA_SOMA, true, () => _pg.ChangeMuloOrStop()));
+
+                if (_mainWindow.chkLamaPortatore.IsChecked.HasValue && _mainWindow.chkLamaPortatore.IsChecked.Value)
+                    _pg.Muli.Add(new Mulo(MuloType.LAMA_PORTATORE, false, () => _pg.ChangeMuloOrStop()));
+            }
+        }
     }
 }

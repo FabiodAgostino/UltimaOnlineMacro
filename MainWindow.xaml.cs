@@ -161,8 +161,7 @@ namespace UltimaOnlineMacro
 
         private async void Run_Click(object sender, RoutedEventArgs e)
         {
-            btnRun.Background = System.Windows.Media.Brushes.Gray;
-            btnStop.Background = System.Windows.Media.Brushes.Red;
+           
             if (!Debugger.IsAttached)
             {
                 string haveValue = Regions.HaveValue();
@@ -177,14 +176,21 @@ namespace UltimaOnlineMacro
                     LogManager.Loggin(isReady);
                     return;
                 }
+                if(!chkMuloDaSoma.IsChecked.Value && !chkLamaPortatore.IsChecked.Value)
+                {
+                    LogManager.Loggin("Seleziona almeno un animale da soma");
+                    return;
+                }
             }
+
             _mainWindowService.TimerUltima.Start();
             _mainWindowService.CheckMacroButtons();
+            _mainWindowService.SetMuli();
+
+            btnRun.Background = System.Windows.Media.Brushes.Gray;
+            btnStop.Background = System.Windows.Media.Brushes.Red;
             LogManager.Loggin("Run!");
             await Pg.Work(Regions);
-
-
-
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {

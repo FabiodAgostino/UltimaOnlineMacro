@@ -18,7 +18,9 @@ namespace AutoClicker.Models.TM
         private ReadLogTMService _readLogTMService;
         private Regions _regions;
         private TesserActService _tesserActService;
+        private int BaseWeight { get; set; }
         public Status StatusForced { get; set; } = new();
+        public List<Mulo> Muli { get; set; } = new();
         public MuloDetectorService DetectorService { get; set; }
         public Pg()
         {
@@ -76,9 +78,10 @@ namespace AutoClicker.Models.TM
 
         public async Task Work(Regions regions, bool enableRunWork=true)
         {
+            _regions = regions;
+            BaseWeight = _tesserActService.GetStatusBar(_regions.BackpackRegion).Stone.value;
             _tesserActService.StartMonitoring(_regions.BackpackRegion, 10000);
 
-            _regions = regions;
             await WearPickaxe();
             RunWork = enableRunWork;
             while (RunWork)
@@ -124,6 +127,8 @@ namespace AutoClicker.Models.TM
                         break;
                     await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
                 }
+                var mulo = Muli.FirstOrDefault(x => x.Selected);
+                mulo.ActualStone = mulo.ActualStone + (_tesserActService._lastStatusBar.Stone.value - BaseWeight);
             }
 
             if (status.Move)
@@ -152,6 +157,17 @@ namespace AutoClicker.Models.TM
                 StatusForced.Stamina = true;
             else
                 StatusForced.Stamina = false;
+        }
+
+        public void ChangeMuloOrStop()
+        {
+            if(Muli.Count > 1)
+            {
+                var muloNonSelezionato = Muli.FirstOrDefault(x => !x.Selected);
+                var muloSelezionato = Muli.FirstOrDefault(x => x.Selected);
+                muloNonSelezionato.Selected = true;
+                muloSelezionato.Selected = false;
+            }
         }
     }
 }
