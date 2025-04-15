@@ -1,162 +1,98 @@
-﻿using AutoClicker.Library;
-using AutoClicker.Models.TM;
+﻿using AutoClicker.Models.TM.MachineLearning;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
 using static AutoClicker.Utils.User32DLL;
-namespace AutoCliecker.Service
+
+namespace AutoClicker.Service
 {
     public class MuloDetectorService
     {
         private readonly MLContext _mlContext;
-        private readonly PredictionEngine<MuloImageData, MuloPrediction> _predictionEngine;
+        private readonly PredictionEngine<MuloImageData, MuloPrediction> _classifierPredictionEngine;
+        private readonly PredictionEngine<MuloImageData, CoordinatePrediction> _xRegressor;
+        private readonly PredictionEngine<MuloImageData, CoordinatePrediction> _yRegressor;
         private readonly string _tempImagePath;
 
-        public MuloDetectorService(string modelPath)
+        public MuloDetectorService(string classifierPath, string xModelPath, string yModelPath)
         {
             _mlContext = new MLContext();
-            _tempImagePath = Path.Combine(Path.GetTempPath(), "temp_screenshot.png");
+            _tempImagePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "temp_screenshot.png");
 
-            // Carica il modello
-            ITransformer loadedModel = _mlContext.Model.Load(modelPath, out var modelInputSchema);
+            // Carica il modello classificatore
+            var classifierModel = _mlContext.Model.Load(classifierPath, out _);
+            _classifierPredictionEngine = _mlContext.Model.CreatePredictionEngine<MuloImageData, MuloPrediction>(classifierModel);
 
-            // Crea il motore di predizione
-            _predictionEngine = _mlContext.Model.CreatePredictionEngine<MuloImageData, MuloPrediction>(loadedModel);
+            // Carica i modelli regressori
+            var xModel = _mlContext.Model.Load(xModelPath, out _);
+            var yModel = _mlContext.Model.Load(yModelPath, out _);
+            _xRegressor = _mlContext.Model.CreatePredictionEngine<MuloImageData, CoordinatePrediction>(xModel);
+            _yRegressor = _mlContext.Model.CreatePredictionEngine<MuloImageData, CoordinatePrediction>(yModel);
         }
 
-        public Rectangle DetectMulo()
+        public void DetectAndDrawMulo()
         {
-            // Cattura screenshot
+            // 1. Cattura lo screenshot dal centro dello schermo
             var screenshot = AutoClicker.Service.ExtensionMethod.Image.CaptureCenterScreenshot();
-            screenshot.bitmap.Save(_tempImagePath);
+            // Salva il file nel percorso _tempImagePath
+            screenshot.bitmap.Save(_tempImagePath, ImageFormat.Png);
 
-            // Predizione
-            var prediction = _predictionEngine.Predict(
-                new MuloImageData { ImagePath = _tempImagePath });
+            // 2. Predizione classificazione
+            var input = new MuloImageData { ImagePath = _tempImagePath };
+            var classification = _classifierPredictionEngine.Predict(input);
 
-            float muloConfidence = 0;
-            if (prediction.Score.Length >= 2)
+            // Estrae l'indice della classe "Mulo"
+            int muloIndex = GetMuloClassIndex(_classifierPredictionEngine);
+            float confidence = (muloIndex >= 0 && classification.Score != null && muloIndex < classification.Score.Length)
+                ? classification.Score[muloIndex]
+                : 0f;
+
+            Console.WriteLine($"🎯 Predizione: {classification.PredictedLabelValue} (confidenza: {confidence:P2})");
+
+            // 3. Se la predizione è positiva e con confidenza > 0.8, procede
+            if (classification.PredictedLabelValue == "Mulo" && confidence > 0.8f)
             {
-                var scoreColumn = _predictionEngine.OutputSchema["Score"];
+                // Predice la coordinata X e Y
+                var xPrediction = _xRegressor.Predict(input);
+                var yPrediction = _yRegressor.Predict(input);
 
-                // Creiamo un buffer vuoto per ricevere i nomi degli slot
-                VBuffer<ReadOnlyMemory<char>> slotNamesBuffer = default;
-                scoreColumn.GetSlotNames(ref slotNamesBuffer);
+                int centerX = (int)xPrediction.Score;
+                int centerY = (int)yPrediction.Score;
 
-                // Convertiamo i nomi degli slot in un array di stringhe
-                var slotNames = new string[slotNamesBuffer.Length];
-                for (int i = 0; i < slotNamesBuffer.Length; i++)
+                Console.WriteLine($"📍 Mulo trovato a X: {centerX}, Y: {centerY}");
+
+                // 4. Disegna un punto rosso sullo screenshot
+                using (var bitmap = new Bitmap(screenshot.bitmap))
+                using (var g = Graphics.FromImage(bitmap))
+                using (var brush = new SolidBrush(Color.Red))
                 {
-                    var value = slotNamesBuffer.GetItemOrDefault(i);
-                    slotNames[i] = value.IsEmpty ? string.Empty : value.ToString();
+                    int radius = 5;
+                    g.FillEllipse(brush, centerX - radius, centerY - radius, radius * 2, radius * 2);
+
+                    // 5. Salva l'immagine per debug
+                    string debugPath = $"MuloDetected_{DateTime.Now:HHmmss}.png";
+                    bitmap.Save(debugPath, ImageFormat.Png);
+                    Console.WriteLine($"🖼️  Immagine salvata: {debugPath}");
                 }
-
-                // Ora possiamo cercare l'indice di "Mulo"
-                int muloIndex = Array.IndexOf(slotNames, "Mulo");
-                if (muloIndex >= 0 && muloIndex < prediction.Score.Length)
-                {
-                    muloConfidence = prediction.Score[muloIndex];
-                }
-            }
-
-            // Se la confidenza è alta, ritorna un rettangolo al centro dello screenshot
-            if (prediction.PredictedLabelValue == "Mulo" && muloConfidence > 0.7)
-            {
-                // Qui dovresti implementare un metodo più preciso per trovare 
-                // la posizione esatta del mulo all'interno dello screenshot
-                // Per ora, ritorniamo semplicemente un rettangolo al centro
-                int centerX = screenshot.bitmap.Width / 2;
-                int centerY = screenshot.bitmap.Height / 2;
-                return new Rectangle(
-                    centerX - 25, // posizione X stimata
-                    centerY - 25, // posizione Y stimata
-                    50,          // larghezza stimata
-                    50           // altezza stimata
-                );
-            }
-
-            return Rectangle.Empty;
-        }
-
-        // Versione migliorata che divide lo screenshot in tile/regioni
-        // per rilevare la posizione precisa del mulo
-        public POINT DetectMuloPrecise()
-        {
-            // Cattura screenshot
-            var screenshot = AutoClicker.Service.ExtensionMethod.Image.CaptureCenterScreenshot();
-            // Definisci dimensione dei tile
-            int tileWidth = 64;
-            int tileHeight = 64;
-            // Definisci overlap tra tile per evitare di perdere il mulo ai bordi
-            int overlapX = 16;
-            int overlapY = 16;
-            float bestConfidence = 0;
-            Rectangle bestRect = Rectangle.Empty;
-
-            // Scansiona lo screenshot con tile sovrapposti
-            for (int y = 0; y < screenshot.bitmap.Height - tileHeight; y += tileHeight - overlapY)
-            {
-                for (int x = 0; x < screenshot.bitmap.Width - tileWidth; x += tileWidth - overlapX)
-                {
-                    // Estrai il tile
-                    using (Bitmap tile = new Bitmap(tileWidth, tileHeight))
-                    {
-                        using (Graphics g = Graphics.FromImage(tile))
-                        {
-                            g.DrawImage(screenshot.bitmap,
-                                new Rectangle(0, 0, tileWidth, tileHeight),
-                                new Rectangle(x, y, tileWidth, tileHeight),
-                                GraphicsUnit.Pixel);
-                        }
-                        // Salva il tile temporaneamente
-                        tile.Save(_tempImagePath);
-                        // Predizione
-                        var prediction = _predictionEngine.Predict(
-                            new MuloImageData { ImagePath = _tempImagePath });
-
-                        // Ottieni confidenza per la classe "Mulo" con il metodo corretto
-                        float muloConfidence = 0;
-                        var scoreColumn = _predictionEngine.OutputSchema["Score"];
-
-                        // Creiamo un buffer vuoto per ricevere i nomi degli slot
-                        VBuffer<ReadOnlyMemory<char>> slotNamesBuffer = default;
-                        scoreColumn.GetSlotNames(ref slotNamesBuffer);
-
-                        // Convertiamo i nomi degli slot in un array di stringhe
-                        var slotNames = new string[slotNamesBuffer.Length];
-                        for (int i = 0; i < slotNamesBuffer.Length; i++)
-                        {
-                            var value = slotNamesBuffer.GetItemOrDefault(i);
-                            slotNames[i] = value.IsEmpty ? string.Empty : value.ToString();
-                        }
-
-                        // Ora possiamo cercare l'indice di "Mulo"
-                        int muloIndex = Array.IndexOf(slotNames, "Mulo");
-                        if (muloIndex >= 0 && muloIndex < prediction.Score.Length)
-                        {
-                            muloConfidence = prediction.Score[muloIndex];
-                        }
-
-                        // Se questo tile ha la confidenza più alta finora
-                        if (prediction.PredictedLabelValue == "Mulo" && muloConfidence > bestConfidence)
-                        {
-                            bestConfidence = muloConfidence;
-                            bestRect = new Rectangle(x, y, tileWidth, tileHeight);
-                        }
-                    }
-                }
-            }
-
-            // Ritorna il rettangolo con la confidenza più alta, se supera la soglia
-            if (bestConfidence > 0.7)
-            {
-                int centerX = bestRect.X + bestRect.Width / 2;
-                int centerY = bestRect.Y + bestRect.Height / 2;
-                return new POINT { X = centerX, Y = centerY };
             }
             else
-                return new POINT();
+            {
+                Console.WriteLine("🚫 Nessun mulo rilevato con sufficiente confidenza.");
+            }
         }
 
-       
+        private int GetMuloClassIndex(PredictionEngine<MuloImageData, MuloPrediction> engine)
+        {
+            var scoreColumn = engine.OutputSchema["Score"];
+            VBuffer<ReadOnlyMemory<char>> slotNames = default;
+            scoreColumn.GetSlotNames(ref slotNames);
+            var slotArray = slotNames.DenseValues().Select(v => v.ToString()).ToArray();
+            // Stampa per debug gli slot trovati
+            Console.WriteLine("Slot names: " + string.Join(", ", slotArray));
+            return Array.IndexOf(slotArray, "Mulo");
+        }
     }
 }

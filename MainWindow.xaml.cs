@@ -13,9 +13,6 @@
 using AutoClicker.Models.System;
 using AutoClicker.Models.TM;
 using AutoClicker.Service;
-using AutoClicker.Utils;
-using AutoCliecker.Service;
-using Microsoft.ML;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -38,12 +35,26 @@ namespace UltimaOnlineMacro
         public MainWindow()
         {
             InitializeComponent();
-            LogManager = new(txtLog);
-            SavedImageTemplate.Initialize();
-            cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
-            cmbKey.SelectedIndex = 0;
-            _mainWindowService = new MainWindowService(this);
-            _mainWindowService.ReadFilesConfiguration();
+
+            //LogManager = new(txtLog);
+            //SavedImageTemplate.Initialize();
+            //cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
+            //cmbKey.SelectedIndex = 0;
+            //_mainWindowService = new MainWindowService(this);
+            //_mainWindowService.ReadFilesConfiguration();
+        }
+
+        private async Task test()
+        {
+            string muloModel = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloModel.zip");
+            string muloModelx = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloRegressorX.zip");
+            string muloModely = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloRegressorY.zip");
+
+            var d = new MuloDetectorService(muloModel, muloModelx, muloModely);
+            while (true)
+            {
+                d.DetectAndDrawMulo();
+            }
         }
       
 
@@ -73,6 +84,13 @@ namespace UltimaOnlineMacro
                 }
             }
         }
+
+        public void SetStatus(Rectangle region)
+        {
+          
+            Regions.StatusRegion = region;
+        }
+
         public void PaperdollHavePickaxe(Rectangle region)
         {
             // Calcola metà larghezza e metà altezza
@@ -141,6 +159,12 @@ namespace UltimaOnlineMacro
 
 
         #region ClickEvent
+        private void SelectStatus_Click(object sender, RoutedEventArgs e)
+        {
+            OverlayWindow overlay = new OverlayWindow("Status", LogManager);
+            overlay.Show();
+        }
+
         private void SelectBackpackRegion_Click(object sender, RoutedEventArgs e)
         {
             OverlayWindow overlay = new OverlayWindow("Piccone", LogManager);
@@ -161,7 +185,8 @@ namespace UltimaOnlineMacro
 
         private async void Run_Click(object sender, RoutedEventArgs e)
         {
-           
+            await test();
+
             if (!Debugger.IsAttached)
             {
                 string haveValue = Regions.HaveValue();
@@ -183,14 +208,14 @@ namespace UltimaOnlineMacro
                 }
             }
 
-            _mainWindowService.TimerUltima.Start();
-            _mainWindowService.CheckMacroButtons();
-            _mainWindowService.SetMuli();
+            //_mainWindowService.TimerUltima.Start();
+            //_mainWindowService.CheckMacroButtons();
+            //_mainWindowService.SetMuli();
 
-            btnRun.Background = System.Windows.Media.Brushes.Gray;
-            btnStop.Background = System.Windows.Media.Brushes.Red;
-            LogManager.Loggin("Run!");
-            await Pg.Work(Regions);
+            //btnRun.Background = System.Windows.Media.Brushes.Gray;
+            //btnStop.Background = System.Windows.Media.Brushes.Red;
+            //LogManager.Loggin("Run!");
+            //await Pg.Work(Regions);
         }
         private void Stop_Click(object sender, RoutedEventArgs e)
         {

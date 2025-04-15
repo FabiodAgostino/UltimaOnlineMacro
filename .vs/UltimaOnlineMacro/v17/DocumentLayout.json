@@ -1,0 +1,143 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\autoclicker\\service\\detectorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\service\\detectorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\autoclicker\\models\\tm\\machinelearning\\muloimagedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\models\\tm\\machinelearning\\muloimagedata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\autoclicker\\models\\tm\\pg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\models\\tm\\pg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\autoclicker\\models\\tm\\machinelearning\\muloprediction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\models\\tm\\machinelearning\\muloprediction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\autoclicker\\service\\extensionmethod\\image.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\service\\extensionmethod\\image.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\thebe\\documents\\github\\ultimaonlinemacro\\autoclicker\\autoclicker.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\autoclicker.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MuloPrediction.cs",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\MachineLearning\\MuloPrediction.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Models\\TM\\MachineLearning\\MuloPrediction.cs",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\MachineLearning\\MuloPrediction.cs",
+              "RelativeToolTip": "AutoClicker\\Models\\TM\\MachineLearning\\MuloPrediction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T20:38:03.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MuloImageData.cs",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\MachineLearning\\MuloImageData.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Models\\TM\\MachineLearning\\MuloImageData.cs",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\MachineLearning\\MuloImageData.cs",
+              "RelativeToolTip": "AutoClicker\\Models\\TM\\MachineLearning\\MuloImageData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T20:35:32.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DetectorService.cs",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\DetectorService.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Service\\DetectorService.cs",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\DetectorService.cs",
+              "RelativeToolTip": "AutoClicker\\Service\\DetectorService.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAnwFEAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T20:23:13.274Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Image.cs",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\ExtensionMethod\\Image.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Service\\ExtensionMethod\\Image.cs",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\ExtensionMethod\\Image.cs",
+              "RelativeToolTip": "AutoClicker\\Service\\ExtensionMethod\\Image.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAgwHIAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T20:22:39.078Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAqwCkAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T19:50:32.381Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AutoClicker.csproj",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\AutoClicker.csproj",
+              "RelativeDocumentMoniker": "AutoClicker\\AutoClicker.csproj",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\AutoClicker.csproj",
+              "RelativeToolTip": "AutoClicker\\AutoClicker.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-04-15T19:54:45.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Pg.cs",
+              "DocumentMoniker": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\Pg.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Models\\TM\\Pg.cs",
+              "ToolTip": "C:\\Users\\thebe\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\Pg.cs",
+              "RelativeToolTip": "AutoClicker\\Models\\TM\\Pg.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-15T16:30:20.198Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

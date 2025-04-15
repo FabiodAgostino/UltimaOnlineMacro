@@ -23,23 +23,25 @@ namespace AutoClicker.Service
 
         public async Task SetTMWindow()
         {
-            IntPtr hwnd = IntPtr.Zero;
-            StringBuilder windowText = new StringBuilder(256);
-            GetModuleHandleProcess();
-
-            while ((hwnd = FindWindowExA(IntPtr.Zero, hwnd, string.Empty, string.Empty)) != IntPtr.Zero)
+            if(TheMiracleWindow == null)
             {
-                GetWindowTextA(hwnd, windowText, windowText.Capacity);
-                if (windowText.ToString().Contains("ClassicUO") && windowText.ToString().Contains("TM Client"))
-                {
-                    TheMiracleWindow.Title = windowText.ToString();
-                    TheMiracleWindow.Hwnd = hwnd;
-                    break;
-                }
-            }
-            if (TheMiracleWindow != null)
-                await FocusWindowReliably(TheMiracleWindow.Hwnd);
+                IntPtr hwnd = IntPtr.Zero;
+                StringBuilder windowText = new StringBuilder(256);
+                GetModuleHandleProcess();
 
+                while ((hwnd = FindWindowExA(IntPtr.Zero, hwnd, null, null)) != IntPtr.Zero)
+                {
+                    GetWindowTextA(hwnd, windowText, windowText.Capacity);
+                    if (windowText.ToString().Contains("ClassicUO") && windowText.ToString().Contains("TM Client"))
+                    {
+                        TheMiracleWindow.Title = windowText.ToString();
+                        TheMiracleWindow.Hwnd = hwnd;
+                        break;
+                    }
+                }
+                if (TheMiracleWindow != null)
+                    await FocusWindowReliably(TheMiracleWindow.Hwnd);
+            }
         }
 
         /// <summary>

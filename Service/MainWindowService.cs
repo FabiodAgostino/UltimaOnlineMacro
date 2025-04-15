@@ -1,6 +1,5 @@
 ﻿using AutoClicker.Models.TM;
 using AutoClicker.Utils;
-using AutoCliecker.Service;
 using System.IO;
 using System.Windows.Forms;
 
@@ -47,11 +46,11 @@ namespace UltimaOnlineMacro.Service
 
         private void ReadMuloDetector()
         {
-            string modelPath = Path.Combine(Directory.GetCurrentDirectory(), "MuloDetector.zip");
-            if (File.Exists(modelPath))
-                _pg.DetectorService = new MuloDetectorService(modelPath);
-            else
-                LogManager.Loggin("MuloDetector non inizializzato, non trovo il il file.");
+            //string modelPath = Path.Combine(Directory.GetCurrentDirectory(), "MuloDetector.zip");
+            //if (File.Exists(modelPath))
+            //    _pg.DetectorService = new MuloDetectorService(modelPath);
+            //else
+            //    LogManager.Loggin("MuloDetector non inizializzato, non trovo il il file.");
         }
 
         private void ReadTessdata()

@@ -127,8 +127,27 @@ namespace AutoClicker.Service.ExtensionMethod
             {
                 g.CopyFromScreen(startX, startY, 0, 0, new Size(width, height));
             }
-
             return (bitmap, new Rectangle(startX, startY, width, height));
+        }
+
+        public static Bitmap CaptureFullScreenshot()
+        {
+            Rectangle screenBounds;
+            if (Screen.PrimaryScreen != null)
+                screenBounds = Screen.PrimaryScreen.Bounds;
+            else
+                throw new Exception("Non trovo le dimensioni dello schermo primario");
+
+            // Crea una bitmap delle dimensioni dell'intero schermo
+            Bitmap bitmap = new Bitmap(screenBounds.Width, screenBounds.Height, PixelFormat.Format24bppRgb);
+
+            // Copia l'intero schermo nella bitmap
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                g.CopyFromScreen(screenBounds.X, screenBounds.Y, 0, 0, screenBounds.Size);
+            }
+
+            return bitmap;
         }
 
 

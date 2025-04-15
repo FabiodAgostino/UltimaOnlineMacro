@@ -20,6 +20,8 @@ namespace AutoClicker.Models.System
         public Rectangle PaperdollRegion { get; set; } // Definisce la regione del paperdoll selezionata
         public Rectangle PaperdollPickaxeRegion { get; set; } // Definisce la regione del piccone sul paperdoll selezionata
         public Rectangle GameRegion { get; set; } // Definisce la regione del game selezionata
+        public Rectangle StatusRegion { get; set; } // Definisce la regione del game selezionata
+
         public User32DLL.POINT FoodXY { get; set; }
         public User32DLL.POINT WaterXY { get; set; }
         public string HaveValue()

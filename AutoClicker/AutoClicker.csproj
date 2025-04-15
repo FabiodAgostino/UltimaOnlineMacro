@@ -19,10 +19,11 @@
     <Compile Include="Models\System\ImageTemplateBgra.cs" />
     <Compile Include="Models\System\SavedImageTemplate.cs" />
     <Compile Include="Models\TM\Iron.cs" />
+    <Compile Include="Models\TM\MachineLearning\CoordinatePrediction.cs" />
     <Compile Include="Models\TM\Macro.cs" />
     <Compile Include="Models\TM\Mulo.cs" />
-    <Compile Include="Models\TM\MuloImageData.cs" />
-    <Compile Include="Models\TM\MuloPrediction.cs" />
+    <Compile Include="Models\TM\MachineLearning\MuloImageData.cs" />
+    <Compile Include="Models\TM\MachineLearning\MuloPrediction.cs" />
     <Compile Include="Models\TM\Pg.cs" />
     <Compile Include="Models\TM\Pickaxe.cs" />
     <Compile Include="Models\System\Regions.cs" />
@@ -47,10 +48,12 @@
     <PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
     <PackageReference Include="Emgu.CV.Bitmap" Version="4.10.0.5680" />
     <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
-    <PackageReference Include="Microsoft.ML" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="4.0.2" />
-    <PackageReference Include="Microsoft.ML.Vision" Version="4.0.2" />
-    <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
+	  <PackageReference Include="Microsoft.ML" Version="4.0.2" />
+	  <PackageReference Include="Microsoft.ML.DataView" Version="4.0.2" />
+	  <PackageReference Include="Microsoft.ML.FastTree" Version="4.0.2" />
+	  <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="4.0.2" />
+	  <PackageReference Include="Microsoft.ML.Vision" Version="4.0.2" />
+	  <PackageReference Include="SciSharp.TensorFlow.Redist" Version="1.15.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
     <PackageReference Include="System.Windows.Extensions" Version="9.0.3" />
     <PackageReference Include="Tesseract" Version="4.1.1" />

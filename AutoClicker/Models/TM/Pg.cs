@@ -1,8 +1,6 @@
 ﻿
 using AutoClicker.Models.System;
 using AutoClicker.Service;
-using AutoClicker.Utils;
-using AutoCliecker.Service;
 
 namespace AutoClicker.Models.TM
 {
@@ -79,8 +77,8 @@ namespace AutoClicker.Models.TM
         public async Task Work(Regions regions, bool enableRunWork=true)
         {
             _regions = regions;
-            BaseWeight = _tesserActService.GetStatusBar(_regions.BackpackRegion).Stone.value;
-            _tesserActService.StartMonitoring(_regions.BackpackRegion, 10000);
+            BaseWeight = _tesserActService.GetStatusBar(_regions.StatusRegion).Stone.value;
+            _tesserActService.StartMonitoring(_regions.StatusRegion, 10000);
 
             await WearPickaxe();
             RunWork = enableRunWork;
@@ -116,17 +114,17 @@ namespace AutoClicker.Models.TM
             if (status.PickaxeBroke)
                 await WearPickaxe();
 
-            if (status.Stone || StatusForced.Stone)
+            if (true)
             {
                 StatusForced.Stone = false;
-                var point = DetectorService.DetectMuloPrecise();
-                while (true)
-                {
+                //var point = DetectorService.DetectMuloPrecise();
+                //while (true)
+                //{
                     var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
-                    if (iron.X == 0 && iron.Y == 0)
-                        break;
-                    await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
-                }
+                    //if (iron.X == 0 && iron.Y == 0)
+                    //    break;
+                    //await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
+                //}
                 var mulo = Muli.FirstOrDefault(x => x.Selected);
                 mulo.ActualStone = mulo.ActualStone + (_tesserActService._lastStatusBar.Stone.value - BaseWeight);
             }
@@ -148,15 +146,18 @@ namespace AutoClicker.Models.TM
 
         private void OnStatusUpdated(object sender, StatusBar status)
         {
-            if (status.Stone.value + 50 >= status.Stone.max)
-                StatusForced.Stone = true;
-            else
-                StatusForced.Stone = false;
+            if(status.Stone != (0,0) && status.Stamina != (0,0))
+            {
+                if (status.Stone.value + 50 >= status.Stone.max)
+                    StatusForced.Stone = true;
+                else
+                    StatusForced.Stone = false;
 
-            if(status.Stamina.value<10)
-                StatusForced.Stamina = true;
-            else
-                StatusForced.Stamina = false;
+                if (status.Stamina.value < 10)
+                    StatusForced.Stamina = true;
+                else
+                    StatusForced.Stamina = false;
+            }
         }
 
         public void ChangeMuloOrStop()

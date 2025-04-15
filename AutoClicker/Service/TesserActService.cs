@@ -19,6 +19,8 @@ namespace AutoClicker.Service
         private readonly object _lockObject = new object();
         // Evento che notifica quando lo stato viene aggiornato
         public event EventHandler<StatusBar> StatusUpdated;
+        private AutoClickerLogger _logger = new AutoClickerLogger();
+
 
         public StatusBar GetStatusBar(Rectangle region)
         {
@@ -32,9 +34,10 @@ namespace AutoClicker.Service
             using (Bitmap processedBitmap = PreprocessImage(bitmap))
             {
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "tessdata");
-
+                processedBitmap.Save("processed.png");
                 using (var engine = new TesseractEngine(path, "eng", EngineMode.Default))
                 {
+                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
                     engine.SetVariable("tessedit_char_whitelist", "0123456789/StamWeight");
 
                     engine.SetVariable("segment_mode", "1");
@@ -44,8 +47,14 @@ namespace AutoClicker.Service
                         string text = page.GetText();
 
                         ExtractStatusValues(text, out (int, int) stamina, out (int, int) weight);
-                        statusBar.Stamina = stamina;
-                        statusBar.Stone = weight;
+                        if (stamina.Item2 != 0 && stamina.Item1 != 0)
+                        {
+                            statusBar.Stamina = stamina;
+                            statusBar.Stone = weight;
+                        }
+                        _logger.Loggin($"Stamina:{statusBar.Stamina.value}/{statusBar.Stamina.max}");
+                        _logger.Loggin($"Weight:{statusBar.Stone.value}/{statusBar.Stone.max}");
+
                     }
                 }
             }

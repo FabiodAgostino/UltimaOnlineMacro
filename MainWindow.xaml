@@ -203,6 +203,8 @@
                                     Click="SelectBackpackRegion_Click" Style="{StaticResource MyButtonStyle}"/>
                             <Button Name="btnSelectPaperdoll" Content="Seleziona Paperdoll" Width="170" Height="50"
                                     Click="SelectPaperdoll_Click" Style="{StaticResource MyButtonStyle}"/>
+                            <Button Name="btnSelectStatus" Content="Select Status" Width="170" Height="50"
+                                Click="SelectStatus_Click" Style="{StaticResource MyButtonStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20">
                             <Button Name="btnSelectFood" Content="Seleziona Cibo" Width="170" Height="50"

@@ -1,0 +1,11 @@
+C:\Users\thebe\Documents\net8.0-windows\LogManager.deps.json
+C:\Users\thebe\Documents\net8.0-windows\LogManager.dll
+C:\Users\thebe\Documents\net8.0-windows\LogManager.pdb
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\LogManager.csproj.AssemblyReference.cache
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\LogManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\LogManager.csproj.CoreCompileInputs.cache
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\LogManager.sourcelink.json
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\LogManager.dll
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\refint\LogManager.dll
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\LogManager.pdb
+C:\Users\thebe\Documents\GitHub\UltimaOnlineMacro\LogManager\obj\Debug\net8.0-windows\ref\LogManager.dll
