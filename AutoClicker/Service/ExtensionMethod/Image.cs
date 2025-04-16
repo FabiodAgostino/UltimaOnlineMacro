@@ -24,43 +24,6 @@ namespace AutoClicker.Service.ExtensionMethod
             return img;
         }
 
-        public static Image<Bgra, byte> BitmapToImageBgra(this Bitmap bitmap)
-        {
-            // Converti il bitmap in Format32bppArgb se necessario
-            Bitmap bmp32 = bitmap;
-            if (bitmap.PixelFormat != PixelFormat.Format32bppArgb)
-            {
-                bmp32 = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format32bppArgb);
-                using (Graphics g = Graphics.FromImage(bmp32))
-                {
-                    g.DrawImage(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-                }
-            }
-
-            // Blocca il bitmap per ottenere i dati dei pixel (in formato 32bppArgb che include l'alpha)
-            BitmapData bitmapData = bmp32.LockBits(
-                new Rectangle(0, 0, bmp32.Width, bmp32.Height),
-                ImageLockMode.ReadOnly,
-                PixelFormat.Format32bppArgb // Usa 32 bit per includere il canale alpha
-            );
-
-            // Crea un'istanza di Image<Bgra, byte> usando i dati del bitmap
-            Image<Bgra, byte> img = new Image<Bgra, byte>(bmp32.Width, bmp32.Height, bitmapData.Stride, bitmapData.Scan0);
-
-            // Sblocca il bitmap dopo la conversione
-            bmp32.UnlockBits(bitmapData);
-
-            // Se abbiamo creato un nuovo bitmap, liberiamolo
-            if (bmp32 != bitmap)
-            {
-                bmp32.Dispose();
-            }
-
-            return img;
-        }
-
-
-
         public static Image<Bgr, byte> CaptureRegion(this Rectangle region)
         {
             try
@@ -150,33 +113,19 @@ namespace AutoClicker.Service.ExtensionMethod
             return bitmap;
         }
 
-
-        public static Image<Bgr, byte> Prova(this (Bitmap bitmap, Rectangle rectangle) screenImage)
+        public static Bitmap CaptureRegionBitmap(Rectangle region)
         {
-            // Crea una nuova Bitmap forzando il formato a 24bppRgb
-            Bitmap safeBitmap = new Bitmap(screenImage.bitmap.Width, screenImage.bitmap.Height, PixelFormat.Format24bppRgb);
-            using (Graphics g = Graphics.FromImage(safeBitmap))
+            Bitmap bmp = new Bitmap(region.Width, region.Height, PixelFormat.Format32bppArgb);
+            using (Graphics g = Graphics.FromImage(bmp))
             {
-                g.DrawImage(screenImage.bitmap, new Rectangle(0, 0, safeBitmap.Width, safeBitmap.Height));
+                g.CopyFromScreen(region.Location, new Point(0, 0), region.Size, CopyPixelOperation.SourceCopy);
             }
 
-            // Usa il costruttore di Emgu CV che copia i dati
-            Image<Bgr, byte> imSafe = safeBitmap.BitmapToImage();
-            return imSafe;
+            return bmp;
         }
 
-        public static Image<Bgr, byte> ConvertSafe(this Bitmap bitmap)
-        {
-            // Crea una nuova Bitmap forzando il formato a 24bppRgb
-            Bitmap safeBitmap = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format24bppRgb);
-            using (Graphics g = Graphics.FromImage(safeBitmap))
-            {
-                g.DrawImage(bitmap, new Rectangle(0, 0, safeBitmap.Width, safeBitmap.Height));
-            }
 
-            Image<Bgr, byte> imSafe = safeBitmap.BitmapToImage();
-            return imSafe;
-        }
+
 
     }
 }

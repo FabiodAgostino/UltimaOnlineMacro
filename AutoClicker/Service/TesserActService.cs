@@ -26,35 +26,28 @@ namespace AutoClicker.Service
         {
             StatusBar statusBar = new StatusBar();
 
-            Bitmap bitmap = new Bitmap(region.Width, region.Height, PixelFormat.Format24bppRgb);
-            using (Graphics graphics = Graphics.FromImage(bitmap))
+            Bitmap bitmap = ExtensionMethod.Image.CaptureRegionBitmap(region);
+
+            using var processedStream = ImagePreprocessorService.ProcessImage(bitmap);
             {
-                graphics.CopyFromScreen(region.X, region.Y, 0, 0, region.Size);
-            }
-            using (Bitmap processedBitmap = PreprocessImage(bitmap))
-            {
-                string path = Path.Combine(Directory.GetCurrentDirectory(), "tessdata");
-                processedBitmap.Save("processed.png");
-                using (var engine = new TesseractEngine(path, "eng", EngineMode.Default))
+                using var pix = Pix.LoadFromMemory(processedStream.ToArray());
+                // Salva l'immagine preprocessata per debug
+                pix.Save("pix_debug.png");
+
+                string tessdataPath = Path.Combine(Directory.GetCurrentDirectory(), "tessdata");
+                using var engine = new TesseractEngine(tessdataPath, "eng", EngineMode.LstmOnly);
                 {
-                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789/StamWeight");
-
-                    engine.SetVariable("segment_mode", "1");
-
-                    using (var page = engine.Process(processedBitmap))
+                    using var page = engine.Process(bitmap, PageSegMode.Auto);
+                    var text = page.GetText();
+                    var confidence = page.GetMeanConfidence();
+                    if (confidence > 0.7)
                     {
-                        string text = page.GetText();
-
-                        ExtractStatusValues(text, out (int, int) stamina, out (int, int) weight);
-                        if (stamina.Item2 != 0 && stamina.Item1 != 0)
+                        bool success = ExtractStatusValues(text, out (int, int) stamina, out (int, int) weight);
+                        if (success && (stamina.Item2 != 0 && stamina.Item1 != 0))
                         {
                             statusBar.Stamina = stamina;
                             statusBar.Stone = weight;
                         }
-                        _logger.Loggin($"Stamina:{statusBar.Stamina.value}/{statusBar.Stamina.max}");
-                        _logger.Loggin($"Weight:{statusBar.Stone.value}/{statusBar.Stone.max}");
-
                     }
                 }
             }
@@ -62,59 +55,49 @@ namespace AutoClicker.Service
             return statusBar;
         }
 
-        private Bitmap PreprocessImage(Bitmap original)
-        {
-            Bitmap result = new Bitmap(original.Width, original.Height);
 
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                ColorMatrix colorMatrix = new ColorMatrix(
-                    new float[][]
-                    {
-                new float[] {1.5f, 0, 0, 0, 0},
-                new float[] {0, 1.5f, 0, 0, 0},
-                new float[] {0, 0, 1.5f, 0, 0},
-                new float[] {0, 0, 0, 1, 0},
-                new float[] {-0.2f, -0.2f, -0.2f, 0, 1}
-                    });
-
-                using (ImageAttributes attributes = new ImageAttributes())
-                {
-                    attributes.SetColorMatrix(colorMatrix);
-                    g.DrawImage(original, new Rectangle(0, 0, result.Width, result.Height),
-                        0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
-                }
-            }
-
-            return result;
-        }
-
-        private void ExtractStatusValues(string text, out (int, int) stamina, out (int, int) weight)
+        private bool ExtractStatusValues(string text, out (int, int) stamina, out (int, int) weight)
         {
             stamina = (0, 0);
             weight = (0, 0);
 
-            Regex stamRegex = new Regex(@"Stam(\d+)/(\d+)");
-            Regex weightRegex = new Regex(@"Weight(\d+)/(\d+)");
+            // Regex con eventuali spazi opzionali e case insensitive
+            Regex stamRegex = new Regex(@"Stam\s*(\d+)\s*/\s*(\d+)", RegexOptions.IgnoreCase);
+            Regex weightRegex = new Regex(@"Weight\s*(\d+)\s*/\s*(\d+)", RegexOptions.IgnoreCase);
 
-            // Cerca Stamina
+            // Cerca e controlla la match per Stamina
             Match stamMatch = stamRegex.Match(text);
-            if (stamMatch.Success)
+            if (!stamMatch.Success)
             {
-                int stamMin = int.Parse(stamMatch.Groups[1].Value);
-                int stamMax = int.Parse(stamMatch.Groups[2].Value);
-                stamina = (stamMin, stamMax);
+                return false;
             }
+            int stamMin = int.Parse(stamMatch.Groups[1].Value);
+            int stamMax = int.Parse(stamMatch.Groups[2].Value);
+            if (stamMin > stamMax)
+            {
+                // Condizione impossibile: stamina min > stamina max
+                return false;
+            }
+            stamina = (stamMin, stamMax);
 
-            // Cerca Weight
+            // Cerca e controlla la match per Weight
             Match weightMatch = weightRegex.Match(text);
-            if (weightMatch.Success)
+            if (!weightMatch.Success)
             {
-                int weightMin = int.Parse(weightMatch.Groups[1].Value);
-                int weightMax = int.Parse(weightMatch.Groups[2].Value);
-                weight = (weightMin, weightMax);
+                return false;
             }
+            int weightMin = int.Parse(weightMatch.Groups[1].Value);
+            int weightMax = int.Parse(weightMatch.Groups[2].Value);
+            if (weightMin == 0 || weightMin + 150 > weightMax)
+            {
+                // Se weightMin è zero oppure weightMin+150 > weightMax, scarta il risultato
+                return false;
+            }
+            weight = (weightMin, weightMax);
+
+            return true;
         }
+
 
         public void StartMonitoring(Rectangle region, int updateIntervalMs = 2000)
         {

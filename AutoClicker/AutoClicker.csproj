@@ -34,6 +34,7 @@
     <Compile Include="Service\ExtensionMethod\Image.cs" />
     <Compile Include="Library\MouseInputSimulator.cs" />
     <Compile Include="Service\ExtensionMethod\Key.cs" />
+    <Compile Include="Service\ImagePreprocessorService.cs" />
     <Compile Include="Service\ProcessService.cs" />
     <Compile Include="Service\ReadLogTMService.cs" />
     <Compile Include="Service\SendInputService.cs" />
@@ -54,6 +55,8 @@
 	  <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="4.0.2" />
 	  <PackageReference Include="Microsoft.ML.Vision" Version="4.0.2" />
 	  <PackageReference Include="SciSharp.TensorFlow.Redist" Version="1.15.0" />
+	  <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
+	  <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.5" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
     <PackageReference Include="System.Windows.Extensions" Version="9.0.3" />
     <PackageReference Include="Tesseract" Version="4.1.1" />
