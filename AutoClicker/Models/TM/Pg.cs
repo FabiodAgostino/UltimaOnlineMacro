@@ -1,6 +1,7 @@
 ﻿
 using AutoClicker.Models.System;
 using AutoClicker.Service;
+using DetectorModel.Services;
 
 namespace AutoClicker.Models.TM
 {
@@ -19,7 +20,9 @@ namespace AutoClicker.Models.TM
         private int BaseWeight { get; set; }
         public Status StatusForced { get; set; } = new();
         public List<Mulo> Muli { get; set; } = new();
-        public MuloDetectorService DetectorService { get; set; }
+        private DetectorService _detectorService { get; set; } = new();
+
+
         public Pg()
         {
             _readLogTMService = new(this);
@@ -117,14 +120,14 @@ namespace AutoClicker.Models.TM
             if (true)
             {
                 StatusForced.Stone = false;
-                //var point = DetectorService.DetectMuloPrecise();
-                //while (true)
-                //{
+                var point = await _detectorService.GetPointToClickPackHorse();
+                while (true)
+                {
                     var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
-                    //if (iron.X == 0 && iron.Y == 0)
-                    //    break;
-                    //await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
-                //}
+                    if (iron.X == 0 && iron.Y == 0)
+                        break;
+                    await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
+                }
                 var mulo = Muli.FirstOrDefault(x => x.Selected);
                 mulo.ActualStone = mulo.ActualStone + (_tesserActService._lastStatusBar.Stone.value - BaseWeight);
             }

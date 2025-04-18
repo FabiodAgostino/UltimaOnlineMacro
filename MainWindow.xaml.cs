@@ -45,18 +45,7 @@ namespace UltimaOnlineMacro
             _mainWindowService.ReadFilesConfiguration();
         }
 
-        private async Task test()
-        {
-            string muloModel = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloModel.zip");
-            string muloModelx = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloRegressorX.zip");
-            string muloModely = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "MuloRegressorY.zip");
-
-            var d = new MuloDetectorService(muloModel, muloModelx, muloModely);
-            while (true)
-            {
-                d.DetectAndDrawMulo();
-            }
-        }
+       
       
 
         #region Callback

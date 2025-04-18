@@ -67,4 +67,10 @@
     <ProjectReference Include="..\LogManager\LogManager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="DetectorModel">
+      <HintPath>..\..\MachileLearning\CombinedModel\bin\Debug\net8.0\DetectorModel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
