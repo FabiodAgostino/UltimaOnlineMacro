@@ -63,7 +63,7 @@
 
   <ItemGroup>
     <Reference Include="DetectorModel">
-      <HintPath>..\..\MachileLearning\CombinedModel\bin\Debug\net8.0\DetectorModel.dll</HintPath>
+      <HintPath>..\DetectorModel.dll</HintPath>
     </Reference>
   </ItemGroup>
 

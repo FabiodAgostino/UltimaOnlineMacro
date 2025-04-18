@@ -72,7 +72,7 @@
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAUwCEAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-18T15:02:40.796Z",
               "EditorCaption": ""
@@ -87,8 +87,7 @@
               "RelativeToolTip": "AutoClicker\\Models\\TM\\Iron.cs",
               "ViewState": "AgIAABUAAAAAAAAAAAAYwDYAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-18T15:02:01.578Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-18T15:02:01.578Z"
             },
             {
               "$type": "Document",
@@ -100,8 +99,7 @@
               "RelativeToolTip": "AutoClicker\\Service\\SendInputService.cs",
               "ViewState": "AgIAADsAAAAAAAAAAAAAADcAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-18T15:01:46.032Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-18T15:01:46.032Z"
             },
             {
               "$type": "Document",
@@ -113,8 +111,7 @@
               "RelativeToolTip": "AutoClicker\\Service\\TesserActService.cs",
               "ViewState": "AgIAAI8AAAAAAAAAAAAAAKQAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-18T15:01:37.43Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-18T15:01:37.43Z"
             },
             {
               "$type": "Document",
@@ -126,8 +123,7 @@
               "RelativeToolTip": "AutoClicker\\Library\\MouseInputSimulator.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAAgwCQAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-18T15:01:25.818Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-18T15:01:25.818Z"
             },
             {
               "$type": "Document",
@@ -139,8 +135,7 @@
               "RelativeToolTip": "AutoClicker\\Library\\KeyboardInputSimulator.cs",
               "ViewState": "AgIAAEcAAAAAAAAAAAAAABwAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-18T14:54:54.296Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-18T14:54:54.296Z"
             }
           ]
         }
