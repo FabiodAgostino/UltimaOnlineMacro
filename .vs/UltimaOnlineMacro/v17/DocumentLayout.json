@@ -1,0 +1,150 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\models\\tm\\iron.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\models\\tm\\iron.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\service\\sendinputservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\service\\sendinputservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\service\\tesseractservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\service\\tesseractservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\library\\mouseinputsimulator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\library\\mouseinputsimulator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\library\\keyboardinputsimulator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\library\\keyboardinputsimulator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:142:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:141:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:12:0:{2456bd12-ecf7-4988-a4a6-67d49173f565}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAOIAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T15:02:40.796Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Iron.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\Iron.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Models\\TM\\Iron.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\Iron.cs",
+              "RelativeToolTip": "AutoClicker\\Models\\TM\\Iron.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAYwDYAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T15:02:01.578Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SendInputService.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\SendInputService.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Service\\SendInputService.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\SendInputService.cs",
+              "RelativeToolTip": "AutoClicker\\Service\\SendInputService.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAAADcAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T15:01:46.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TesserActService.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\TesserActService.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Service\\TesserActService.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\TesserActService.cs",
+              "RelativeToolTip": "AutoClicker\\Service\\TesserActService.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAAAAAKQAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T15:01:37.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MouseInputSimulator.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Library\\MouseInputSimulator.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Library\\MouseInputSimulator.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Library\\MouseInputSimulator.cs",
+              "RelativeToolTip": "AutoClicker\\Library\\MouseInputSimulator.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAgwCQAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T15:01:25.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "KeyboardInputSimulator.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Library\\KeyboardInputSimulator.cs",
+              "RelativeDocumentMoniker": "AutoClicker\\Library\\KeyboardInputSimulator.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Library\\KeyboardInputSimulator.cs",
+              "RelativeToolTip": "AutoClicker\\Library\\KeyboardInputSimulator.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAAABwAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T14:54:54.296Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

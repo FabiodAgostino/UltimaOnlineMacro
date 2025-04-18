@@ -1,6 +1,4 @@
-﻿using Microsoft.ML.Data;
-
-namespace AutoClicker.Models.TM.MachineLearning
+﻿namespace AutoClicker.Models.TM.MachineLearning
 {
     public class CoordinatePrediction
     {

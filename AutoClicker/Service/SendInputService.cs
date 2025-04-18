@@ -1,20 +1,15 @@
 ﻿using AutoClicker.Const;
 using AutoClicker.Library;
-using AutoClicker.Models.System;
-using AutoClicker.Utils;
-using System.Net;
-using System.Runtime.InteropServices;
+using LogManager;
 using static AutoClicker.Const.KeyboardMouseConst;
 using static AutoClicker.Utils.User32DLL;
-
 
 namespace AutoClicker.Service
 {
     public class SendInputService
     {
-        AutoClickerLogger Logger = new();
-        MouseInputSimulator MouseInputSimulator = new MouseInputSimulator();
-        KeyboardInputSimulator KeyboardInputSimulator = new KeyboardInputSimulator();
+        private MouseInputSimulator MouseInputSimulator = new MouseInputSimulator();
+        private KeyboardInputSimulator KeyboardInputSimulator = new KeyboardInputSimulator();
 
         public SendInputService()
         {
@@ -24,7 +19,7 @@ namespace AutoClicker.Service
         /// </summary>
         public async Task TestMouse()
         {
-            await MouseInputSimulator.SimulateDoubleClick10Times(100,400);
+            await MouseInputSimulator.SimulateDoubleClick10Times(100, 400);
         }
 
         public async Task TestKeyboard()
@@ -35,7 +30,6 @@ namespace AutoClicker.Service
             }
         }
 
-
         public async Task<bool> DragAndDrop(int startX, int startY, int endX, int endY, int duration = 500, bool installHook = false)
         {
             return await MouseInputSimulator.DragAndDrop(startX, startY, endX, endY);
@@ -44,11 +38,10 @@ namespace AutoClicker.Service
         public async Task<bool> DragAndDropIron(int startX, int startY, int endX, int endY)
         {
             await KeyboardInputSimulator.ClickUnclickShift();
-            var success = await MouseInputSimulator.DragAndDrop(startX, startY, endX, endY,150);
+            var success = await MouseInputSimulator.DragAndDrop(startX, startY, endX, endY, 150);
             await KeyboardInputSimulator.ClickUnclickShift(false);
             return success;
         }
-      
 
         public Task<POINT> BeginCaptureAsync()
         {
@@ -62,13 +55,12 @@ namespace AutoClicker.Service
                 Random random = new Random();
                 Logger.Loggin($"Iniziando sequenza di {numberOfSteps} movimenti randomici");
 
-                for (int i = 0; i < numberOfSteps/2; i++)
+                for (int i = 0; i < numberOfSteps / 2; i++)
                 {
                     byte direction = ArrowKeys[random.Next(ArrowKeys.Length)];
                     await KeyboardInputSimulator.Move(direction);
                     await KeyboardInputSimulator.Move(direction);
                     await KeyboardInputSimulator.Move(direction);
-
                 }
             }
             catch (Exception e)
@@ -81,6 +73,5 @@ namespace AutoClicker.Service
         {
             await KeyboardInputSimulator.SimulateMacroWithModifiers(keys);
         }
-
     }
 }

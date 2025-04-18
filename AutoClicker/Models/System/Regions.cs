@@ -1,14 +1,4 @@
 ﻿using AutoClicker.Models.TM;
-using AutoClicker.Service.ExtensionMethod;
-using AutoClicker.Service;
-using Emgu.CV.Structure;
-using Emgu.CV;
-using System.Drawing;
-using AutoClicker.Library;
-using Emgu.CV.Features2D;
-using Emgu.CV.Util;
-using Emgu.CV.XObjdetect;
-using Emgu.CV.CvEnum;
 using AutoClicker.Utils;
 
 namespace AutoClicker.Models.System
@@ -24,6 +14,7 @@ namespace AutoClicker.Models.System
 
         public User32DLL.POINT FoodXY { get; set; }
         public User32DLL.POINT WaterXY { get; set; }
+
         public string HaveValue()
         {
             if (BackpackRegion == Rectangle.Empty)

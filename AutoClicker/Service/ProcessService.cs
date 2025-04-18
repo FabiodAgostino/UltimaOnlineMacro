@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using static AutoClicker.Const.KeyboardMouseConst;
 using static AutoClicker.Utils.User32DLL;
+
 namespace AutoClicker.Service
 {
     public class ProcessService
@@ -23,7 +23,7 @@ namespace AutoClicker.Service
 
         public async Task SetTMWindow()
         {
-            if(TheMiracleWindow == null)
+            if (TheMiracleWindow == null)
             {
                 IntPtr hwnd = IntPtr.Zero;
                 StringBuilder windowText = new StringBuilder(256);

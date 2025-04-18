@@ -1,27 +1,10 @@
-﻿// Questo programma è un'applicazione WPF che utilizza un hook di basso livello per intercettare i clic del mouse
-// anche al di fuori della finestra principale, consentendo la selezione di regioni specifiche nella finestra di gioco.
-// 
-// Flusso dell'applicazione:
-// 1. L'utente avvia l'app e può selezionare due punti importanti nel gioco:
-//    - La regione dello zaino (dove si cerca il piccone)
-//    - La posizione target (dove trascinare il piccone)
-// 2. Quando l'utente clicca "Avvia Macro", viene eseguita la ricerca del piccone nella regione selezionata.
-// 3. Se il piccone viene trovato, viene simulato un drag-and-drop per posizionarlo sulla posizione target.
-// 4. L'utente può interrompere la macro cliccando "Ferma Macro".
-// 5. L'app utilizza un hook di sistema per rilevare i clic del mouse ovunque sullo schermo.
-
-using AutoClicker.Models.System;
+﻿using AutoClicker.Models.System;
 using AutoClicker.Models.TM;
 using AutoClicker.Service;
-using SkiaSharp;
-using System;
+using LogManager;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using UltimaOnlineMacro.Service;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -30,31 +13,28 @@ namespace UltimaOnlineMacro
     public partial class MainWindow : Window
     {
         private Regions Regions = new Regions();
-        public Pg Pg = new Pg();
-        public Logger LogManager;
+        public Pg Pg;
         private MainWindowService _mainWindowService;
+
         public MainWindow()
         {
             InitializeComponent();
-           
-            LogManager = new(txtLog);
+            Logger._logTextBox = txtLog;
+            Pg = new Pg();
             SavedImageTemplate.Initialize();
             cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
             cmbKey.SelectedIndex = 0;
             _mainWindowService = new MainWindowService(this);
-            _mainWindowService.ReadFilesConfiguration();
         }
 
-       
-      
-
         #region Callback
+
         public void SetBackpackRegion(Rectangle region)
         {
             if (Regions.BackpackRegion != region)
             {
                 Regions.BackpackRegion = region;
-                LogManager.Loggin($"Regione zaino selezionata: {Regions.BackpackRegion}");
+                Logger.Loggin($"Regione zaino selezionata: {Regions.BackpackRegion}");
                 try
                 {
                     var pickaxe = new Pickaxe(region, SavedImageTemplate.ImageTemplatePickaxe);
@@ -70,7 +50,7 @@ namespace UltimaOnlineMacro
                 }
                 catch (Exception e)
                 {
-                    LogManager.Loggin($"Errore: {e.Message}");
+                    Logger.Loggin($"Errore: {e.Message}");
                 }
             }
         }
@@ -80,7 +60,6 @@ namespace UltimaOnlineMacro
             var t = new TestService();
             t.MeasureExecutionTime(region);
             Regions.StatusRegion = region;
-           
         }
 
         public void PaperdollHavePickaxe(Rectangle region)
@@ -100,15 +79,15 @@ namespace UltimaOnlineMacro
             {
                 Regions.PaperdollRegion = region;
                 Regions.PaperdollPickaxeRegion = centeredRegion;
-                LogManager.Loggin($"Regione paperdoll selezionata (centrata): {Regions.PaperdollRegion}");
+                Logger.Loggin($"Regione paperdoll selezionata (centrata): {Regions.PaperdollRegion}");
                 btnSelectPaperdoll.Background = System.Windows.Media.Brushes.Gray;
             }
         }
 
-        #endregion
-
+        #endregion Callback
 
         #region WindowsHelper
+
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -137,7 +116,6 @@ namespace UltimaOnlineMacro
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-           
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -146,27 +124,25 @@ namespace UltimaOnlineMacro
                 this.DragMove();
         }
 
-
-        #endregion
-
+        #endregion WindowsHelper
 
         #region ClickEvent
+
         private void SelectStatus_Click(object sender, RoutedEventArgs e)
         {
-            OverlayWindow overlay = new OverlayWindow("Status", LogManager);
+            OverlayWindow overlay = new OverlayWindow("Status");
             overlay.Show();
         }
 
         private void SelectBackpackRegion_Click(object sender, RoutedEventArgs e)
         {
-            OverlayWindow overlay = new OverlayWindow("Piccone", LogManager);
+            OverlayWindow overlay = new OverlayWindow("Piccone");
             overlay.Show();
         }
 
-
         private void SelectPaperdoll_Click(object sender, RoutedEventArgs e)
         {
-            OverlayWindow overlay = new OverlayWindow("Paperdoll", LogManager);
+            OverlayWindow overlay = new OverlayWindow("Paperdoll");
             overlay.Show();
         }
 
@@ -182,18 +158,18 @@ namespace UltimaOnlineMacro
                 string haveValue = Regions.HaveValue();
                 if (!String.IsNullOrEmpty(haveValue))
                 {
-                    LogManager.Loggin(haveValue);
+                    Logger.Loggin(haveValue);
                     return;
                 }
                 string isReady = Pg.IsReady();
                 if (!String.IsNullOrEmpty(isReady))
                 {
-                    LogManager.Loggin(isReady);
+                    Logger.Loggin(isReady);
                     return;
                 }
-                if(!chkMuloDaSoma.IsChecked.Value && !chkLamaPortatore.IsChecked.Value)
+                if (!chkMuloDaSoma.IsChecked.Value && !chkLamaPortatore.IsChecked.Value)
                 {
-                    LogManager.Loggin("Seleziona almeno un animale da soma");
+                    Logger.Loggin("Seleziona almeno un animale da soma");
                     return;
                 }
             }
@@ -204,9 +180,10 @@ namespace UltimaOnlineMacro
 
             btnRun.Background = System.Windows.Media.Brushes.Gray;
             btnStop.Background = System.Windows.Media.Brushes.Red;
-            LogManager.Loggin("Run!");
+            Logger.Loggin("Run!");
             await Pg.Work(Regions);
         }
+
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
             _mainWindowService.TimerUltima.Stop();
@@ -214,9 +191,8 @@ namespace UltimaOnlineMacro
             Pg.RunWork = false;
             btnRun.Background = System.Windows.Media.Brushes.Green;
             btnStop.Background = System.Windows.Media.Brushes.Red;
-            LogManager.Loggin("Stop!");
+            Logger.Loggin("Stop!");
         }
-
 
         private async void SelectWater_Click(object sender, RoutedEventArgs e)
         {
@@ -261,10 +237,6 @@ namespace UltimaOnlineMacro
             }
         }
 
-
-        #endregion
-
-      
+        #endregion ClickEvent
     }
-
 }

@@ -1,12 +1,7 @@
 ﻿using AutoClicker.Models.TM;
-using System;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Tesseract;
-using static AutoClicker.Utils.User32DLL;
-using static System.Windows.Forms.AxHost;
 namespace AutoClicker.Service
 {
     public class TesserActService
@@ -19,8 +14,6 @@ namespace AutoClicker.Service
         private readonly object _lockObject = new object();
         // Evento che notifica quando lo stato viene aggiornato
         public event EventHandler<StatusBar> StatusUpdated;
-        private AutoClickerLogger _logger = new AutoClickerLogger();
-
 
         public StatusBar GetStatusBar(Rectangle region)
         {
@@ -54,7 +47,6 @@ namespace AutoClicker.Service
 
             return statusBar;
         }
-
 
         private bool ExtractStatusValues(string text, out (int, int) stamina, out (int, int) weight)
         {
@@ -97,7 +89,6 @@ namespace AutoClicker.Service
 
             return true;
         }
-
 
         public void StartMonitoring(Rectangle region, int updateIntervalMs = 2000)
         {
@@ -173,6 +164,5 @@ namespace AutoClicker.Service
         {
             return await Task.Run(() => GetStatusBar(region));
         }
-
     }
 }

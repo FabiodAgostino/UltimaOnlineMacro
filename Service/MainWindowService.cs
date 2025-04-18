@@ -1,5 +1,6 @@
 ﻿using AutoClicker.Models.TM;
 using AutoClicker.Utils;
+using LogManager;
 using System.IO;
 using System.Windows.Forms;
 
@@ -7,19 +8,19 @@ namespace UltimaOnlineMacro.Service
 {
     public class MainWindowService
     {
-        public Logger LogManager;
         public TimerUltima TimerUltima;
         private Pg _pg { get; set; }
         private bool _initializeMacro { get; set; } = true;
-        private MainWindow _mainWindow {  get; set; }
+        private MainWindow _mainWindow { get; set; }
+
         public MainWindowService(MainWindow mainWindow)
         {
-            LogManager = mainWindow.LogManager;
             _pg = mainWindow.Pg;
             _mainWindow = mainWindow;
             SetTimerUltima();
-            ReadFilesConfiguration();   
+            ReadFilesConfiguration();
         }
+
         public void SetTimerUltima()
         {
             TimerUltima = new TimerUltima(text =>
@@ -57,7 +58,7 @@ namespace UltimaOnlineMacro.Service
         {
             string modelPath = Path.Combine(Directory.GetCurrentDirectory(), "tessdata", "eng.traineddata");
             if (!File.Exists(modelPath))
-                LogManager.Loggin("Non trovo il file tessdata.");
+                Logger.Loggin("Non trovo il file tessdata.");
         }
 
         public void CheckMacroButtons()
@@ -86,7 +87,6 @@ namespace UltimaOnlineMacro.Service
                     macroKeys.Add(modifiers);
                 if (_pg.Macro == null || _pg.Macro.Delay != delay || _pg.Macro.MacroKeys.All(x => !macroKeys.Contains(x)))
                     _pg.Macro = new Macro(macroKeys, delay, (repetitions) => { _mainWindow.txtRuns.Text = repetitions.ToString(); });
-
             }
             else
             {
@@ -96,7 +96,7 @@ namespace UltimaOnlineMacro.Service
 
         public void SetMuli()
         {
-            if(_pg.Muli.Count == 0)
+            if (_pg.Muli.Count == 0)
             {
                 if (_mainWindow.chkMuloDaSoma.IsChecked.HasValue && _mainWindow.chkMuloDaSoma.IsChecked.Value)
                     _pg.Muli.Add(new Mulo(MuloType.MULO_DA_SOMA, true, () => _pg.ChangeMuloOrStop()));

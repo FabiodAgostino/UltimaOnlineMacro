@@ -15,8 +15,6 @@
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)sixlabors.imagesharp\3.1.7\build\SixLabors.ImageSharp.props" Condition="Exists('$(NuGetPackageRoot)sixlabors.imagesharp\3.1.7\build\SixLabors.ImageSharp.props')" />
-    <Import Project="$(NuGetPackageRoot)scisharp.tensorflow.redist\1.15.0\build\netstandard2.0\SciSharp.TensorFlow.Redist.props" Condition="Exists('$(NuGetPackageRoot)scisharp.tensorflow.redist\1.15.0\build\netstandard2.0\SciSharp.TensorFlow.Redist.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.ml\4.0.2\build\netstandard2.0\Microsoft.ML.props" Condition="Exists('$(NuGetPackageRoot)microsoft.ml\4.0.2\build\netstandard2.0\Microsoft.ML.props')" />
-    <Import Project="$(NuGetPackageRoot)microsoft.ml.fasttree\4.0.2\build\netstandard2.0\Microsoft.ML.FastTree.props" Condition="Exists('$(NuGetPackageRoot)microsoft.ml.fasttree\4.0.2\build\netstandard2.0\Microsoft.ML.FastTree.props')" />
   </ImportGroup>
 </Project>

@@ -1,11 +1,9 @@
-﻿using Emgu.CV.Structure;
-using Emgu.CV;
-using System.Drawing;
-using System.IO;
-using AutoClicker.Service.ExtensionMethod;
-using AutoClicker.Models.System;
-using LogManager;
+﻿using AutoClicker.Models.System;
 using AutoClicker.Service;
+using AutoClicker.Service.ExtensionMethod;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using LogManager;
 
 namespace AutoClicker.Models.TM
 {
@@ -14,6 +12,7 @@ namespace AutoClicker.Models.TM
         public int Y { get; set; }
         public int X { get; set; }
         public bool IsFound { get; set; }
+
         public Pickaxe(Rectangle region, ImageTemplate imageTemplate)
         {
             GetPosition(region, imageTemplate);
@@ -21,8 +20,6 @@ namespace AutoClicker.Models.TM
 
         public void GetPosition(Rectangle region, ImageTemplate imageTemplate)
         {
-            var logger = new AutoClickerLogger();
-
             // Acquisisci screenshot (ritorna Image<Bgr, byte>)
             var screenImage = region.CaptureRegion();
 
@@ -39,13 +36,13 @@ namespace AutoClicker.Models.TM
                 Point minLoc = new Point(), maxLoc = new Point();
                 CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
 
-                logger.Loggin($"MaxVal ottenuto: {maxVal}");
+                Logger.Loggin($"MaxVal ottenuto: {maxVal}");
                 grayScreen.Save("debug_screen.png");
                 grayTemplate.Save("debug_template.png");
                 if (maxVal > 0.8) // Soglia standard
                 {
                     Point pos = maxLoc;
-                    logger.Loggin($"Oggetto trovato a: {pos}");
+                    Logger.Loggin($"Oggetto trovato a: {pos}");
 
                     X = region.X + pos.X + imageTemplate.Template.Width / 2;
                     Y = region.Y + pos.Y + imageTemplate.Template.Height / 2;
@@ -54,10 +51,9 @@ namespace AutoClicker.Models.TM
                 else
                 {
                     IsFound = false;
-                    logger.Loggin("Oggetto non trovato.");
+                    Logger.Loggin("Oggetto non trovato.");
                 }
             }
         }
-
     }
 }

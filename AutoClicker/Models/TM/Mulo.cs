@@ -3,6 +3,7 @@
     public class Mulo
     {
         public MuloType Type { get; set; }
+
         public int ActualStone
         {
             get => _actualStone; set
@@ -14,6 +15,7 @@
                 }
             }
         }
+
         private int _actualStone { get; set; }
 
         public const int MaxStone = 2000;
@@ -27,8 +29,6 @@
             MuloFull = muloFull;
         }
     }
-
-
 
     public enum MuloType
     {

@@ -1,19 +1,25 @@
 ﻿using Serilog;
+using System.Windows.Controls;
 
 namespace LogManager
 {
-    public abstract class Logger
+    public static class Logger
     {
-        protected Logger()
+        public static TextBox _logTextBox;
+
+        public static void Loggin(string message, bool err = false)
         {
             LoggerConfig.Initialize();
-        }
-        public abstract void Initialize(object text);
-        public abstract void Loggin(string message, bool err=false);
+            if (_logTextBox != null)
+            {
+                _logTextBox.Dispatcher.Invoke(() =>
+                {
+                    _logTextBox.AppendText($"{DateTime.Now:HH:mm:ss} - {message}\n");
+                    _logTextBox.ScrollToEnd();
+                });
+            }
 
-        public void Serilog(string message, bool err)
-        {
-            if(err)
+            if (err)
             {
                 Log.Error(message);
                 Console.Error.WriteLine(message);
@@ -24,6 +30,5 @@ namespace LogManager
                 Log.Debug(message);
             }
         }
-
     }
 }

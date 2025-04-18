@@ -29,7 +29,6 @@
     <Compile Include="Models\System\Regions.cs" />
     <Compile Include="Models\System\TMWindow.cs" />
     <Compile Include="Models\TM\Status.cs" />
-    <Compile Include="Service\AutoClickerLogger.cs" />
     <Compile Include="Service\DetectorService.cs" />
     <Compile Include="Service\ExtensionMethod\Image.cs" />
     <Compile Include="Library\MouseInputSimulator.cs" />
@@ -50,11 +49,6 @@
     <PackageReference Include="Emgu.CV.Bitmap" Version="4.10.0.5680" />
     <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
 	  <PackageReference Include="Microsoft.ML" Version="4.0.2" />
-	  <PackageReference Include="Microsoft.ML.DataView" Version="4.0.2" />
-	  <PackageReference Include="Microsoft.ML.FastTree" Version="4.0.2" />
-	  <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="4.0.2" />
-	  <PackageReference Include="Microsoft.ML.Vision" Version="4.0.2" />
-	  <PackageReference Include="SciSharp.TensorFlow.Redist" Version="1.15.0" />
 	  <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
 	  <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.5" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />

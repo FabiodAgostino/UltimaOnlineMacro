@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Serilog;
 using System.Timers;
-using Serilog;
 
 namespace AutoClicker.Utils
 {
@@ -14,6 +13,7 @@ namespace AutoClicker.Utils
         private TimeSpan accumulatedTime = TimeSpan.Zero;
 
         public event EventHandler<TimeSpan> OnTimerUpdate;
+
         public TimeSpan ElapsedTime { get; private set; }
 
         public TimerUltima(Action<string> updateLabelAction)

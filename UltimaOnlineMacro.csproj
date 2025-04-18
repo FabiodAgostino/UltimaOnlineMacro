@@ -43,11 +43,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
-		<PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
-		<PackageReference Include="MouseKeyHook" Version="5.7.1" />
-		<PackageReference Include="Serilog" Version="4.2.0" />
-		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
 		<Content Include="Assets\Images\Pickaxe.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,16 +1,13 @@
 ﻿using AutoClicker.Service;
-using System.Diagnostics;
+using LogManager;
 using System.Runtime.InteropServices;
 using static AutoClicker.Const.KeyboardMouseConst;
 using static AutoClicker.Utils.User32DLL;
 
 namespace AutoClicker.Library
 {
-
     public class MouseInputSimulator
     {
-        AutoClickerLogger Logger = new();
-
         private ProcessService processService;
         private nint hookID = nint.Zero;
 
@@ -80,7 +77,6 @@ namespace AutoClicker.Library
 
         private void InstallMouseHook()
         {
-
             // Installa un hook che ci permetterà di studiare i messaggi del mouse nel sistema
             LowLevelMouseProc proc = HookCallback;
             hookID = SetWindowsHookEx(WH_MOUSE_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
@@ -121,8 +117,6 @@ namespace AutoClicker.Library
             SetForegroundWindow(hWnd);
             await Task.Delay(200); // Attendi che la finestra sia in primo piano
 
-
-           
             try
             {
                 // Installa anche un hook per il mouse per monitoraggio
@@ -221,7 +215,5 @@ namespace AutoClicker.Library
 
             return tcs.Task;
         }
-
-
     }
 }

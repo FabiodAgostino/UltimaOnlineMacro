@@ -1,12 +1,13 @@
-﻿using System.Windows;
+﻿using LogManager;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using UltimaOnlineMacro.Service;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using Pen = System.Windows.Media.Pen;
 using Point = System.Windows.Point;
 using Rectangle = System.Drawing.Rectangle;
-using UltimaOnlineMacro.Service;
 
 namespace UltimaOnlineMacro
 {
@@ -15,13 +16,11 @@ namespace UltimaOnlineMacro
         private Point selectionStart;
         private Point selectionEnd;
         private bool isSelecting = false;
-        Rect SelectionRect { get; set; }
+        private Rect SelectionRect { get; set; }
         private string suffix { get; set; }
-        public Logger LogManager { get; }
 
-        public OverlayWindow(string suffix, Logger logManager)
+        public OverlayWindow(string suffix)
         {
-            LogManager = logManager;
             InitializeComponent();
 
             // Finestra senza bordi e trasparente
@@ -56,7 +55,6 @@ namespace UltimaOnlineMacro
             this.MouseMove += OverlayWindow_MouseMove;
             this.MouseLeftButtonUp += OverlayWindow_MouseLeftButtonUp;
             this.suffix = suffix;
-            this.LogManager = LogManager;
 
             // IMPORTANTE: Non bloccare completamente gli eventi ma permettili per questa window
             // Evita di usare PreviewMouseDown/Up/Move qui in quanto potrebbero interferire
@@ -71,7 +69,7 @@ namespace UltimaOnlineMacro
             this.CaptureMouse(); // IMPORTANTE: cattura il mouse per ricevere tutti gli eventi anche fuori dalla finestra
             this.InvalidateVisual(); // Aggiorna la visualizzazione
 
-            LogManager.Loggin($"Inizio selezione {suffix}: " + selectionStart.ToString());
+            Logger.Loggin($"Inizio selezione {suffix}: " + selectionStart.ToString());
             e.Handled = true;
         }
 
@@ -109,16 +107,19 @@ namespace UltimaOnlineMacro
                 var mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
-                    mainWindow.Dispatcher.Invoke(() => {
+                    mainWindow.Dispatcher.Invoke(() =>
+                    {
                         this.Close();
-                        switch(suffix)
+                        switch (suffix)
                         {
                             case "Piccone":
                                 mainWindow.SetBackpackRegion(selectedRegion);
                                 break;
+
                             case "Paperdoll":
                                 mainWindow.PaperdollHavePickaxe(selectedRegion);
                                 break;
+
                             case "Status":
                                 mainWindow.SetStatus(selectedRegion);
                                 break;
@@ -148,7 +149,6 @@ namespace UltimaOnlineMacro
                     Math.Abs(selectionStart.X - selectionEnd.X),
                     Math.Abs(selectionStart.Y - selectionEnd.Y)
                 );
-
 
                 // Disegna un bordo rosso più visibile
                 drawingContext.DrawRectangle(

@@ -1,5 +1,4 @@
-﻿using AutoClicker.Service.ExtensionMethod;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.Structure;
 
 namespace AutoClicker.Models.System

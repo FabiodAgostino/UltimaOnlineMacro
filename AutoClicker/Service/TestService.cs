@@ -1,5 +1,4 @@
-﻿using AutoClicker.Models.System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace AutoClicker.Service
 {
@@ -22,7 +21,6 @@ namespace AutoClicker.Service
             Console.WriteLine($"Tempo di esecuzione preciso: {stopwatch.Elapsed}");
 
             Debug.WriteLine($"[DEBUG] GetStatusBar ha impiegato {stopwatch.ElapsedMilliseconds} ms");
-
         }
     }
 }

@@ -77,10 +77,10 @@ namespace AutoClicker.Utils
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
         public delegate nint LowLevelMouseProc(int nCode, nint wParam, nint lParam);
 
         public static LowLevelMouseProc captureProc;
-
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -96,16 +96,20 @@ namespace AutoClicker.Utils
             public int Type;
             public INPUTUNION Union;
         }
+
         [StructLayout(LayoutKind.Explicit)]
         public struct INPUTUNION
         {
             [FieldOffset(0)]
             public KEYBDINPUT Keyboard;
+
             [FieldOffset(0)]
             public MOUSEINPUT Mouse;
+
             [FieldOffset(0)]
             public HARDWAREINPUT Hardware;
         }
+
         // Struttura per l'hook del mouse a basso livello
         [StructLayout(LayoutKind.Sequential)]
         public struct MSLLHOOKSTRUCT
@@ -138,7 +142,6 @@ namespace AutoClicker.Utils
             public IntPtr dwExtraInfo;
         }
 
-
         // Struttura per l'hook della tastiera a basso livello
         [StructLayout(LayoutKind.Sequential)]
         public struct KBDLLHOOKSTRUCT
@@ -155,12 +158,13 @@ namespace AutoClicker.Utils
         {
             [FieldOffset(0)]
             public MOUSEINPUT Mouse;
+
             [FieldOffset(0)]
             public KEYBDINPUT Keyboard;
+
             [FieldOffset(0)]
             public HARDWAREINPUT Hardware;
         }
-
 
         [StructLayout(LayoutKind.Sequential)]
         public struct HARDWAREINPUT

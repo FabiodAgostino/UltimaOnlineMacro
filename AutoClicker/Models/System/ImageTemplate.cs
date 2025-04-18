@@ -22,6 +22,5 @@ namespace AutoClicker.Models.System
             Template = Image.BitmapToImage().Convert<Bgr, byte>();
             Name = path;
         }
-
     }
 }

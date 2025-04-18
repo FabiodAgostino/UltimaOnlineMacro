@@ -1,14 +1,12 @@
 ﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.PixelFormats;
-using Image = SixLabors.ImageSharp.Image;
+using SixLabors.ImageSharp.Processing;
 using System.Drawing.Imaging;
-using ColorMatrix = System.Drawing.Imaging.ColorMatrix;
-using Rectangle = System.Drawing.Rectangle;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace AutoClicker.Service
 {
-    class ImagePreprocessorService
+    internal class ImagePreprocessorService
     {
         public static MemoryStream ProcessImage(Bitmap bmp)
         {
@@ -33,8 +31,5 @@ namespace AutoClicker.Service
             processedStream.Seek(0, SeekOrigin.Begin);
             return processedStream;
         }
-
-       
-
     }
 }

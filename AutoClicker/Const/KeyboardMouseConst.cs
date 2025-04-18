@@ -1,5 +1,4 @@
 ﻿using AutoClicker.Models.System;
-using System.Runtime.InteropServices;
 
 namespace AutoClicker.Const
 {
@@ -7,11 +6,13 @@ namespace AutoClicker.Const
     {
         // Codici messaggi per mouse
         public const uint WM_LBUTTONDOWN = 0x0201;
+
         public const uint WM_LBUTTONUP = 0x0202;
         public const uint WM_MOUSEMOVE = 0x0200;
 
         // Costanti per mouse input
         public const int WH_MOUSE_LL = 14;
+
         public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
         public const uint MOUSEEVENTF_LEFTUP = 0x0004;
         public const uint MOUSEEVENTF_MOVE = 0x0001;
@@ -19,6 +20,7 @@ namespace AutoClicker.Const
 
         // Costanti per input di tastiera
         public const int INPUT_KEYBOARD = 1;
+
         public const int INPUT_MOUSE = 0;
         public const uint KEYEVENTF_KEYDOWN = 0x0000;
         public const uint KEYEVENTF_KEYUP = 0x0002;
@@ -38,7 +40,6 @@ namespace AutoClicker.Const
         public const uint MOD_SHIFT = 0x0004;
         public const int HOTKEY_ID = 1;
 
-
         // Array tasti freccia
         public static readonly byte[] ArrowKeys = { VK_UP, VK_RIGHT, VK_DOWN, VK_LEFT };
 
@@ -54,11 +55,13 @@ namespace AutoClicker.Const
 
         // Costanti per messaggi di tastiera
         public const uint WM_KEYDOWN = 0x0100;
+
         public const uint WM_KEYUP = 0x0101;
 
         // Costanti per virtual key codes
         // Tasti numerici (0-9)
         public const byte VK_0 = 0x30;
+
         public const byte VK_1 = 0x31;
         public const byte VK_2 = 0x32;
         public const byte VK_3 = 0x33;
@@ -71,6 +74,7 @@ namespace AutoClicker.Const
 
         // Tasti alfabetici (A-Z)
         public const byte VK_A = 0x41;
+
         public const byte VK_B = 0x42;
         public const byte VK_C = 0x43;
         public const byte VK_D = 0x44;
@@ -99,6 +103,7 @@ namespace AutoClicker.Const
 
         // Tasti funzione (F1-F12)
         public const byte VK_F1 = 0x70;
+
         public const byte VK_F2 = 0x71;
         public const byte VK_F3 = 0x72;
         public const byte VK_F4 = 0x73;
@@ -113,12 +118,14 @@ namespace AutoClicker.Const
 
         // Tasti direzionali
         public const byte VK_UP = 0x26;
+
         public const byte VK_DOWN = 0x28;
         public const byte VK_LEFT = 0x25;
         public const byte VK_RIGHT = 0x27;
 
         // Tasti di navigazione
         public const byte VK_ESCAPE = 0x1B;
+
         public const byte VK_TAB = 0x09;
         public const byte VK_RETURN = 0x0D; // Enter
         public const byte VK_SPACE = 0x20;
@@ -132,6 +139,7 @@ namespace AutoClicker.Const
 
         // Tasti di controllo
         public const byte VK_CONTROL = 0x11;
+
         public const byte VK_MENU = 0x12; // ALT
         public const byte VK_SHIFT = 0x10;
         public const byte VK_LWIN = 0x5B; // Tasto Windows sinistro
@@ -145,6 +153,7 @@ namespace AutoClicker.Const
 
         // Tasti OEM / locali
         public const byte VK_OEM_1 = 0xBA; // È nella tastiera italiana
+
         public const byte VK_OEM_PLUS = 0xBB; // + (più)
         public const byte VK_OEM_COMMA = 0xBC; // , (virgola)
         public const byte VK_OEM_MINUS = 0xBD; // - (meno)
@@ -160,6 +169,7 @@ namespace AutoClicker.Const
 
         // Tasti del tastierino numerico
         public const byte VK_NUMPAD0 = 0x60;
+
         public const byte VK_NUMPAD1 = 0x61;
         public const byte VK_NUMPAD2 = 0x62;
         public const byte VK_NUMPAD3 = 0x63;
@@ -178,6 +188,7 @@ namespace AutoClicker.Const
 
         // Costanti per codici di scansione
         public const ushort SC_F1 = 0x3B;
+
         public const ushort SC_F2 = 0x3C;
         public const ushort SC_F3 = 0x3D;
         public const ushort SC_F4 = 0x3E;
@@ -210,6 +221,7 @@ namespace AutoClicker.Const
 
         // Costanti per generazione di lParam
         public const uint KEY_PRESSED = 0x00000001;
+
         public const uint KEY_RELEASED_TRANSITION = 0xC0000001;
         public const uint EXTENDED_KEY_RELEASED_TRANSITION = 0xC1000001;
         public static readonly Keys[] ModifierKeys = { Keys.ControlKey, Keys.ShiftKey, Keys.Menu };
@@ -230,13 +242,13 @@ namespace AutoClicker.Const
             { VK_F10, SC_F10 },
             { VK_F11, SC_F11 },
             { VK_F12, SC_F12 },
-            
+
             // Tasti direzionali
             { VK_UP, SC_UP },
             { VK_DOWN, SC_DOWN },
             { VK_LEFT, SC_LEFT },
             { VK_RIGHT, SC_RIGHT },
-            
+
             // Tasti di controllo e navigazione
             { VK_ESCAPE, SC_ESCAPE },
             { VK_TAB, SC_TAB },
@@ -246,7 +258,7 @@ namespace AutoClicker.Const
             { VK_RETURN, SC_RETURN },
             { VK_SPACE, SC_SPACE },
             { VK_BACK, SC_BACK },
-            
+
             // Tasti OEM
             { VK_OEM_1, SC_OEM_1 }, // È italiana
             { VK_OEM_3, SC_OEM_3 }  // ` (backtick)

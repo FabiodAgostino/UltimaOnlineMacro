@@ -6,6 +6,7 @@ namespace AutoClicker.Models.TM.MachineLearning
     {
         [ColumnName("PredictedLabel")]
         public string PredictedLabelValue { get; set; }
+
         public float[] Score { get; set; }
     }
 }

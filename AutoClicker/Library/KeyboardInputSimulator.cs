@@ -1,21 +1,15 @@
-﻿using AutoClicker.Const;
-using AutoClicker.Service;
-using System.Diagnostics;
+﻿using AutoClicker.Service;
+using LogManager;
 using System.Runtime.InteropServices;
 using static AutoClicker.Const.KeyboardMouseConst;
 using static AutoClicker.Utils.User32DLL;
-using System.Windows.Forms;
-using AutoClicker.Service.ExtensionMethod;
 
 namespace AutoClicker.Library
 {
     public class KeyboardInputSimulator
     {
-        AutoClickerLogger Logger = new();
-
         private ProcessService processService;
         private nint hookID = nint.Zero;
-
 
         public KeyboardInputSimulator()
         {
@@ -58,9 +52,9 @@ namespace AutoClicker.Library
                 }
             }
         }
+
         private void InstallKeyboardHook()
         {
-
             LowLevelKeyboardProc proc = HookCallback;
             hookID = SetWindowsHookEx(WH_KEYBOARD_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
 
@@ -113,7 +107,6 @@ namespace AutoClicker.Library
                     if (i < times - 1)
                         await Task.Delay(random.Next(100, 300));
                 }
-
             }
             catch (Exception ex)
             {
@@ -181,6 +174,5 @@ namespace AutoClicker.Library
                     await Task.Delay(random.Next(100, 300));
             }
         }
-
     }
 }

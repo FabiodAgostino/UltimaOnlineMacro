@@ -1,5 +1,4 @@
 ﻿using AutoClicker.Models.TM;
-using System.IO;
 using System.Media;
 using System.Text.RegularExpressions;
 
@@ -11,6 +10,7 @@ namespace AutoClicker.Service
         private Pg _pg;
         private string _beepSound = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Sounds", "Beep.wav");
         private SoundPlayer _playerBeep;
+
         public ReadLogTMService(Pg pg)
         {
             _pg = pg;
@@ -117,7 +117,7 @@ namespace AutoClicker.Service
 
         public void StopSound()
         {
-            if(_playerBeep != null )
+            if (_playerBeep != null)
                 _playerBeep.Stop();
         }
     }

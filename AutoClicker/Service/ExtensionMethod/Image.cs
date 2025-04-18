@@ -84,7 +84,6 @@ namespace AutoClicker.Service.ExtensionMethod
             // Crea la bitmap della dimensione desiderata
             Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
 
-
             // Copia la porzione di schermo nella bitmap
             using (Graphics g = Graphics.FromImage(bitmap))
             {
@@ -123,9 +122,5 @@ namespace AutoClicker.Service.ExtensionMethod
 
             return bmp;
         }
-
-
-
-
     }
 }

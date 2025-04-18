@@ -1,7 +1,6 @@
-﻿
-using AutoClicker.Models.System;
+﻿using AutoClicker.Models.System;
 using AutoClicker.Service;
-using DetectorModel.Services;
+using LogManager;
 
 namespace AutoClicker.Models.TM
 {
@@ -13,7 +12,6 @@ namespace AutoClicker.Models.TM
         public Macro Macro;
         private readonly SendInputService _sendInputService = new();
         public bool RunWork { get; set; } = true;
-        private AutoClickerLogger _logger = new AutoClickerLogger();
         private ReadLogTMService _readLogTMService;
         private Regions _regions;
         private TesserActService _tesserActService;
@@ -22,12 +20,10 @@ namespace AutoClicker.Models.TM
         public List<Mulo> Muli { get; set; } = new();
         private DetectorService _detectorService { get; set; } = new();
 
-
         public Pg()
         {
             _readLogTMService = new(this);
             _tesserActService = new TesserActService();
-
             // Registra l'evento di aggiornamento
             _tesserActService.StatusUpdated += OnStatusUpdated;
         }
@@ -48,7 +44,7 @@ namespace AutoClicker.Models.TM
 
                 //controllo per vedere se adesso ha il piccone in mano
                 if (!PaperdollHavePickaxeInHand(_regions))
-                    _logger.Loggin("Qualcosa è andato storto, il pg non ha il piccone in mano dopo WearPickaxe", true);
+                    Logger.Loggin("Qualcosa è andato storto, il pg non ha il piccone in mano dopo WearPickaxe", true);
             }
         }
 
@@ -60,24 +56,23 @@ namespace AutoClicker.Models.TM
                 var pickaxePaperdoll = new Pickaxe(regions.PaperdollRegion, SavedImageTemplate.ImageTemplatePaperdollWithPickaxe);
                 if (pickaxePaperdoll.X == 0 && pickaxePaperdoll.Y == 0) //Se il paperdoll non ha il piccone
                 {
-                    _logger.Loggin($"Il paperdoll non utilizza il piccone.");
+                    Logger.Loggin($"Il paperdoll non utilizza il piccone.");
                     if (!regions.BackpackRegion.IsEmpty)
-                        _logger.Loggin($"Seleziona una regione per lo zaino.");
+                        Logger.Loggin($"Seleziona una regione per lo zaino.");
 
                     havePickaxe = false;
                 }
                 else
                     havePickaxe = true;
-
             }
             catch (Exception e)
             {
-                _logger.Loggin($"Errore: {e.Message}", true);
+                Logger.Loggin($"Errore: {e.Message}", true);
             }
             return havePickaxe;
         }
 
-        public async Task Work(Regions regions, bool enableRunWork=true)
+        public async Task Work(Regions regions, bool enableRunWork = true)
         {
             _regions = regions;
             BaseWeight = _tesserActService.GetStatusBar(_regions.StatusRegion).Stone.value;
@@ -99,6 +94,7 @@ namespace AutoClicker.Models.TM
         }
 
         public async Task SetWater() => _regions.WaterXY = (await _sendInputService.BeginCaptureAsync());
+
         public async Task SetFood() => _regions.FoodXY = (await _sendInputService.BeginCaptureAsync());
 
         public string IsReady()
@@ -110,7 +106,6 @@ namespace AutoClicker.Models.TM
         }
 
         public void StopBeep() => _readLogTMService.StopSound();
-
 
         public async Task Actions(Status status)
         {
@@ -149,7 +144,7 @@ namespace AutoClicker.Models.TM
 
         private void OnStatusUpdated(object sender, StatusBar status)
         {
-            if(status.Stone != (0,0) && status.Stamina != (0,0))
+            if (status.Stone != (0, 0) && status.Stamina != (0, 0))
             {
                 if (status.Stone.value + 50 >= status.Stone.max)
                     StatusForced.Stone = true;
@@ -165,7 +160,7 @@ namespace AutoClicker.Models.TM
 
         public void ChangeMuloOrStop()
         {
-            if(Muli.Count > 1)
+            if (Muli.Count > 1)
             {
                 var muloNonSelezionato = Muli.FirstOrDefault(x => !x.Selected);
                 var muloSelezionato = Muli.FirstOrDefault(x => x.Selected);
