@@ -80,7 +80,7 @@ namespace AutoClicker.Service
             }
             int weightMin = int.Parse(weightMatch.Groups[1].Value);
             int weightMax = int.Parse(weightMatch.Groups[2].Value);
-            if (weightMin == 0 || weightMin + 150 > weightMax)
+            if (weightMin == 0)
             {
                 // Se weightMin è zero oppure weightMin+150 > weightMax, scarta il risultato
                 return false;

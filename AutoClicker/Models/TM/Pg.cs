@@ -19,6 +19,7 @@ namespace AutoClicker.Models.TM
         public Status StatusForced { get; set; } = new();
         public List<Mulo> Muli { get; set; } = new();
         private DetectorService _detectorService { get; set; } = new();
+        public Action<Dictionary<string, int>> RefreshRisorse { get => _readLogTMService.RefreshRisorse; set => _readLogTMService.RefreshRisorse = value; }
 
         public Pg()
         {
@@ -112,20 +113,31 @@ namespace AutoClicker.Models.TM
             if (status.PickaxeBroke)
                 await WearPickaxe();
 
-            if (true)
+            if(status.Stone || StatusForced.Stone)
             {
-                StatusForced.Stone = false;
-                var point = await _detectorService.GetPointToClickPackHorse();
-                while (true)
-                {
-                    var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
-                    if (iron.X == 0 && iron.Y == 0)
-                        break;
-                    await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
-                }
-                var mulo = Muli.FirstOrDefault(x => x.Selected);
-                mulo.ActualStone = mulo.ActualStone + (_tesserActService._lastStatusBar.Stone.value - BaseWeight);
+                _readLogTMService._playerBeep.PlayLooping();
+
             }
+
+            //if (status.Stone || StatusForced.Stone)
+            //{
+            //    StatusForced.Stone = false;
+            //    var result = await _detectorService.GetPointToClickPackHorse();
+            //    if(result!=null)
+            //    {
+            //        var point = result.Value;
+            //        for (int i = 0; i < 10; i++)
+            //        {
+            //            var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
+            //            if (iron.X == 0 && iron.Y == 0)
+            //                break;
+            //            await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
+            //        }
+            //        var mulo = Muli.FirstOrDefault(x => x.Selected);
+            //        mulo.ActualStone = mulo.ActualStone + (_tesserActService._lastStatusBar.Stone.value - BaseWeight);
+            //    }
+
+            //}
 
             if (status.Move)
                 await _sendInputService.MoveRandomly(8);

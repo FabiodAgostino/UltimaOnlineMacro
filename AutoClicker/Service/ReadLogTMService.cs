@@ -9,8 +9,13 @@ namespace AutoClicker.Service
         private DateTime lastMacrocheckDateTime = new DateTime();
         private Pg _pg;
         private string _beepSound = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Sounds", "Beep.wav");
-        private SoundPlayer _playerBeep;
-
+        public SoundPlayer _playerBeep;
+        public Dictionary<string, int> RisorseRaccolte { get; }
+                = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        private static readonly Regex _raccoltaRegex = new Regex(
+        @"Hai raccolto\s*:\s*(\d+)\s+(.+?grezzo)",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        public Action<Dictionary<string, int>> RefreshRisorse { get; set; }
         public ReadLogTMService(Pg pg)
         {
             _pg = pg;
@@ -87,7 +92,7 @@ namespace AutoClicker.Service
 
                                 if (timestamp >= lastMinute)
                                 {
-                                    if (line.Contains("stanco"))
+                                    if (line.Contains("troppo stanco"))
                                         status.Stamina = true;
                                     if (line.Contains("da scavare qui"))
                                         status.Move = true;
@@ -96,7 +101,35 @@ namespace AutoClicker.Service
                                         status.MoveIrons = true;
                                         status.Stone = true;
                                     }
+                                    if(line.Contains("attrezzo"))
+                                        status.PickaxeBroke = true;
                                 }
+
+                                var raccoltaMatch = _raccoltaRegex.Match(line);
+                                if (raccoltaMatch.Success)
+                                {
+                                    int qty = int.Parse(raccoltaMatch.Groups[1].Value);
+                                    string risorsa = raccoltaMatch.Groups[2].Value.Trim();
+
+                                    // Verifica se la risorsa è un minerale grezzo
+                                    if (risorsa.EndsWith("grezzo", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // Estrae il tipo di metallo rimuovendo "grezzo"
+                                        string metallo = risorsa.Substring(0, risorsa.Length - "grezzo".Length).Trim();
+
+                                        // Costruisce il nome del lingotto
+                                        risorsa = $"Lingotti di {metallo}";
+                                    }
+
+                                    // Aggiunge o aggiorna il dizionario
+                                    if (RisorseRaccolte.ContainsKey(risorsa))
+                                        RisorseRaccolte[risorsa] += qty * 2;
+                                    else
+                                        RisorseRaccolte[risorsa] = qty * 2;
+
+                                    RefreshRisorse.Invoke(RisorseRaccolte);
+                                }
+
                             }
                         }
 

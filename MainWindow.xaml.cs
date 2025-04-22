@@ -2,7 +2,10 @@
 using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using LogManager;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using UltimaOnlineMacro.Service;
@@ -10,20 +13,33 @@ using Rectangle = System.Drawing.Rectangle;
 
 namespace UltimaOnlineMacro
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private Regions Regions = new Regions();
+        public Regions Regions = new Regions();
         public Pg Pg;
         private MainWindowService _mainWindowService;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void RaiseChanged([CallerMemberName] string n = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+
+        // Espongo Risorse come ObservableCollection
+        private ObservableCollection<KeyValuePair<string, int>> _risorse;
+        public ObservableCollection<KeyValuePair<string, int>> Risorse
+        {
+            get => _risorse;
+            set
+            {
+                _risorse = value;
+                RaiseChanged();
+            }
+        }
+
 
         public MainWindow()
         {
             InitializeComponent();
-            Logger._logTextBox = txtLog;
-            Pg = new Pg();
-            SavedImageTemplate.Initialize();
-            cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
-            cmbKey.SelectedIndex = 0;
+            DataContext = this;
             _mainWindowService = new MainWindowService(this);
         }
 
@@ -57,9 +73,9 @@ namespace UltimaOnlineMacro
 
         public void SetStatus(Rectangle region)
         {
-            var t = new TestService();
-            t.MeasureExecutionTime(region);
             Regions.StatusRegion = region;
+            btnSelectStatus.Background = System.Windows.Media.Brushes.Gray;
+
         }
 
         public void PaperdollHavePickaxe(Rectangle region)
@@ -177,11 +193,12 @@ namespace UltimaOnlineMacro
             _mainWindowService.TimerUltima.Start();
             _mainWindowService.CheckMacroButtons();
             _mainWindowService.SetMuli();
-
+            _mainWindowService.SaveSettings();
             btnRun.Background = System.Windows.Media.Brushes.Gray;
             btnStop.Background = System.Windows.Media.Brushes.Red;
             Logger.Loggin("Run!");
             await Pg.Work(Regions);
+
         }
 
         private void Stop_Click(object sender, RoutedEventArgs e)
