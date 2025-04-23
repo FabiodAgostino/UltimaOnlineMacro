@@ -19,6 +19,8 @@
 
             // File selezionato
             public string JournalPath { get; set; }
+            public string MacroPath { get; set; }
+
 
             // Animali selezionati
             public bool MuloDaSomaSelected { get; set; }
@@ -27,6 +29,9 @@
             // Posizioni cibo e acqua
             public PointSettings FoodPosition { get; set; }
             public PointSettings WaterPosition { get; set; }
+            public string PgName { get; set; }
+            public bool HaveBaseFuria { get; set; }
+            public bool FuriaChecked { get; set; }
         }
 
         // Classe per salvare Rectangle

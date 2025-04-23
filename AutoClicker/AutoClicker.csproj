@@ -8,7 +8,8 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 		<UseWindowsForms>true</UseWindowsForms>
-		<RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
@@ -20,22 +21,19 @@
 		<Compile Include="Models\System\ImageTemplateBgra.cs" />
 		<Compile Include="Models\System\SavedImageTemplate.cs" />
 		<Compile Include="Models\TM\Iron.cs" />
-		<Compile Include="Models\TM\MachineLearning\CoordinatePrediction.cs" />
 		<Compile Include="Models\TM\Macro.cs" />
 		<Compile Include="Models\TM\Mulo.cs" />
-		<Compile Include="Models\TM\MachineLearning\MuloImageData.cs" />
-		<Compile Include="Models\TM\MachineLearning\MuloPrediction.cs" />
 		<Compile Include="Models\TM\Pg.cs" />
 		<Compile Include="Models\TM\Pickaxe.cs" />
 		<Compile Include="Models\System\Regions.cs" />
 		<Compile Include="Models\System\TMWindow.cs" />
 		<Compile Include="Models\TM\Status.cs" />
 		<Compile Include="Service\AppSettingsService.cs" />
-		<Compile Include="Service\DetectorService.cs" />
 		<Compile Include="Service\ExtensionMethod\Image.cs" />
 		<Compile Include="Library\MouseInputSimulator.cs" />
 		<Compile Include="Service\ExtensionMethod\Key.cs" />
-		<Compile Include="Service\ImagePreprocessorService.cs" />
+		<Compile Include="Service\ImagePreprocessorService2.cs" />
+		<Compile Include="Service\MacroManipulator.cs" />
 		<Compile Include="Service\ProcessService.cs" />
 		<Compile Include="Service\ReadLogTMService.cs" />
 		<Compile Include="Service\ScreenCapture.cs" />
@@ -43,6 +41,7 @@
 		<Compile Include="Library\KeyboardInputSimulator.cs" />
 		<Compile Include="Service\TesserActService.cs" />
 		<Compile Include="Service\TestService.cs" />
+		<Compile Include="Utils\PathHelper.cs" />
 		<Compile Include="Utils\TimerUltima.cs" />
 		<Compile Include="Utils\User32DLL.cs" />
 	</ItemGroup>
@@ -51,15 +50,7 @@
 		<PackageReference Include="Emgu.CV" Version="4.10.0.5680" />
 		<PackageReference Include="Emgu.CV.Bitmap" Version="4.10.0.5680" />
 		<PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
-		<PackageReference Include="Microsoft.ML" Version="4.0.2" />
-		<PackageReference Include="Microsoft.ML.DataView" Version="4.0.2" />
-		<PackageReference Include="Microsoft.ML.ImageAnalytics" Version="4.0.2" />
-		<PackageReference Include="Microsoft.ML.LightGbm" Version="4.0.2" />
 		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.21.0" />
-		<PackageReference Include="Microsoft.ML.OnnxTransformer" Version="4.0.2" />
-		<PackageReference Include="Microsoft.ML.Vision" Version="4.0.2" />
-		<PackageReference Include="SciSharp.TensorFlow.Redist" Version="1.15.0" />
-		<PackageReference Include="Microsoft.ML.FastTree" Version="4.0.2" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
 		<PackageReference Include="System.Windows.Extensions" Version="9.0.3" />

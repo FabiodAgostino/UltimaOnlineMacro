@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using LogManager;
 using System.Drawing.Imaging;
 
 namespace AutoClicker.Service.ExtensionMethod
@@ -115,10 +116,17 @@ namespace AutoClicker.Service.ExtensionMethod
         public static Bitmap CaptureRegionBitmap(Rectangle region)
         {
             Bitmap bmp = new Bitmap(region.Width, region.Height, PixelFormat.Format32bppArgb);
-            using (Graphics g = Graphics.FromImage(bmp))
+            try
             {
-                g.CopyFromScreen(region.Location, new Point(0, 0), region.Size, CopyPixelOperation.SourceCopy);
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(region.Location, new Point(0, 0), region.Size, CopyPixelOperation.SourceCopy);
+                }
+            }catch
+            {
+                Logger.Loggin("Qualcosa è andato storto in CaptureRegionBitmap");
             }
+           
 
             return bmp;
         }

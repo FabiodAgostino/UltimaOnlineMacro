@@ -32,7 +32,7 @@ namespace AutoClicker.Service
         public void Start()
         {
             // Avvia il timer con intervallo di 5 secondi
-            captureTimer.Change(0, 5000);
+            captureTimer.Change(0, 2000);
             Console.WriteLine("Cattura schermo avviata. Le immagini verranno salvate in: " + outputDirectory);
         }
 

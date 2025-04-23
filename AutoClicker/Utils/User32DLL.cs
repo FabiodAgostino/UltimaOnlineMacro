@@ -12,6 +12,10 @@ namespace AutoClicker.Utils
 
         [DllImport("user32.dll")]
         public static extern bool SetCursorPos(int X, int Y);
+        public const int SW_RESTORE = 9;
+
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
         public static extern void mouse_event(uint dwFlags, int dx, int dy, uint dwData, IntPtr dwExtraInfo);
@@ -31,6 +35,8 @@ namespace AutoClicker.Utils
 
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(ref POINT lpPoint);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
 
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);

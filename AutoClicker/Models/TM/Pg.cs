@@ -6,11 +6,15 @@ namespace AutoClicker.Models.TM
 {
     public class Pg
     {
+        public string Name { get; set; }
         public Pickaxe? PickaxeInBackpack { get; set; }
         public Pickaxe? PickaxeInHand { get; set; }
         public string PathJuornalLog { get; set; }
+        public string PathMacro { get; set; }
+
         public Macro Macro;
-        private readonly SendInputService _sendInputService = new();
+        private SendInputService _sendInputService {  get; set; }
+        private ProcessService _processService { get; set; }
         public bool RunWork { get; set; } = true;
         private ReadLogTMService _readLogTMService;
         private Regions _regions;
@@ -18,11 +22,16 @@ namespace AutoClicker.Models.TM
         private int BaseWeight { get; set; }
         public Status StatusForced { get; set; } = new();
         public List<Mulo> Muli { get; set; } = new();
-        private DetectorService _detectorService { get; set; } = new();
         public Action<Dictionary<string, int>> RefreshRisorse { get => _readLogTMService.RefreshRisorse; set => _readLogTMService.RefreshRisorse = value; }
+        public bool HaveBaseFuria { get; set; }
+        public bool FuriaChecked { get; set; }
 
-        public Pg()
+        private Action<bool> _run { get; set; }
+        public Pg(ProcessService processService, Action<bool> run)
         {
+            _run = run;
+            _processService = processService;
+            _sendInputService = new(processService);
             _readLogTMService = new(this);
             _tesserActService = new TesserActService();
             // Registra l'evento di aggiornamento
@@ -107,45 +116,33 @@ namespace AutoClicker.Models.TM
         }
 
         public void StopBeep() => _readLogTMService.StopSound();
-
         public async Task Actions(Status status)
         {
+            if(HaveBaseFuria && FuriaChecked)
+                await _sendInputService.RunMacro(Macro.MacroFuria);
+
+            if (status.Macrocheck)
+            {
+                _readLogTMService._playerBeep.Play();
+                Logger.Loggin("Macrocheck ricevuto... procedo al riavvio (non toccare nulla fino al termine del beep)");
+                _run.Invoke(false);
+                await _processService.HandleRestartClient(this.PathMacro, 120000);
+                await _sendInputService.Login();
+                await Task.Delay(10000);
+                _run.Invoke(true);
+            }
             if (status.PickaxeBroke)
                 await WearPickaxe();
-
-            if(status.Stone || StatusForced.Stone)
-            {
-                _readLogTMService._playerBeep.PlayLooping();
-
-            }
-
-            //if (status.Stone || StatusForced.Stone)
-            //{
-            //    StatusForced.Stone = false;
-            //    var result = await _detectorService.GetPointToClickPackHorse();
-            //    if(result!=null)
-            //    {
-            //        var point = result.Value;
-            //        for (int i = 0; i < 10; i++)
-            //        {
-            //            var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
-            //            if (iron.X == 0 && iron.Y == 0)
-            //                break;
-            //            await _sendInputService.DragAndDropIron(iron.X, iron.Y, point.X, point.Y);
-            //        }
-            //        var mulo = Muli.FirstOrDefault(x => x.Selected);
-            //        mulo.ActualStone = mulo.ActualStone + (_tesserActService._lastStatusBar.Stone.value - BaseWeight);
-            //    }
-
-            //}
 
             if (status.Move)
                 await _sendInputService.MoveRandomly(8);
 
-            if (status.Stamina || StatusForced.Stamina)
+
+            if(status.Stamina || StatusForced.Stamina)
             {
+                await Task.Delay(60000);
                 StatusForced.Stamina = false;
-                await Task.Delay(50000);
+
             }
             else
                 await Task.Delay((int)Macro.Delay);
@@ -159,10 +156,10 @@ namespace AutoClicker.Models.TM
             if (status.Stone != (0, 0) && status.Stamina != (0, 0))
             {
                 if (status.Stone.value + 50 >= status.Stone.max)
-                    StatusForced.Stone = true;
-                else
-                    StatusForced.Stone = false;
-
+                {
+                    _readLogTMService._playerBeep.Play();
+                    Logger.Loggin("Troppo peso");
+                }
                 if (status.Stamina.value < 10)
                     StatusForced.Stamina = true;
                 else

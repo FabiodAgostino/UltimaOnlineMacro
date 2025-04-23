@@ -24,13 +24,21 @@ namespace UltimaOnlineMacro.Service
         {
             _mainWindow = mainWindow;
             _mainWindow.Risorse = new ObservableCollection<KeyValuePair<string, int>>();
-            _mainWindow.Pg = new Pg();
+            _mainWindow.Pg = new Pg(_mainWindow.ProcessService, async (bool run) => await StartStop(run));
             _pg = mainWindow.Pg;
             Initialize();
         }
 
-        public void Initialize()
+        public async Task StartStop(bool run)
         {
+            if (run)
+                await _mainWindow.Run();
+            else
+                await _mainWindow.Stop();
+        }
+        public async void Initialize()
+        {
+            await _mainWindow.ProcessService.FocusWindowReliably();
             Logger._logTextBox = _mainWindow.txtLog;
             SavedImageTemplate.Initialize();
             _mainWindow.cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
@@ -40,16 +48,21 @@ namespace UltimaOnlineMacro.Service
             SetTimerUltima();
             ReadFilesConfiguration();
             _pg.RefreshRisorse += RefreshRisorse;
+            _mainWindow.Activate();
         }
 
         public void RefreshRisorse(Dictionary<string, int> risorse)
         {
             // Svuota e ricostruisci la collection
             _mainWindow.Risorse.Clear();
+            int somma = 0;
             foreach (var kv in risorse)
             {
                 _mainWindow.Risorse.Add(kv);
+                somma += kv.Value;
             }
+            var mulo = _mainWindow.Pg.Muli.FirstOrDefault(x => x.Selected);
+            mulo.ActualOre = somma;
             _mainWindow.RaiseChanged();
         }
         private void LoadSettings()
@@ -75,17 +88,25 @@ namespace UltimaOnlineMacro.Service
                 // Imposta i valori della macro
                 if (!string.IsNullOrEmpty(settings.SelectedKey))
                     _mainWindow.cmbKey.SelectedItem = settings.SelectedKey;
-
+                if(settings.HaveBaseFuria)
+                {
+                    _mainWindow.Pg.HaveBaseFuria = settings.HaveBaseFuria;
+                    _mainWindow.chkFuria.IsEnabled = true;
+                    _mainWindow.chkFuria.IsChecked = settings.FuriaChecked;
+                }
                 _mainWindow.chkCtrl.IsChecked = settings.CtrlModifier;
                 _mainWindow.chkAlt.IsChecked = settings.AltModifier;
                 _mainWindow.chkShift.IsChecked = settings.ShiftModifier;
                 _mainWindow.sldDelay.Value = settings.DelayValue == 0 ? 5000 : settings.DelayValue;
 
+                _mainWindow.Pg.Name = settings.PgName;
                 // Imposta il percorso del journal
                 if (!string.IsNullOrEmpty(settings.JournalPath))
                 {
                     _mainWindow.Pg.PathJuornalLog = settings.JournalPath;
-                    _mainWindow.SelectedFilePathText.Text = $"File selezionato: {settings.JournalPath}";
+                    _mainWindow.Pg.PathMacro = settings.MacroPath;
+
+                    _mainWindow.SelectedFilePathText.Text = $"File selezionato: {settings.MacroPath}";
                 }
 
                 // Imposta gli animali selezionati
@@ -99,7 +120,7 @@ namespace UltimaOnlineMacro.Service
                 if (settings.WaterPosition != null)
                     _mainWindow.Regions.WaterXY = settings.WaterPosition.ToPoint();
 
-                Logger.Loggin("Impostazioni caricate con successo!");
+                Logger.Loggin("Impostazioni di default caricate con successo!");
             }
             catch (Exception ex)
             {
@@ -111,6 +132,8 @@ namespace UltimaOnlineMacro.Service
         {
             var settings = new AppSettings
             {
+                PgName = _mainWindow.Pg.Name,
+                HaveBaseFuria = _mainWindow.Pg.HaveBaseFuria,
                 BackpackRegion = _mainWindow.Regions.BackpackRegion != Rectangle.Empty ? new RectangleSettings(_mainWindow.Regions.BackpackRegion) : null,
                 PaperdollRegion = _mainWindow.Regions.PaperdollRegion != Rectangle.Empty ? new RectangleSettings(_mainWindow.Regions.PaperdollRegion) : null,
                 StatusRegion = _mainWindow.Regions.StatusRegion != Rectangle.Empty ? new RectangleSettings(_mainWindow.Regions.StatusRegion) : null,
@@ -123,6 +146,8 @@ namespace UltimaOnlineMacro.Service
                 DelayValue = _mainWindow.sldDelay.Value,
 
                 JournalPath = _mainWindow.Pg.PathJuornalLog,
+                MacroPath = _mainWindow.Pg.PathMacro,
+                FuriaChecked = _mainWindow.chkFuria.IsChecked ?? false,
 
                 MuloDaSomaSelected = _mainWindow.chkMuloDaSoma.IsChecked ?? false,
                 LamaPortatoreSelected = _mainWindow.chkLamaPortatore.IsChecked ?? false,
@@ -199,7 +224,18 @@ namespace UltimaOnlineMacro.Service
                 if (modifiers != Keys.None)
                     macroKeys.Add(modifiers);
                 if (_pg.Macro == null || _pg.Macro.Delay != delay || _pg.Macro.MacroKeys.All(x => !macroKeys.Contains(x)))
+                {
                     _pg.Macro = new Macro(macroKeys, delay, (repetitions) => { _mainWindow.txtRuns.Text = repetitions.ToString(); });
+                    if(_mainWindow.chkFuria.IsChecked == true)
+                    {
+                        _pg.Macro.MacroFuria = new();
+                        _pg.Macro.MacroFuria.Add(Keys.ShiftKey);
+                        _pg.Macro.MacroFuria.Add(Keys.O);
+                    }
+                    _pg.Macro.MacroSaccaRaccolta = new();
+                    _pg.Macro.MacroSaccaRaccolta.Add(Keys.ShiftKey);
+                    _pg.Macro.MacroSaccaRaccolta.Add(Keys.I);
+                }
             }
             else
             {

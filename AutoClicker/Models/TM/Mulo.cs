@@ -4,21 +4,21 @@
     {
         public MuloType Type { get; set; }
 
-        public int ActualStone
+        public int ActualOre
         {
-            get => _actualStone; set
+            get => _actualOre; set
             {
-                _actualStone = value;
-                if (_actualStone + 100 > MaxStone)
+                _actualOre = value;
+                if (_actualOre + 50 > MaxOre)
                 {
                     MuloFull.Invoke();
                 }
             }
         }
 
-        private int _actualStone { get; set; }
+        private int _actualOre { get; set; }
 
-        public const int MaxStone = 2000;
+        public const int MaxOre = 800;
         public bool Selected { get; set; } = false;
         public Action MuloFull { get; set; }
 

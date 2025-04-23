@@ -1,10 +1,13 @@
 ﻿using AutoClicker.Models.System;
 using AutoClicker.Models.TM;
 using AutoClicker.Service;
+using AutoClicker.Utils;
 using LogManager;
+using Microsoft.ML;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -18,7 +21,7 @@ namespace UltimaOnlineMacro
         public Regions Regions = new Regions();
         public Pg Pg;
         private MainWindowService _mainWindowService;
-
+        public ProcessService ProcessService = new();
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaiseChanged([CallerMemberName] string n = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
@@ -38,9 +41,10 @@ namespace UltimaOnlineMacro
 
         public MainWindow()
         {
-            InitializeComponent();
             DataContext = this;
             _mainWindowService = new MainWindowService(this);
+            InitializeComponent();
+
         }
 
         #region Callback
@@ -50,7 +54,7 @@ namespace UltimaOnlineMacro
             if (Regions.BackpackRegion != region)
             {
                 Regions.BackpackRegion = region;
-                Logger.Loggin($"Regione zaino selezionata: {Regions.BackpackRegion}");
+                Logger.Loggin($"Regione zaino selezionata");
                 try
                 {
                     var pickaxe = new Pickaxe(region, SavedImageTemplate.ImageTemplatePickaxe);
@@ -95,7 +99,7 @@ namespace UltimaOnlineMacro
             {
                 Regions.PaperdollRegion = region;
                 Regions.PaperdollPickaxeRegion = centeredRegion;
-                Logger.Loggin($"Regione paperdoll selezionata (centrata): {Regions.PaperdollRegion}");
+                Logger.Loggin($"Regione paperdoll selezionata");
                 btnSelectPaperdoll.Background = System.Windows.Media.Brushes.Gray;
             }
         }
@@ -113,7 +117,7 @@ namespace UltimaOnlineMacro
         {
             this.WindowState = WindowState.Minimized;
             await Task.Delay(1000);
-            var service = new SendInputService();
+            var service = new SendInputService(new ProcessService());
             await service.TestKeyboard();
             this.WindowState = WindowState.Normal;
             this.Activate();
@@ -123,7 +127,7 @@ namespace UltimaOnlineMacro
         {
             this.WindowState = WindowState.Minimized;
             await Task.Delay(1000);
-            var service = new SendInputService();
+            var service = new SendInputService(new ProcessService());
             await service.TestMouse();
             this.WindowState = WindowState.Normal;
             this.Activate();
@@ -167,7 +171,9 @@ namespace UltimaOnlineMacro
             Pg.StopBeep();
         }
 
-        private async void Run_Click(object sender, RoutedEventArgs e)
+        private async void Run_Click(object sender, RoutedEventArgs e) => await Run();
+
+        public async Task Run()
         {
             if (!Debugger.IsAttached)
             {
@@ -196,12 +202,20 @@ namespace UltimaOnlineMacro
             _mainWindowService.SaveSettings();
             btnRun.Background = System.Windows.Media.Brushes.Gray;
             btnStop.Background = System.Windows.Media.Brushes.Red;
+            Pg.FuriaChecked = chkFuria.IsChecked.Value;
+
             Logger.Loggin("Run!");
             await Pg.Work(Regions);
+        }
+
+
+        private async void RefreshScreen_Click(object sender, RoutedEventArgs e)
+        {
 
         }
 
-        private void Stop_Click(object sender, RoutedEventArgs e)
+        private async void Stop_Click(object sender, RoutedEventArgs e) => await Stop();
+        public async Task Stop()
         {
             _mainWindowService.TimerUltima.Stop();
             Pg.Stop();
@@ -229,12 +243,11 @@ namespace UltimaOnlineMacro
             btnSelectWater.Background = System.Windows.Media.Brushes.Gray;
         }
 
-        private void SelectFile_Click(object sender, RoutedEventArgs e)
+        private void SelectFileMacro_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new();
-            openFileDialog.Title = "Seleziona un file di testo";
-            string expectedFileName = DateTime.Now.ToString("yyyy_MM_dd") + "_journal.txt";
-
+            openFileDialog.Title = "Seleziona il file macros";
+            string expectedFileName = "macros.xml";
             openFileDialog.Filter = $"{expectedFileName}|{expectedFileName}";
             openFileDialog.Multiselect = false;
 
@@ -242,14 +255,153 @@ namespace UltimaOnlineMacro
             {
                 string selectedFile = openFileDialog.FileName;
                 string fileName = System.IO.Path.GetFileName(selectedFile);
+
                 if (fileName.Equals(expectedFileName, StringComparison.OrdinalIgnoreCase))
                 {
+                    // Ottieni il nome della cartella principale (nome PG)
+                    string folderPath = System.IO.Path.GetDirectoryName(selectedFile);
+                    string characterName = System.IO.Path.GetFileName(folderPath);
+
                     SelectedFilePathText.Text = $"File selezionato: {selectedFile}";
-                    Pg.PathJuornalLog = selectedFile;
+                    Pg.Name = characterName;
+                    Pg.PathMacro = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+
+                    // Imposta automaticamente il PathJuornalLog nella cartella JournalLogs
+                    try
+                    {
+                        // Risali nella gerarchia delle cartelle per trovare la directory Data
+                        DirectoryInfo currentDir = new DirectoryInfo(folderPath);
+                        string dataFolderPath = null;
+
+                        while (currentDir != null)
+                        {
+                            // Verifica se siamo nella cartella Data
+                            if (currentDir.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+                            {
+                                dataFolderPath = currentDir.FullName;
+                                break;
+                            }
+
+                            // Vai su di un livello
+                            currentDir = currentDir.Parent;
+                        }
+
+                        if (dataFolderPath != null)
+                        {
+                            // Costruisci il percorso del file journal di oggi
+                            string journalLogsFolder = System.IO.Path.Combine(dataFolderPath, "Client", "JournalLogs");
+                            string expectedFileNameJournal = DateTime.Now.ToString("yyyy_MM_dd") + "_journal.txt";
+                            string journalFilePath = System.IO.Path.Combine(journalLogsFolder, expectedFileNameJournal);
+
+                            // Verifica se la directory esiste
+                            if (Directory.Exists(journalLogsFolder))
+                            {
+                                // Verifica se il file esiste, altrimenti prova a crearlo
+                                if (!File.Exists(journalFilePath))
+                                {
+                                    // Se il file non esiste ma la directory sì, crea un file vuoto
+                                    using (File.Create(journalFilePath)) { }
+                                    Console.WriteLine($"Creato nuovo file journal: {journalFilePath}");
+                                }
+
+                                Pg.PathJuornalLog = journalFilePath;
+                                Console.WriteLine($"Impostato PathJuornalLog: {journalFilePath}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Directory JournalLogs non trovata: {journalLogsFolder}");
+                                Pg.PathJuornalLog = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Directory Data non trovata nella gerarchia delle cartelle");
+                            Pg.PathJuornalLog =PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Errore nell'impostazione del PathJuornalLog: {ex.Message}");
+                        Pg.PathJuornalLog = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+                    }
+
+                    // Elabora il file macro con MacroManipulator
+                    try
+                    {
+                        // Verifica e manipola le macro nel file
+                        var result = AutoClicker.Service.MacroManipulator.ManipulateMacros(
+                            selectedFile, // File di input
+                            selectedFile, // Sovrascrive lo stesso file
+                            true         // Crea infuriarsi se non presente
+                        );
+
+                        // Mostra informazioni sulle macro create/aggiornate
+                        string message = "";
+
+                        Pg.HaveBaseFuria = result.HaveBaseFuria;
+                        if (Pg.HaveBaseFuria)
+                            chkFuria.IsEnabled = true;
+
+                        if (result.HasInfuriarsi)
+                        {
+                            message += $"Macro 'Infuriarsi' impostata su: {result.InfuriarsiKeyInfo}\n";
+                        }
+
+                        if (result.HasSaccaraccolta)
+                        {
+                            message += $"Macro 'saccaraccolta' impostata su: {result.SaccaraccoltaKeyInfo}\n";
+                        }
+
+                        // Se sono state aggiunte nuove macro, riavvia il client
+                        if (result.NeedsClientRestart)
+                        {
+                            if (System.Windows.MessageBox.Show(
+                                $"Personaggio: {characterName}\n\n{message}\n\nSono state aggiunte nuove macro. È necessario riavviare il client per applicare le modifiche. Vuoi riavviare il client ora?",
+                                "Riavvio necessario",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question) == MessageBoxResult.Yes)
+                            {
+                                bool restartSuccessful = ProcessService.HandleClientRestartUpdater(selectedFile);
+
+                                if (!restartSuccessful)
+                                {
+                                    System.Windows.MessageBox.Show(
+                                        "Non è stato possibile riavviare automaticamente il client. Chiudi manualmente il client e riavvialo per applicare le modifiche.",
+                                        "Errore",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Warning
+                                    );
+                                }
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(message))
+                        {
+                            System.Windows.MessageBox.Show(
+                                $"Personaggio: {characterName}\n\n{message}\n\nLe macro sono già presenti e configurate correttamente.",
+                                "Informazioni macro",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information
+                            );
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.MessageBox.Show(
+                            $"Errore durante l'elaborazione del file macro: {ex.Message}",
+                            "Errore",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                    }
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show($"Il file selezionato non corrisponde al formato richiesto ({expectedFileName}).", "File non valido", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show(
+                        $"Il file selezionato non corrisponde al formato richiesto ({expectedFileName}).",
+                        "File non valido",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
                 }
             }
         }

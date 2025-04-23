@@ -1,4 +1,5 @@
 ﻿using AutoClicker.Models.TM;
+using LogManager;
 using System.Media;
 using System.Text.RegularExpressions;
 
@@ -98,8 +99,8 @@ namespace AutoClicker.Service
                                         status.Move = true;
                                     if (line.Contains("troppo peso"))
                                     {
-                                        status.MoveIrons = true;
-                                        status.Stone = true;
+                                        Logger.Loggin("Troppo peso.");
+                                        _playerBeep.Play();
                                     }
                                     if(line.Contains("attrezzo"))
                                         status.PickaxeBroke = true;

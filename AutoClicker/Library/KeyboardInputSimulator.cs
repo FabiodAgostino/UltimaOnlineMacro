@@ -11,9 +11,9 @@ namespace AutoClicker.Library
         private ProcessService processService;
         private nint hookID = nint.Zero;
 
-        public KeyboardInputSimulator()
+        public KeyboardInputSimulator(ProcessService process)
         {
-            processService = new ProcessService();
+            this.processService = process;
         }
 
         public async Task Move(byte tasto)
@@ -106,6 +106,7 @@ namespace AutoClicker.Library
                     PostMessage(hWnd, WM_KEYUP, tastoPtr, lParamUp);
                     if (i < times - 1)
                         await Task.Delay(random.Next(100, 300));
+
                 }
             }
             catch (Exception ex)
@@ -173,6 +174,33 @@ namespace AutoClicker.Library
                 if (i < times - 1)
                     await Task.Delay(random.Next(100, 300));
             }
+        }
+
+
+        public async Task LogIn()
+        {
+            await Task.Delay(2000);
+
+            var result = processService.GetClientPtr();
+            if(result.HasValue)
+            {
+                var hWnd = result.Value;
+                Random random = new Random();
+                int times = 3;
+                for (int i = 0; i < times; i++)
+                {
+                    await Task.Delay(2000);
+                    // Premi il tasto azione
+                    uint scanCode = MapVirtualKey((uint)Keys.Enter, 0);
+                    IntPtr lParamDownAction = (IntPtr)((scanCode << 16) | 0x00000001);
+                    IntPtr lParamUpAction = (IntPtr)((scanCode << 16) | 0xC0000001);
+
+                    PostMessage(hWnd, WM_KEYDOWN, (IntPtr)Keys.Enter, lParamDownAction);
+                    await Task.Delay(random.Next(40, 100));
+                    PostMessage(hWnd, WM_KEYUP, (IntPtr)Keys.Enter, lParamUpAction);
+                }
+            }
+            
         }
     }
 }

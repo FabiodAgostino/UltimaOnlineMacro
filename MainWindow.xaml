@@ -1,12 +1,12 @@
 ﻿<Window x:Class="UltimaOnlineMacro.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:UltimaOnlineMacro.Service"
-        Title="UltimaOnlineMacro - Rotiniel Tools" Height="650" Width="600"
+        xmlns:local="clr-namespace:UltimaOnlineMacro.Service" xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Title="UltimaOnlineMacro - Rotiniel Tools" Height="660" Width="470"
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
         AllowsTransparency="False"
-        Icon="/Assets/Images/icon.ico"
+        Icon="/UltimaOnlineMacro;component/Assets/Images/icon.ico"        
         WindowStyle="None">
 
     <Window.Resources>
@@ -53,30 +53,14 @@
                                 CornerRadius="8"
                                 BorderBrush="Transparent"
                                 BorderThickness="0">
-                            <!--<Border.Effect>
-                                <DropShadowEffect BlurRadius="8" Direction="315" 
-                                                 Opacity="0.3" ShadowDepth="1" Color="Black"/>
-                            </Border.Effect>-->
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}" TargetName="border" />
-                                <!--<Setter Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect BlurRadius="12" Direction="315" 
-                                                         Opacity="0.5" ShadowDepth="2" Color="Black"/>
-                                    </Setter.Value>
-                                </Setter>-->
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}" TargetName="border" />
-                                <!--<Setter Property="Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect BlurRadius="6" Direction="315" 
-                                                         Opacity="0.2" ShadowDepth="1" Color="Black"/>
-                                    </Setter.Value>
-                                </Setter>-->
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Background" Value="#666666" TargetName="border" />
@@ -186,6 +170,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
         <!-- Stile per TabControl -->
         <Style x:Key="ModernTabControlStyle" TargetType="TabControl">
@@ -257,7 +242,7 @@
         </Border>
 
         <!-- Sistema di border annidati per gli angoli arrotondati corretti -->
-        <Border x:Name="MainBorder" CornerRadius="12" Background="{StaticResource PrimaryBrush}">
+        <Border x:Name="MainBorder" Background="{StaticResource PrimaryBrush}">
             <Border CornerRadius="11" Background="{StaticResource BackgroundDarkBrush}" Margin="1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -275,7 +260,7 @@
 
                         <!-- Logo e titolo -->
                         <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,0,0">
-                            <Image Source="/Assets/Images/icon.ico" Width="20" Height="20" Margin="0,0,10,0" />
+                            <Image Source="/UltimaOnlineMacro;component/Assets/Images/icon.png" Width="30" Height="30" Margin="0,0,10,0" />
                             <TextBlock Text="UltimaOnlineMacro - Rotiniel Tools"
                                    Foreground="{StaticResource TextPrimaryBrush}" FontWeight="Bold" VerticalAlignment="Center" />
                         </StackPanel>
@@ -295,14 +280,17 @@
 
                         <!-- Scheda Macro Principale -->
                         <TabItem Header="Macro Principale">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <StackPanel Margin="5,10">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
+                                <StackPanel Margin="5,10,20,5">
                                     <!-- Pannello Impostazioni Macro -->
                                     <Border Style="{StaticResource CardStyle}">
                                         <StackPanel>
-                                            <TextBlock Text="Impostazioni Macro"
-                                                   Foreground="{StaticResource TextPrimaryBrush}" FontSize="20" FontWeight="Bold"
-                                                   Margin="0,0,0,15" HorizontalAlignment="Center" />
+
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                                <fa:ImageAwesome Icon="cog" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                                <TextBlock Text="Impostazioni Macro"
+               Foreground="{StaticResource TextPrimaryBrush}" FontSize="20" FontWeight="Bold"/>
+                                            </StackPanel>
 
                                             <!-- Tasto e Modificatori -->
                                             <Grid Margin="0,0,0,15">
@@ -319,7 +307,7 @@
                                                             <DropShadowEffect BlurRadius="5" Direction="315" 
                              Opacity="0.3" ShadowDepth="1" Color="Black"/>
                                                         </Border.Effect>
-                                                        <ComboBox Name="cmbKey" Width="200" Height="32"
+                                                        <ComboBox Name="cmbKey"  Height="32"
                   Background="#2A2A30" 
                   Foreground="White" 
                   FontSize="14" 
@@ -492,6 +480,7 @@
                                                 <StackPanel Grid.Column="0">
                                                     <CheckBox Name="chkMuloDaSoma" Content="Mulo da Soma" IsChecked="True" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,5" />
                                                     <CheckBox Name="chkLamaPortatore" Content="Lama portatore" IsChecked="False" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,5" />
+                                                    <CheckBox Name="chkFuria" Content="AutoFuria" IsEnabled="false" IsChecked="False" Style="{StaticResource ModernCheckBoxStyle}" Margin="0,5" />
                                                 </StackPanel>
 
                                                 <!-- Timer -->
@@ -510,10 +499,12 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <Button Name="btnRun" Grid.Column="0" Content="START" Width="170" Height="50"
-                                            Click="Run_Click" Style="{StaticResource MyButtonStyle}" Background="#00C853" HorizontalAlignment="Center">
+                                        <Button Name="btnRun" Grid.Column="0" Width="170" Height="50"
+        Click="Run_Click" Style="{StaticResource MyButtonStyle}" Background="#00C853" HorizontalAlignment="Center">
+                                            <fa:ImageAwesome Icon="Play" Width="16" Height="16" Margin="0,0,5,0" Foreground="White"/>
                                             <Button.Resources>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
@@ -525,8 +516,9 @@
                                             </Button.Resources>
                                         </Button>
 
-                                        <Button Name="btnStop" Grid.Column="1" Content="STOP" Width="170" Height="50"
-                                            Click="Stop_Click" Style="{StaticResource MyButtonStyle}" Background="#E53935" HorizontalAlignment="Center">
+                                        <Button Name="btnStop" Grid.Column="1"  Width="170" Height="50"
+        Click="Stop_Click" Style="{StaticResource MyButtonStyle}" Background="#E53935" HorizontalAlignment="Center">
+                                            <fa:ImageAwesome Icon="Stop" Width="16" Height="16" Margin="0,0,5,0" Foreground="White"/>
                                             <Button.Resources>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
@@ -537,24 +529,78 @@
                                                 </Style>
                                             </Button.Resources>
                                         </Button>
+
+                                        <!-- Bottone Aggiunto -->
+                                        <Button Name="btnRefreshScreen" Grid.Column="2" Width="170" Height="50"
+        Click="RefreshScreen_Click" Style="{StaticResource MyButtonStyle}" Background="#FF9800" HorizontalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <fa:ImageAwesome Icon="Refresh" Width="16" Height="16" Margin="0,0,5,0" Foreground="White"/>
+                                            </StackPanel>
+                                            <Button.Resources>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#FB8C00"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Resources>
+                                        </Button>
                                     </Grid>
 
                                     <!-- Log di sistema -->
-                                    <Border Style="{StaticResource CardStyle}" Height="180">
+                                    <Border Style="{StaticResource CardStyle}">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
 
-                                            <TextBlock Grid.Row="0" Text="Log di Sistema" Foreground="{StaticResource TextPrimaryBrush}" 
-                                                   FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                            <!-- Intestazione espandibile -->
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
 
-                                            <Border Grid.Row="1" Background="#1A1A1A" CornerRadius="6" BorderBrush="#454545" BorderThickness="1">
+                                                <TextBlock Grid.Column="0" Text="Log di Sistema" Foreground="{StaticResource TextPrimaryBrush}" 
+                   FontWeight="SemiBold" Margin="0,0,0,8"/>
+
+                                                <ToggleButton x:Name="toggleLogVisibility" Grid.Column="1" Content="▼" Width="26" Height="26"
+                      IsChecked="False" Background="Transparent" BorderThickness="0" 
+                      Foreground="{StaticResource TextPrimaryBrush}"
+                      VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                    <ToggleButton.Style>
+                                                        <Style TargetType="ToggleButton">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="ToggleButton">
+                                                                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsChecked" Value="False">
+                                                                                <Setter Property="Content" Value="▶" />
+                                                                            </Trigger>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Background" Value="#3E3E42" />
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </ToggleButton.Style>
+                                                </ToggleButton>
+                                            </Grid>
+
+                                            <!-- Contenuto del log espandibile -->
+                                            <Border Grid.Row="1" Background="#1A1A1A" CornerRadius="6" BorderBrush="#454545" BorderThickness="1"
+            Height="180" Visibility="{Binding IsChecked, ElementName=toggleLogVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                     <TextBox Name="txtLog" IsReadOnly="True" TextWrapping="Wrap"
-                                                         Background="Transparent" Foreground="#CCCCCC" BorderThickness="0" 
-                                                         FontFamily="Consolas" FontSize="13" Padding="10" />
+                   Background="Transparent" Foreground="#CCCCCC" BorderThickness="0" 
+                   FontFamily="Consolas" FontSize="13" Padding="10" />
                                                 </ScrollViewer>
                                             </Border>
                                         </Grid>
@@ -567,7 +613,7 @@
                             </ScrollViewer>
                         </TabItem>
                         <!-- Scheda Regions (mantenuta nell'ordine originale) -->
-                        <TabItem Header="Regions">
+                        <TabItem Header="Regioni">
                             <Border Style="{StaticResource CardStyle}" Margin="5,10">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -575,10 +621,12 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Text="Configurazione Regioni UI" 
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                        <fa:ImageAwesome Icon="WindowRestore" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                        <TextBlock Grid.Row="0" Text="Configurazione Regioni UI" 
                                                Foreground="{StaticResource TextPrimaryBrush}" FontSize="20" FontWeight="Bold"
-                                               Margin="0,0,0,20" HorizontalAlignment="Center" />
+                                               Margin="0,0,0,0" HorizontalAlignment="Center" />
+                                    </StackPanel>
 
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
@@ -659,9 +707,12 @@
                         <TabItem Header="Risorse">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="10">
                                 <StackPanel>
-                                    <TextBlock Text="Risorse Disponibili" 
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                        <fa:ImageAwesome Icon="Sitemap" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                        <TextBlock Text="Risorse Raccolte" 
                    Foreground="{StaticResource TextPrimaryBrush}" FontSize="20" FontWeight="Bold"
-                   Margin="0,5,0,15" HorizontalAlignment="Center" />
+                   Margin="0,0,0,0" HorizontalAlignment="Center" />
+                                    </StackPanel>
 
                                     <ItemsControl ItemsSource="{Binding Risorse}">
                                         <!-- Layout con WrapPanel migliorato -->
@@ -681,11 +732,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Border BorderThickness="1" CornerRadius="8" Margin="8" Padding="10"
-                            BorderBrush="{Binding Key, Converter={StaticResource MaterialToColorConverter}}">
-                                                    <!--<Border.Effect>
-                                                        <DropShadowEffect BlurRadius="8" Direction="315" 
-                                             Opacity="0.25" ShadowDepth="1" Color="Black"/>
-                                                    </Border.Effect>-->
+                BorderBrush="{Binding Key, Converter={StaticResource MaterialToColorConverter}}">
                                                     <Border.Background>
                                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                             <GradientStop Color="#FF3E3E42" Offset="0.0"/>
@@ -702,25 +749,25 @@
 
                                                         <!-- Nome risorsa con TextWrapping e TextTrimming -->
                                                         <TextBlock 
-                                    Text="{Binding Key}" 
-                                    FontSize="14" 
-                                    FontWeight="SemiBold"
-                                    Foreground="White"
-                                    TextWrapping="Wrap"
-                                    TextTrimming="CharacterEllipsis"
-                                    MaxHeight="40"
-                                    VerticalAlignment="Top"
-                                    HorizontalAlignment="Center"/>
+                        Text="{Binding Key}" 
+                        FontSize="14" 
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        TextWrapping="Wrap"
+                        TextTrimming="CharacterEllipsis"
+                        MaxHeight="40"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"/>
 
                                                         <!-- Valore risorsa -->
                                                         <TextBlock 
-                                    Grid.Row="1"
-                                    Text="{Binding Value}" 
-                                    FontSize="24" 
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                        Grid.Row="1"
+                        Text="{Binding Value}" 
+                        FontSize="24" 
+                        FontWeight="Bold"
+                        Foreground="White"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>
@@ -730,7 +777,7 @@
                             </ScrollViewer>
                         </TabItem>
                         <!-- Scheda Settings -->
-                        <TabItem Header="Settings">
+                        <TabItem Header="Impostazioni">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <Border Style="{StaticResource CardStyle}" Margin="5,10">
                                     <Grid>
@@ -739,10 +786,12 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-
-                                        <TextBlock Grid.Row="0" Text="Impostazioni Avanzate" 
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                            <fa:ImageAwesome Icon="Wrench" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                            <TextBlock Grid.Row="0" Text="Impostazioni Avanzate" 
                        Foreground="{StaticResource TextPrimaryBrush}" FontSize="20" FontWeight="Bold"
-                       Margin="0,0,0,20" HorizontalAlignment="Center" />
+                       Margin="0,0,0,0" HorizontalAlignment="Center" />
+                                        </StackPanel>
 
                                         <!-- Journal Configuration -->
                                         <Border Grid.Row="1" Style="{StaticResource CardStyle}" Background="#2A2A30" Padding="15">
@@ -752,20 +801,21 @@
                                Margin="0,0,0,10" HorizontalAlignment="Center" />
 
                                                 <Border Background="#1A1A1A" CornerRadius="6" Padding="10" Margin="0,0,0,15">
-                                                    <TextBlock Text="Generalmente contenuto dentro The Miracle\Data\Client\JournalLogs" 
+                                                    <TextBlock Text="Generalmente contenuto dentro The Miracle\Data\Profiles\nomeaccount\The Miracle DC\nomepg" 
                                    Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" />
                                                 </Border>
 
-                                                <Button Content="Seleziona Journal TM" Click="SelectFile_Click" Width="220" Height="45" Style="{StaticResource MyButtonStyle}">
+                                                <Button Content="Seleziona File Macro" Click="SelectFileMacro_Click" Width="220" Height="45" Style="{StaticResource MyButtonStyle}">
                                                     <Button.ContentTemplate>
                                                         <DataTemplate>
                                                             <StackPanel Orientation="Horizontal">
                                                                 <TextBlock Text="📁" FontSize="18" Margin="0,0,10,0"/>
-                                                                <TextBlock Text="SelectedFilePathText" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Seleziona File Macro" VerticalAlignment="Center"/>
                                                             </StackPanel>
                                                         </DataTemplate>
                                                     </Button.ContentTemplate>
                                                 </Button>
+
 
                                                 <Border Background="#1A1A1A" CornerRadius="6" Padding="12" Margin="0,15,0,0" BorderBrush="#454545" BorderThickness="1">
                                                     <TextBlock Name="SelectedFilePathText" TextWrapping="Wrap" FontWeight="SemiBold" Foreground="#4CAF50" />
@@ -816,10 +866,12 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-
-                                        <TextBlock Grid.Row="0" Text="Strumenti di Test" 
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                            <fa:ImageAwesome Icon="Flask" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                            <TextBlock Grid.Row="0" Text="Strumenti di Test" 
                                                Foreground="{StaticResource TextPrimaryBrush}" FontSize="20" FontWeight="Bold"
-                                               Margin="0,0,0,20" HorizontalAlignment="Center" />
+                                               Margin="0,0,0,0" HorizontalAlignment="Center" />
+                                        </StackPanel>
 
                                         <!-- Test Buttons Section -->
                                         <Border Grid.Row="1" Style="{StaticResource CardStyle}" Background="#2A2A30" Padding="15">

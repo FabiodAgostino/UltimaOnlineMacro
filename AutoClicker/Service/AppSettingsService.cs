@@ -1,7 +1,10 @@
 ﻿using AutoClicker.Models.System;
 using AutoClicker.Models.System.UltimaOnlineMacro.Models.System;
+using AutoClicker.Utils;
 using LogManager;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace UltimaOnlineMacro.Service
 {
@@ -15,26 +18,6 @@ namespace UltimaOnlineMacro.Service
             _settingsFilePath = Path.Combine(Directory.GetCurrentDirectory(), SettingsFileName);
         }
 
-        public void SaveSettings(AppSettings settings)
-        {
-            try
-            {
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                };
-
-                string jsonString = JsonSerializer.Serialize(settings, options);
-                File.WriteAllText(_settingsFilePath, jsonString);
-
-                Logger.Loggin($"Impostazioni salvate correttamente in {_settingsFilePath}");
-            }
-            catch (Exception ex)
-            {
-                Logger.Loggin($"Errore durante il salvataggio delle impostazioni: {ex.Message}", true);
-            }
-        }
-
         public AppSettings LoadSettings()
         {
             try
@@ -44,17 +27,49 @@ namespace UltimaOnlineMacro.Service
                     string jsonString = File.ReadAllText(_settingsFilePath);
                     var settings = JsonSerializer.Deserialize<AppSettings>(jsonString);
 
+                    // Decodifica i percorsi con caratteri Unicode
+                    if (settings != null)
+                    {
+                        if (!string.IsNullOrEmpty(settings.MacroPath))
+                            settings.MacroPath = PathHelper.NormalizePath(settings.MacroPath);
+
+                        if (!string.IsNullOrEmpty(settings.JournalPath))
+                            settings.JournalPath = PathHelper.NormalizePath(settings.JournalPath);
+                    }
+
                     Logger.Loggin($"Impostazioni caricate correttamente da {_settingsFilePath}");
                     return settings;
                 }
 
-                Logger.Loggin("File di impostazioni non trovato. Verranno utilizzate le impostazioni predefinite.");
+                Logger.Loggin($"File impostazioni non trovato. Creazione nuove impostazioni di default.", false);
                 return new AppSettings();
             }
             catch (Exception ex)
             {
                 Logger.Loggin($"Errore durante il caricamento delle impostazioni: {ex.Message}", true);
                 return new AppSettings();
+            }
+        }
+
+        public void SaveSettings(AppSettings settings)
+        {
+            try
+            {
+                // Configura le opzioni JSON per mantenere i caratteri speciali
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    // Permette di usare caratteri speciali senza convertirli in \uXXXX
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                };
+
+                string jsonString = JsonSerializer.Serialize(settings, options);
+                File.WriteAllText(_settingsFilePath, jsonString);
+                Logger.Loggin($"Impostazioni salvate correttamente in {_settingsFilePath}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore durante il salvataggio delle impostazioni: {ex.Message}", true);
             }
         }
     }

@@ -37,13 +37,10 @@ namespace AutoClicker.Models.TM
                 Point minLoc = new Point(), maxLoc = new Point();
                 CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
 
-                Logger.Loggin($"MaxVal ottenuto: {maxVal}");
-                grayScreen.Save("debug_screen_iron.png");
-                grayTemplate.Save("debug_template_iron.png");
                 if (maxVal > 0.5) // Soglia standard
                 {
                     Point pos = maxLoc;
-                    Logger.Loggin($"Oggetto trovato a: {pos}");
+                    Logger.Loggin($"Minerale trovato a: {pos}");
 
                     X = region.X + pos.X + imageTemplate.Template.Width / 2;
                     Y = region.Y + pos.Y + imageTemplate.Template.Height / 2;
@@ -52,7 +49,7 @@ namespace AutoClicker.Models.TM
                 else
                 {
                     IsFound = false;
-                    Logger.Loggin("Oggetto non trovato.");
+                    Logger.Loggin("Minerale non trovato.");
                 }
             }
         }

@@ -11,9 +11,9 @@ namespace AutoClicker.Library
         private ProcessService processService;
         private nint hookID = nint.Zero;
 
-        public MouseInputSimulator()
+        public MouseInputSimulator(ProcessService service)
         {
-            processService = new ProcessService();
+            processService = service;
         }
 
         public async Task MoveMouse(int x, int y)
@@ -30,8 +30,6 @@ namespace AutoClicker.Library
 
             try
             {
-                SetForegroundWindow(hWnd);
-
                 InstallMouseHook();
 
                 Logger.Loggin("Hook mouse a basso livello inizializzato correttamente");
