@@ -7,16 +7,20 @@ namespace LogManager
     {
         public static TextBox _logTextBox;
 
-        public static void Loggin(string message, bool err = false)
+        public static void Loggin(string message, bool err = false, bool log=true)
         {
             LoggerConfig.Initialize();
-            if (_logTextBox != null)
+
+            if(log)
             {
-                _logTextBox.Dispatcher.Invoke(() =>
+                if (_logTextBox != null)
                 {
-                    _logTextBox.AppendText($"{DateTime.Now:HH:mm:ss} - {message}\n");
-                    _logTextBox.ScrollToEnd();
-                });
+                    _logTextBox.Dispatcher.Invoke(() =>
+                    {
+                        _logTextBox.AppendText($"{DateTime.Now:HH:mm:ss} - {message}\n");
+                        _logTextBox.ScrollToEnd();
+                    });
+                }
             }
 
             if (err)

@@ -15,7 +15,7 @@ namespace UltimaOnlineMacro.Service
 
         public SettingsService()
         {
-            _settingsFilePath = Path.Combine(Directory.GetCurrentDirectory(), SettingsFileName);
+            _settingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
         }
 
         public AppSettings LoadSettings()

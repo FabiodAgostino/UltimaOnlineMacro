@@ -135,7 +135,7 @@ namespace AutoClicker.Models.TM
                 await WearPickaxe();
 
             if (status.Move)
-                await _sendInputService.MoveRandomly(8);
+                await _sendInputService.MoveRandomly(4);
 
 
             if(status.Stamina || StatusForced.Stamina)
@@ -158,10 +158,13 @@ namespace AutoClicker.Models.TM
                 if (status.Stone.value + 50 >= status.Stone.max)
                 {
                     _readLogTMService._playerBeep.Play();
-                    Logger.Loggin("Troppo peso");
+                    Logger.Loggin($"Troppo peso: {status.Stone.value}");
                 }
                 if (status.Stamina.value < 10)
+                {
                     StatusForced.Stamina = true;
+                    Logger.Loggin($"Stamina bassa: {status.Stamina.value}");
+                }
                 else
                     StatusForced.Stamina = false;
             }

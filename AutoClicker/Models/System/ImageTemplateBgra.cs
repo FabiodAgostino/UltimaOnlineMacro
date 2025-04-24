@@ -16,7 +16,7 @@ namespace AutoClicker.Models.System
 
         public void CreateImage(string path)
         {
-            string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images", path);
+            string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Images", path);
             Image = new Bitmap(imagePath);
             Template = Image.ToImage<Bgra, byte>();
             Name = path;

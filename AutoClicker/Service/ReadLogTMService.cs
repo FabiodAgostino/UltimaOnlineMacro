@@ -9,7 +9,7 @@ namespace AutoClicker.Service
     {
         private DateTime lastMacrocheckDateTime = new DateTime();
         private Pg _pg;
-        private string _beepSound = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Sounds", "Beep.wav");
+        private string _beepSound = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Sounds", "Beep.wav");
         public SoundPlayer _playerBeep;
         public Dictionary<string, int> RisorseRaccolte { get; }
                 = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);

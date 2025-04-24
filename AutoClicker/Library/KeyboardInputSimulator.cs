@@ -2,7 +2,7 @@
 using LogManager;
 using System.Runtime.InteropServices;
 using static AutoClicker.Const.KeyboardMouseConst;
-using static AutoClicker.Utils.User32DLL;
+using static User32DLL;
 
 namespace AutoClicker.Library
 {
@@ -10,7 +10,8 @@ namespace AutoClicker.Library
     {
         private ProcessService processService;
         private nint hookID = nint.Zero;
-
+        private static readonly List<LowLevelKeyboardProc> _activeHooks = new List<LowLevelKeyboardProc>();
+        private LowLevelKeyboardProc _currentHookProc; // Mantieni un riferimento al delegate corrente
         public KeyboardInputSimulator(ProcessService process)
         {
             this.processService = process;
@@ -21,26 +22,20 @@ namespace AutoClicker.Library
             Logger.Loggin("Inizializzazione simulazione freccia destra con hook a basso livello...");
             var tm = processService.TheMiracleWindow;
             var hWnd = tm.Hwnd;
-
             try
             {
                 InstallKeyboardHook();
-
-                Logger.Loggin("Hook a basso livello inizializzato correttamente");
-
+                Logger.Loggin("Hook a basso livello inizializzato correttamente",false,false);
                 Random random = new Random();
-
                 keybd_event(tasto, 0, KEYEVENTF_EXTENDEDKEY, nint.Zero);
                 await Task.Delay(random.Next(50, 150));
-
                 keybd_event(tasto, 0, KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY, nint.Zero);
                 await Task.Delay(random.Next(50, 150));
-
-                Logger.Loggin("Simulazione completata con successo - 30 pressioni della freccia destra eseguite");
+                Logger.Loggin("Simulazione completata con successo - 30 pressioni della freccia destra eseguite",false,false);
             }
             catch (Exception e)
             {
-                Logger.Loggin($"Errore durante la simulazione: {e.Message}", true);
+                Logger.Loggin($"Errore durante la simulazione: {e.Message}", true,false);
             }
             finally
             {
@@ -48,19 +43,41 @@ namespace AutoClicker.Library
                 if (hookID != nint.Zero)
                 {
                     UnhookWindowsHookEx(hookID);
-                    Logger.Loggin("Hook a basso livello rimosso");
+
+                    // Rimuovi il riferimento al delegate dalla lista statica
+                    lock (_activeHooks)
+                    {
+                        _activeHooks.Remove(_currentHookProc);
+                    }
+
+                    Logger.Loggin("Hook a basso livello rimosso",false);
                 }
             }
         }
 
+       
+
         private void InstallKeyboardHook()
         {
-            LowLevelKeyboardProc proc = HookCallback;
-            hookID = SetWindowsHookEx(WH_KEYBOARD_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
+            // Salva il delegate in un campo membro
+            _currentHookProc = HookCallback;
 
+            // Mantieni un riferimento forte al delegate nella lista statica
+            lock (_activeHooks)
+            {
+                _activeHooks.Add(_currentHookProc);
+            }
+
+            // Usa il delegate salvato
+            hookID = User32DLL.SetWindowsHookEx(User32DLL.WH_KEYBOARD_LL, _currentHookProc, processService.TheMiracleWindow.ModuleHandle, 0);
             if (hookID == nint.Zero)
             {
-                Logger.Loggin("Impossibile installare l'hook a basso livello", true);
+                // Rimuovi il riferimento al delegate se l'installazione fallisce
+                lock (_activeHooks)
+                {
+                    _activeHooks.Remove(_currentHookProc);
+                }
+                Logger.Loggin("Impossibile installare l'hook a basso livello", true, false);
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
         }
@@ -75,7 +92,7 @@ namespace AutoClicker.Library
                 {
                     if (keyInfo.vkCode == VK_RIGHT)
                     {
-                        Logger.Loggin($"HOOK: Tasto freccia destra rilevato (VK:{keyInfo.vkCode}, SC:{keyInfo.scanCode}, FL:{keyInfo.flags})");
+                        Logger.Loggin($"HOOK: Tasto freccia destra rilevato (VK:{keyInfo.vkCode}, SC:{keyInfo.scanCode}, FL:{keyInfo.flags})", false, false);
                     }
                 }
             }

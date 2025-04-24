@@ -24,10 +24,7 @@ namespace AutoClicker.Service
             using var processedStream = ImagePreprocessorService.ProcessImage(bitmap);
             {
                 using var pix = Pix.LoadFromMemory(processedStream.ToArray());
-                // Salva l'immagine preprocessata per debug
-                pix.Save("pix_debug.png");
-
-                string tessdataPath = Path.Combine(Directory.GetCurrentDirectory(), "tessdata");
+                string tessdataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata");
                 using var engine = new TesseractEngine(tessdataPath, "eng", EngineMode.LstmOnly);
                 {
                     using var page = engine.Process(bitmap, PageSegMode.Auto);

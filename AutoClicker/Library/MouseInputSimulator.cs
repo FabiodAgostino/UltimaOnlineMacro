@@ -2,7 +2,7 @@
 using LogManager;
 using System.Runtime.InteropServices;
 using static AutoClicker.Const.KeyboardMouseConst;
-using static AutoClicker.Utils.User32DLL;
+using static User32DLL;
 
 namespace AutoClicker.Library
 {
@@ -77,7 +77,7 @@ namespace AutoClicker.Library
         {
             // Installa un hook che ci permetterà di studiare i messaggi del mouse nel sistema
             LowLevelMouseProc proc = HookCallback;
-            hookID = SetWindowsHookEx(WH_MOUSE_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
+            hookID = User32DLL.SetWindowsHookEx(User32DLL.WH_KEYBOARD_LL, proc, processService.TheMiracleWindow.ModuleHandle, 0);
 
             if (hookID == nint.Zero)
             {
@@ -119,7 +119,7 @@ namespace AutoClicker.Library
             {
                 // Installa anche un hook per il mouse per monitoraggio
                 LowLevelMouseProc mouseProc = HookCallback;
-                IntPtr mouseHookID = SetWindowsHookEx(WH_MOUSE_LL, mouseProc, processService.TheMiracleWindow.ModuleHandle, 0);
+                IntPtr mouseHookID = User32DLL.SetWindowsHookEx(User32DLL.WH_KEYBOARD_LL, mouseProc, processService.TheMiracleWindow.ModuleHandle, 0);
 
                 // Posiziona il cursore al punto iniziale
                 SetCursorPos(startX, startY);
@@ -201,7 +201,7 @@ namespace AutoClicker.Library
                 return CallNextHookEx(hookID, nCode, wParam, lParam);
             };
 
-            hookID = SetWindowsHookEx(WH_MOUSE_LL, captureProc, processService.TheMiracleWindow.ModuleHandle, 0);
+            hookID = User32DLL.SetWindowsHookEx(User32DLL.WH_KEYBOARD_LL, captureProc, processService.TheMiracleWindow.ModuleHandle, 0);
 
             if (hookID == IntPtr.Zero)
             {

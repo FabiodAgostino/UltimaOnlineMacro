@@ -66,15 +66,15 @@
 
             public PointSettings() { }
 
-            public PointSettings(AutoClicker.Utils.User32DLL.POINT point)
+            public PointSettings(User32DLL.POINT point)
             {
                 X = point.X;
                 Y = point.Y;
             }
 
-            public AutoClicker.Utils.User32DLL.POINT ToPoint()
+            public User32DLL.POINT ToPoint()
             {
-                return new AutoClicker.Utils.User32DLL.POINT { X = X, Y = Y };
+                return new User32DLL.POINT { X = X, Y = Y };
             }
         }
     }

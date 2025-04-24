@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows</TargetFramework>
@@ -14,8 +13,9 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 		<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+		<!-- Aggiungi questa riga per assicurarti che il percorso dei file di output sia il più semplice possibile -->
+		<UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<Compile Remove="AutoClicker\**" />
 		<Compile Remove="LogManager\**" />
@@ -37,46 +37,52 @@
 		<Page Remove="Logs\**" />
 		<Page Remove="tessdata\**" />
 		<Page Remove="tessdata_fast-main\**" />
-
 	</ItemGroup>
-
 	<ItemGroup>
 		<None Remove=".dockerignore" />
 		<None Remove=".gitattributes" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
-		<Content Include="Assets\Images\Pickaxe.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Images\Pickaxe2.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Images\PaperdollWithPickaxe.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Sounds\beep.wav">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Images\iron.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Images\Mulo\mulo1.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Images\icon.ico">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Images\icon.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
+		<!-- Cambia tutte le Content in None con CopyToOutputDirectory -->
+		<None Include="Assets\Images\Pickaxe.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Images\Pickaxe2.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Images\PaperdollWithPickaxe.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Sounds\beep.wav">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Images\iron.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Images\Mulo\mulo1.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Images\icon.ico">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Assets\Images\icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<!-- Mantieni l'icona come Resource per l'applicazione -->
 		<Resource Include="Assets\Images\icon.ico" />
+		<Resource Include="Assets\Images\icon.png" />
+
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="AutoClicker\AutoClicker.csproj" />
 		<ProjectReference Include="LogManager\LogManager.csproj" />
 	</ItemGroup>
-
+	<!-- Aggiungi questa sezione per assicurarti che i file di tessdata siano copiati -->
+	<ItemGroup>
+		<None Include="tessdata\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

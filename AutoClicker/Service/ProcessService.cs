@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Interop;
-using static AutoClicker.Utils.User32DLL;
+using static User32DLL;
 
 namespace AutoClicker.Service
 {

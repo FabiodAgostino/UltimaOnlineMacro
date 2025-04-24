@@ -185,7 +185,7 @@ namespace UltimaOnlineMacro.Service
 
         private void ReadMuloDetector()
         {
-            //    string modelPath = Path.Combine(Directory.GetCurrentDirectory(), "MuloDetector.zip");
+            //    string modelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MuloDetector.zip");
             //    if (File.Exists(modelPath))
             //        _pg.DetectorService = new MuloDetectorService(modelPath);
             //    else
@@ -194,7 +194,7 @@ namespace UltimaOnlineMacro.Service
 
         private void ReadTessdata()
         {
-            string modelPath = Path.Combine(Directory.GetCurrentDirectory(), "tessdata", "eng.traineddata");
+            string modelPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata", "eng.traineddata");
             if (!File.Exists(modelPath))
                 Logger.Loggin("Non trovo il file tessdata.");
         }

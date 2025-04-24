@@ -18,7 +18,7 @@ namespace AutoClicker.Service
             this.halfHeight = halfHeight;
 
             // Creo la directory "newDataset" nel percorso corrente
-            outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "newDataset");
+            outputDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "newDataset");
 
             if (!Directory.Exists(outputDirectory))
             {

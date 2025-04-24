@@ -2,7 +2,7 @@
 using AutoClicker.Library;
 using LogManager;
 using static AutoClicker.Const.KeyboardMouseConst;
-using static AutoClicker.Utils.User32DLL;
+using static User32DLL;
 
 namespace AutoClicker.Service
 {
@@ -74,20 +74,21 @@ namespace AutoClicker.Service
             {
                 await processService.FocusWindowReliably();
                 Random random = new Random();
-                Logger.Loggin($"Iniziando sequenza di {numberOfSteps} movimenti randomici");
 
-                for (int i = 0; i < numberOfSteps / 2; i++)
+                // Scegli casualmente una sola direzione all'inizio
+                byte selectedDirection = ArrowKeys[random.Next(ArrowKeys.Length)];
+
+
+                for (int i = 0; i < numberOfSteps; i++)
                 {
-                    byte direction = ArrowKeys[random.Next(ArrowKeys.Length)];
-                    await KeyboardInputSimulator.Move(direction);
-                    await KeyboardInputSimulator.Move(direction);
-                    await KeyboardInputSimulator.Move(direction);
+                    await KeyboardInputSimulator.Move(selectedDirection);
                 }
+
                 await processService.RestoreOldWindow();
             }
             catch (Exception e)
             {
-                Logger.Loggin($"Errore durante la simulazione dei movimenti randomici: {e.Message}", true);
+                Logger.Loggin($"Errore durante la simulazione dei movimenti direzionali: {e.Message}", true,false);
             }
         }
 
