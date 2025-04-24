@@ -23,7 +23,7 @@ namespace UltimaOnlineMacro.Service
         public MainWindowService(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
-            _mainWindow.Risorse = new ObservableCollection<KeyValuePair<string, int>>();
+            _mainWindow.Muli = new ObservableCollection<Mulo>();
             _mainWindow.Pg = new Pg(_mainWindow.ProcessService, async (bool run) => await StartStop(run));
             _pg = mainWindow.Pg;
             Initialize();
@@ -51,18 +51,10 @@ namespace UltimaOnlineMacro.Service
             _mainWindow.Activate();
         }
 
-        public void RefreshRisorse(Dictionary<string, int> risorse)
+        public void RefreshRisorse()
         {
-            // Svuota e ricostruisci la collection
-            _mainWindow.Risorse.Clear();
-            int somma = 0;
-            foreach (var kv in risorse)
-            {
-                _mainWindow.Risorse.Add(kv);
-                somma += kv.Value;
-            }
-            var mulo = _mainWindow.Pg.Muli.FirstOrDefault(x => x.Selected);
-            mulo.ActualOre = somma;
+            var mulo=
+            _mainWindow.Muli = new ObservableCollection<Mulo>(_pg.Muli);
             _mainWindow.RaiseChanged();
         }
         private void LoadSettings()

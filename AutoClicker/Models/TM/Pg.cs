@@ -13,19 +13,19 @@ namespace AutoClicker.Models.TM
         public string PathMacro { get; set; }
 
         public Macro Macro;
-        private SendInputService _sendInputService {  get; set; }
+        private SendInputService _sendInputService { get; set; }
         private ProcessService _processService { get; set; }
         public bool RunWork { get; set; } = true;
         private ReadLogTMService _readLogTMService;
         private Regions _regions;
         private TesserActService _tesserActService;
-        private int BaseWeight { get; set; }
+        public int BaseWeight { get; set; }
         public Status StatusForced { get; set; } = new();
         public List<Mulo> Muli { get; set; } = new();
-        public Action<Dictionary<string, int>> RefreshRisorse { get => _readLogTMService.RefreshRisorse; set => _readLogTMService.RefreshRisorse = value; }
+        public Action RefreshRisorse {  get => _readLogTMService.RefreshRisorse; set => _readLogTMService.RefreshRisorse = value; }
         public bool HaveBaseFuria { get; set; }
         public bool FuriaChecked { get; set; }
-
+        private int _countForStop { get; set; } = 0;
         private Action<bool> _run { get; set; }
         public Pg(ProcessService processService, Action<bool> run)
         {
@@ -116,9 +116,11 @@ namespace AutoClicker.Models.TM
         }
 
         public void StopBeep() => _readLogTMService.StopSound();
+        public void PlayBeep() => _readLogTMService._playerBeep.Play();
+
         public async Task Actions(Status status)
         {
-            if(HaveBaseFuria && FuriaChecked)
+            if (HaveBaseFuria && FuriaChecked)
                 await _sendInputService.RunMacro(Macro.MacroFuria);
 
             if (status.Macrocheck)
@@ -134,11 +136,11 @@ namespace AutoClicker.Models.TM
             if (status.PickaxeBroke)
                 await WearPickaxe();
 
-            if (status.Move)
+            if (true)
                 await _sendInputService.MoveRandomly(4);
 
 
-            if(status.Stamina || StatusForced.Stamina)
+            if (status.Stamina || StatusForced.Stamina)
             {
                 await Task.Delay(60000);
                 StatusForced.Stamina = false;
@@ -155,6 +157,25 @@ namespace AutoClicker.Models.TM
         {
             if (status.Stone != (0, 0) && status.Stamina != (0, 0))
             {
+                if (BaseWeight == 0)
+                    BaseWeight = status.Stone.value;
+
+                if(BaseWeight < status.Stone.value)
+                {
+                    BaseWeight = status.Stone.value;
+                    var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
+                    if(iron.IsFound)
+                    {
+                        _readLogTMService._playerBeep.Play();
+                        Logger.Loggin("Hai finito lo spazio nei tuoi muli!");
+                        _countForStop++;
+                    }
+                    if(_countForStop > 5)
+                    {
+                        _countForStop = 0;
+                        _run.Invoke(false);
+                    }
+                }
                 if (status.Stone.value + 50 >= status.Stone.max)
                 {
                     _readLogTMService._playerBeep.Play();
@@ -168,6 +189,8 @@ namespace AutoClicker.Models.TM
                 else
                     StatusForced.Stamina = false;
             }
+            else
+                Logger.Loggin("Non sto leggendo correttamente la barra status");
         }
 
         public void ChangeMuloOrStop()

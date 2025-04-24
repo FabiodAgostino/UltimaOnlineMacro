@@ -27,7 +27,7 @@ namespace UltimaOnlineMacro.Service
                 case "lingotti di rame":
                     return new SolidColorBrush(Color.FromRgb(184, 115, 51)); // Colore rame
 
-                case "lingotti di argen":
+                case "lingotti di argento":
                     return new SolidColorBrush(Color.FromRgb(192, 192, 192)); // Colore argento
 
                 case "lingotti di oro":

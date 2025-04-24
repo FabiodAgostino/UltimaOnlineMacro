@@ -12,6 +12,8 @@ namespace AutoClicker.Library
         private nint hookID = nint.Zero;
         private static readonly List<LowLevelKeyboardProc> _activeHooks = new List<LowLevelKeyboardProc>();
         private LowLevelKeyboardProc _currentHookProc; // Mantieni un riferimento al delegate corrente
+        private KeyboardHook _keyboardHook;
+
         public KeyboardInputSimulator(ProcessService process)
         {
             this.processService = process;
@@ -19,7 +21,7 @@ namespace AutoClicker.Library
 
         public async Task Move(byte tasto)
         {
-            Logger.Loggin("Inizializzazione simulazione freccia destra con hook a basso livello...");
+            Logger.Loggin("Inizializzazione simulazione freccia destra con hook a basso livello...", false,false);
             var tm = processService.TheMiracleWindow;
             var hWnd = tm.Hwnd;
             try
@@ -39,19 +41,7 @@ namespace AutoClicker.Library
             }
             finally
             {
-                // Rimuovi l'hook se installato
-                if (hookID != nint.Zero)
-                {
-                    UnhookWindowsHookEx(hookID);
-
-                    // Rimuovi il riferimento al delegate dalla lista statica
-                    lock (_activeHooks)
-                    {
-                        _activeHooks.Remove(_currentHookProc);
-                    }
-
-                    Logger.Loggin("Hook a basso livello rimosso",false);
-                }
+                _keyboardHook.Uninstall();
             }
         }
 
@@ -60,46 +50,28 @@ namespace AutoClicker.Library
         private void InstallKeyboardHook()
         {
             // Salva il delegate in un campo membro
-            _currentHookProc = HookCallback;
-
-            // Mantieni un riferimento forte al delegate nella lista statica
-            lock (_activeHooks)
-            {
-                _activeHooks.Add(_currentHookProc);
-            }
-
-            // Usa il delegate salvato
-            hookID = User32DLL.SetWindowsHookEx(User32DLL.WH_KEYBOARD_LL, _currentHookProc, processService.TheMiracleWindow.ModuleHandle, 0);
-            if (hookID == nint.Zero)
-            {
-                // Rimuovi il riferimento al delegate se l'installazione fallisce
-                lock (_activeHooks)
-                {
-                    _activeHooks.Remove(_currentHookProc);
-                }
-                Logger.Loggin("Impossibile installare l'hook a basso livello", true, false);
-                throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
-            }
+            _keyboardHook = new KeyboardHook();
+            _keyboardHook.Install();
         }
 
-        private nint HookCallback(int nCode, nint wParam, nint lParam)
-        {
-            if (nCode >= 0)
-            {
-                var keyInfo = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
+        //private nint HookCallback(int nCode, nint wParam, nint lParam)
+        //{
+        //    if (nCode >= 0)
+        //    {
+        //        var keyInfo = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
 
-                if ((int)wParam == WM_KEYDOWN || (int)wParam == WM_SYSKEYDOWN)
-                {
-                    if (keyInfo.vkCode == VK_RIGHT)
-                    {
-                        Logger.Loggin($"HOOK: Tasto freccia destra rilevato (VK:{keyInfo.vkCode}, SC:{keyInfo.scanCode}, FL:{keyInfo.flags})", false, false);
-                    }
-                }
-            }
+        //        if ((int)wParam == WM_KEYDOWN || (int)wParam == WM_SYSKEYDOWN)
+        //        {
+        //            if (keyInfo.vkCode == VK_RIGHT)
+        //            {
+        //                Logger.Loggin($"HOOK: Tasto freccia destra rilevato (VK:{keyInfo.vkCode}, SC:{keyInfo.scanCode}, FL:{keyInfo.flags})", false, false);
+        //            }
+        //        }
+        //    }
 
-            // Passa sempre l'evento al prossimo hook
-            return CallNextHookEx(hookID, nCode, wParam, lParam);
-        }
+        //    // Passa sempre l'evento al prossimo hook
+        //    return CallNextHookEx(hookID, nCode, wParam, lParam);
+        //}
 
         public async Task SimulateButtonPressMacro(int tasto, int times = 1)
         {

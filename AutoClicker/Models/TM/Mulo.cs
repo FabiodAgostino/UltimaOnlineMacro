@@ -3,30 +3,42 @@
     public class Mulo
     {
         public MuloType Type { get; set; }
+        public string Name { get => Type == MuloType.MULO_DA_SOMA ? "Mulo da Soma" : "Lama Portatore"; }
 
         public int ActualOre
         {
-            get => _actualOre; set
+            get
             {
-                _actualOre = value;
-                if (_actualOre + 50 > MaxOre)
-                {
-                    MuloFull.Invoke();
-                }
+                return RisorseQuantita.Sum(x => x.QuantitaGrezza);
             }
         }
 
         private int _actualOre { get; set; }
 
+        public List<RisorsaQuantita> RisorseQuantita { get; set; } = new();
+
+
         public const int MaxOre = 800;
         public bool Selected { get; set; } = false;
-        public Action MuloFull { get; set; }
 
         public Mulo(MuloType type, bool selected, Action muloFull)
         {
             Type = type;
             Selected = selected;
-            MuloFull = muloFull;
+        }
+
+        public void AddRisorseQuantita(string risorsa, int quantita)
+        {
+            var risorsaEsistente = RisorseQuantita.FirstOrDefault(r => r.Risorsa == risorsa);
+
+            if (risorsaEsistente != null)
+            {
+                risorsaEsistente.QuantitaGrezza += quantita;
+            }
+            else
+            {
+                RisorseQuantita.Add(new RisorsaQuantita { Risorsa = risorsa, QuantitaGrezza = quantita });
+            }
         }
     }
 

@@ -24,7 +24,7 @@ namespace AutoClicker.Library
 
         public async Task SimulateDoubleClick10Times(int x, int y)
         {
-            Logger.Loggin($"Inizializzazione simulazione doppio clic alle coordinate ({x}, {y})...");
+            Logger.Loggin($"Inizializzazione simulazione doppio clic alle coordinate ({x}, {y})...", false, false);
             var tm = processService.TheMiracleWindow;
             var hWnd = tm.Hwnd;
 
@@ -32,16 +32,16 @@ namespace AutoClicker.Library
             {
                 InstallMouseHook();
 
-                Logger.Loggin("Hook mouse a basso livello inizializzato correttamente");
+                Logger.Loggin("Hook mouse a basso livello inizializzato correttamente", false, false);
 
                 SetCursorPos(x, y);
-                Logger.Loggin($"Cursore posizionato alle coordinate ({x}, {y})");
+                Logger.Loggin($"Cursore posizionato alle coordinate ({x}, {y})", false, false);
 
                 Random random = new Random();
 
                 for (int i = 0; i < 10; i++)
                 {
-                    Logger.Loggin($"Simulazione doppio clic #{i + 1}");
+                    Logger.Loggin($"Simulazione doppio clic #{i + 1}", false, false);
 
                     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, nint.Zero);
                     await Task.Delay(random.Next(10, 30)); // Breve attesa tra pressione e rilascio
@@ -56,7 +56,7 @@ namespace AutoClicker.Library
                     await Task.Delay(random.Next(100, 300));
                 }
 
-                Logger.Loggin("Simulazione completata con successo - 100 doppi clic eseguiti");
+                Logger.Loggin("Simulazione completata con successo - 100 doppi clic eseguiti", false, false);
             }
             catch (Exception e)
             {
@@ -68,7 +68,7 @@ namespace AutoClicker.Library
                 if (hookID != nint.Zero)
                 {
                     UnhookWindowsHookEx(hookID);
-                    Logger.Loggin("Hook mouse a basso livello rimosso");
+                    Logger.Loggin("Hook mouse a basso livello rimosso",false,false);
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace AutoClicker.Library
 
             if (hookID == nint.Zero)
             {
-                Logger.Loggin("Impossibile installare l'hook mouse a basso livello", true);
+                Logger.Loggin("Impossibile installare l'hook mouse a basso livello", true, true);
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
         }
@@ -96,7 +96,7 @@ namespace AutoClicker.Library
                 // Logga solo gli eventi di clic per debug, non tutti gli eventi mouse
                 if ((int)wParam == WM_LBUTTONDOWN)
                 {
-                    Logger.Loggin($"HOOK: Clic sinistro rilevato alle coordinate ({mouseInfo.pt.X}, {mouseInfo.pt.Y})");
+                    Logger.Loggin($"HOOK: Clic sinistro rilevato alle coordinate ({mouseInfo.pt.X}, {mouseInfo.pt.Y})",false,false);
                 }
             }
 
@@ -106,7 +106,7 @@ namespace AutoClicker.Library
 
         public async Task<bool> DragAndDrop(int startX, int startY, int endX, int endY, int duration = 500)
         {
-            Logger.Loggin($"Esecuzione drag and drop a basso livello da ({startX},{startY}) a ({endX},{endY})");
+            Logger.Loggin($"Esecuzione drag and drop a basso livello da ({startX},{startY}) a ({endX},{endY})",false,false);
             bool success = true;
 
             // Attiva la finestra del gioco
@@ -126,7 +126,7 @@ namespace AutoClicker.Library
                 await Task.Delay(100);
 
                 // Esegui click sinistro down con API a basso livello
-                Logger.Loggin($"Pressione pulsante sinistro alle coordinate ({startX},{startY})");
+                Logger.Loggin($"Pressione pulsante sinistro alle coordinate ({startX},{startY})", false, false);
                 mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, IntPtr.Zero);
                 await Task.Delay(100);
 
@@ -150,10 +150,10 @@ namespace AutoClicker.Library
                 await Task.Delay(50);
 
                 // Esegui rilascio click sinistro con API a basso livello
-                Logger.Loggin($"Rilascio pulsante sinistro alle coordinate ({endX},{endY})");
+                Logger.Loggin($"Rilascio pulsante sinistro alle coordinate ({endX},{endY})", false, false);
                 mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, IntPtr.Zero);
 
-                Logger.Loggin("Operazione di drag and drop completata con successo.");
+                Logger.Loggin("Operazione di drag and drop completata con successo.", false, false);
 
                 // Rimuovi l'hook del mouse
                 if (mouseHookID != IntPtr.Zero)
@@ -163,7 +163,7 @@ namespace AutoClicker.Library
             }
             catch (Exception e)
             {
-                Logger.Loggin($"Errore durante drag and drop: {e.Message}", true);
+                Logger.Loggin($"Errore durante drag and drop: {e.Message}", true, true);
                 success = false;
             }
             finally
@@ -172,7 +172,7 @@ namespace AutoClicker.Library
                 if (hookID != IntPtr.Zero)
                 {
                     UnhookWindowsHookEx(hookID);
-                    Logger.Loggin("Hook di tastiera rimosso.");
+                    Logger.Loggin("Hook di tastiera rimosso.",false,false);
                 }
             }
 
@@ -187,7 +187,7 @@ namespace AutoClicker.Library
                 if (nCode >= 0 && (int)wParam == WM_LBUTTONDOWN)
                 {
                     var mouseInfo = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
-                    Logger.Loggin($"Coordinate catturate: X={mouseInfo.pt.X}, Y={mouseInfo.pt.Y}");
+                    Logger.Loggin($"Coordinate catturate: X={mouseInfo.pt.X}, Y={mouseInfo.pt.Y}", false, false);
 
                     // Rimuovi l'hook
                     UnhookWindowsHookEx(hookID);
@@ -205,11 +205,11 @@ namespace AutoClicker.Library
 
             if (hookID == IntPtr.Zero)
             {
-                Logger.Loggin("Impossibile installare l'hook mouse per cattura coordinate", true);
+                Logger.Loggin("Impossibile installare l'hook mouse per cattura coordinate", true, true);
                 tcs.TrySetException(new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error()));
             }
 
-            Logger.Loggin("Hook per cattura coordinate attivo. Clicca in un punto dello schermo.");
+            Logger.Loggin("Hook per cattura coordinate attivo. Clicca in un punto dello schermo.", false,false);
 
             return tcs.Task;
         }

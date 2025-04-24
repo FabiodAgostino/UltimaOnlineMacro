@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<Compile Include="Const\KeyboardMouseConst.cs" />
+		<Compile Include="Library\KeyboardHook.cs" />
 		<Compile Include="Models\System\AppSettings.cs" />
 		<Compile Include="Models\System\ArrowCombination.cs" />
 		<Compile Include="Models\System\ImageTemplate.cs" />
@@ -27,6 +28,7 @@
 		<Compile Include="Models\TM\Pickaxe.cs" />
 		<Compile Include="Models\System\Regions.cs" />
 		<Compile Include="Models\System\TMWindow.cs" />
+		<Compile Include="Models\TM\RisorsaQuantita.cs" />
 		<Compile Include="Models\TM\Status.cs" />
 		<Compile Include="Service\AppSettingsService.cs" />
 		<Compile Include="Service\ExtensionMethod\Image.cs" />

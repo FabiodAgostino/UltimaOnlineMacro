@@ -27,13 +27,13 @@ namespace UltimaOnlineMacro
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
 
         // Espongo Risorse come ObservableCollection
-        private ObservableCollection<KeyValuePair<string, int>> _risorse;
-        public ObservableCollection<KeyValuePair<string, int>> Risorse
+        private ObservableCollection<Mulo> _muli;
+        public ObservableCollection<Mulo> Muli
         {
-            get => _risorse;
+            get => _muli;
             set
             {
-                _risorse = value;
+                _muli = value;
                 RaiseChanged();
             }
         }
@@ -51,27 +51,24 @@ namespace UltimaOnlineMacro
 
         public void SetBackpackRegion(Rectangle region)
         {
-            if (Regions.BackpackRegion != region)
+            Regions.BackpackRegion = region;
+            Logger.Loggin($"Regione zaino selezionata");
+            try
             {
-                Regions.BackpackRegion = region;
-                Logger.Loggin($"Regione zaino selezionata");
-                try
-                {
-                    var pickaxe = new Pickaxe(region, SavedImageTemplate.ImageTemplatePickaxe);
-                    Pg.PickaxeInBackpack = pickaxe;
+                var pickaxe = new Pickaxe(region, SavedImageTemplate.ImageTemplatePickaxe);
+                Pg.PickaxeInBackpack = pickaxe;
 
-                    if (pickaxe.IsFound)
-                    {
-                        Regions.Pickaxe = pickaxe;
-                        btnSelectBackpack.Background = System.Windows.Media.Brushes.Gray;
-                    }
-                    else
-                        Regions.Pickaxe = null;
-                }
-                catch (Exception e)
+                if (pickaxe.IsFound)
                 {
-                    Logger.Loggin($"Errore: {e.Message}");
+                    Regions.Pickaxe = pickaxe;
+                    btnSelectBackpack.Background = System.Windows.Media.Brushes.Gray;
                 }
+                else
+                    Regions.Pickaxe = null;
+            }
+            catch (Exception e)
+            {
+                Logger.Loggin($"Errore: {e.Message}");
             }
         }
 
@@ -79,7 +76,12 @@ namespace UltimaOnlineMacro
         {
             Regions.StatusRegion = region;
             btnSelectStatus.Background = System.Windows.Media.Brushes.Gray;
-
+            var t = new TesserActService();
+            var result = t.GetStatusBar(Regions.StatusRegion);
+            if (result.Stamina.value > 0 || result.Stamina.max > 0)
+                Logger.Loggin("Status intercettato correttamente!");
+            else
+                Logger.Loggin("Status non trovato");
         }
 
         public void PaperdollHavePickaxe(Rectangle region)
@@ -203,15 +205,15 @@ namespace UltimaOnlineMacro
             btnRun.Background = System.Windows.Media.Brushes.Gray;
             btnStop.Background = System.Windows.Media.Brushes.Red;
             Pg.FuriaChecked = chkFuria.IsChecked.Value;
-
             Logger.Loggin("Run!");
-            await Pg.Work(Regions);
+            await Pg.Work(Regions,true);
         }
 
 
         private async void RefreshScreen_Click(object sender, RoutedEventArgs e)
         {
-
+            SetBackpackRegion(Regions.BackpackRegion);
+            SetStatus(Regions.StatusRegion);
         }
 
         private async void Stop_Click(object sender, RoutedEventArgs e) => await Stop();

@@ -37,7 +37,7 @@ namespace UltimaOnlineMacro.Service
                             settings.JournalPath = PathHelper.NormalizePath(settings.JournalPath);
                     }
 
-                    Logger.Loggin($"Impostazioni caricate correttamente da {_settingsFilePath}");
+                    Logger.Loggin($"Impostazioni caricate correttamente da {_settingsFilePath}",false,false);
                     return settings;
                 }
 
@@ -46,7 +46,7 @@ namespace UltimaOnlineMacro.Service
             }
             catch (Exception ex)
             {
-                Logger.Loggin($"Errore durante il caricamento delle impostazioni: {ex.Message}", true);
+                Logger.Loggin($"Errore durante il caricamento delle impostazioni: {ex.Message}", true,true);
                 return new AppSettings();
             }
         }
@@ -65,11 +65,11 @@ namespace UltimaOnlineMacro.Service
 
                 string jsonString = JsonSerializer.Serialize(settings, options);
                 File.WriteAllText(_settingsFilePath, jsonString);
-                Logger.Loggin($"Impostazioni salvate correttamente in {_settingsFilePath}");
+                Logger.Loggin($"Impostazioni salvate correttamente in {_settingsFilePath}",false,false);
             }
             catch (Exception ex)
             {
-                Logger.Loggin($"Errore durante il salvataggio delle impostazioni: {ex.Message}", true);
+                Logger.Loggin($"Errore durante il salvataggio delle impostazioni: {ex.Message}", true,true);
             }
         }
     }

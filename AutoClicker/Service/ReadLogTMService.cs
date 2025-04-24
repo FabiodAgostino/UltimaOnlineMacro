@@ -11,12 +11,10 @@ namespace AutoClicker.Service
         private Pg _pg;
         private string _beepSound = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Sounds", "Beep.wav");
         public SoundPlayer _playerBeep;
-        public Dictionary<string, int> RisorseRaccolte { get; }
-                = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         private static readonly Regex _raccoltaRegex = new Regex(
         @"Hai raccolto\s*:\s*(\d+)\s+(.+?grezzo)",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        public Action<Dictionary<string, int>> RefreshRisorse { get; set; }
+        public Action RefreshRisorse { get; set; }
         public ReadLogTMService(Pg pg)
         {
             _pg = pg;
@@ -122,13 +120,10 @@ namespace AutoClicker.Service
                                         risorsa = $"Lingotti di {metallo}";
                                     }
 
-                                    // Aggiunge o aggiorna il dizionario
-                                    if (RisorseRaccolte.ContainsKey(risorsa))
-                                        RisorseRaccolte[risorsa] += qty * 2;
-                                    else
-                                        RisorseRaccolte[risorsa] = qty * 2;
-
-                                    RefreshRisorse.Invoke(RisorseRaccolte);
+                                    var mulo = _pg.Muli.FirstOrDefault(x => x.Selected);
+                                    mulo.AddRisorseQuantita(risorsa, qty);
+                                   
+                                    RefreshRisorse.Invoke();
                                 }
 
                             }
@@ -148,6 +143,7 @@ namespace AutoClicker.Service
                 return status;
             }
         }
+
 
         public void StopSound()
         {
