@@ -107,12 +107,24 @@ namespace UltimaOnlineMacro.Service
 
                 _mainWindow.Pg.Name = settings.PgName;
                 // Imposta il percorso del journal
-                if (!string.IsNullOrEmpty(settings.JournalPath))
+                if (!string.IsNullOrEmpty(settings.MacroPath))
                 {
-                    _mainWindow.Pg.PathJuornalLog = settings.JournalPath;
                     _mainWindow.Pg.PathMacro = settings.MacroPath;
-
                     _mainWindow.SelectedFilePathText.Text = $"File selezionato: {settings.MacroPath}";
+
+                    // Trova automaticamente il journal file di oggi
+                    string todayJournalPath = FindTodayJournalFile(settings.MacroPath);
+                    if (!string.IsNullOrEmpty(todayJournalPath))
+                    {
+                        _mainWindow.Pg.PathJuornalLog = todayJournalPath;
+                        Logger.Loggin($"Journal path aggiornato a: {todayJournalPath}");
+                    }
+                    else
+                    {
+                        // Fallback al path salvato se non trovato
+                        _mainWindow.Pg.PathJuornalLog = settings.JournalPath;
+                        Logger.Loggin($"Utilizzo del journal path salvato: {settings.JournalPath}");
+                    }
                 }
 
                 // Imposta gli animali selezionati
@@ -131,6 +143,69 @@ namespace UltimaOnlineMacro.Service
             catch (Exception ex)
             {
                 Logger.Loggin($"Errore durante l'applicazione delle impostazioni: {ex.Message}", true);
+            }
+        }
+
+        public string FindTodayJournalFile(string macroPath)
+        {
+            try
+            {
+                // Ottieni il nome della cartella principale (nome PG)
+                string folderPath = System.IO.Path.GetDirectoryName(macroPath);
+
+                // Risali nella gerarchia delle cartelle per trovare la directory Data
+                DirectoryInfo currentDir = new DirectoryInfo(folderPath);
+                string dataFolderPath = null;
+
+                while (currentDir != null)
+                {
+                    // Verifica se siamo nella cartella Data
+                    if (currentDir.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+                    {
+                        dataFolderPath = currentDir.FullName;
+                        break;
+                    }
+
+                    // Vai su di un livello
+                    currentDir = currentDir.Parent;
+                }
+
+                if (dataFolderPath != null)
+                {
+                    // Costruisci il percorso del file journal di oggi
+                    string journalLogsFolder = System.IO.Path.Combine(dataFolderPath, "Client", "JournalLogs");
+                    string expectedFileNameJournal = DateTime.Now.ToString("yyyy_MM_dd") + "_journal.txt";
+                    string journalFilePath = System.IO.Path.Combine(journalLogsFolder, expectedFileNameJournal);
+
+                    // Verifica se la directory esiste
+                    if (Directory.Exists(journalLogsFolder))
+                    {
+                        // Verifica se il file esiste, altrimenti prova a crearlo
+                        if (!File.Exists(journalFilePath))
+                        {
+                            // Se il file non esiste ma la directory sì, crea un file vuoto
+                            using (File.Create(journalFilePath)) { }
+                            Logger.Loggin($"Creato nuovo file journal: {journalFilePath}");
+                        }
+
+                        return journalFilePath;
+                    }
+                    else
+                    {
+                        Logger.Loggin($"Directory JournalLogs non trovata: {journalLogsFolder}");
+                        return null;
+                    }
+                }
+                else
+                {
+                    Logger.Loggin("Directory Data non trovata nella gerarchia delle cartelle");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nella ricerca del file journal: {ex.Message}");
+                return null;
             }
         }
 

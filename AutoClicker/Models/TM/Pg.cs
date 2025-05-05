@@ -27,6 +27,7 @@ namespace AutoClicker.Models.TM
         public bool HaveBaseFuria { get; set; }
         public bool FuriaChecked { get; set; }
         private int _countForStop { get; set; } = 0;
+        public bool HaveMacrocheck { get; set; }
         private Action<bool> _run { get; set; }
         public Pg(ProcessService processService, Action<bool> run)
         {
@@ -51,6 +52,12 @@ namespace AutoClicker.Models.TM
             if (!PaperdollHavePickaxeInHand(_regions))
             {
                 var pickaxeBackpack = new Pickaxe(_regions.BackpackRegion, SavedImageTemplate.ImageTemplatePickaxe);
+                if(pickaxeBackpack.X == 0 || pickaxeBackpack.Y == 0)
+                {
+                    SoundsPlayerService.LoopPlay(SoundsFile.Beep);
+                    Logger.Loggin("Non riesco a trovare il piccone nello zaino.", true, true);
+                    _run.Invoke(false);
+                }
                 await _sendInputService.DragAndDrop(pickaxeBackpack.X, pickaxeBackpack.Y, _regions.PaperdollPickaxeRegion.X, _regions.PaperdollPickaxeRegion.Y);
 
                 //controllo per vedere se adesso ha il piccone in mano
@@ -121,6 +128,7 @@ namespace AutoClicker.Models.TM
             
             if (status.Macrocheck)
             {
+                HaveMacrocheck = true;
                 SoundsPlayerService.OnePlay(SoundsFile.Beep);
                 Logger.Loggin("Macrocheck ricevuto... procedo al riavvio (non toccare nulla fino al termine del beep)");
                 _run.Invoke(false);
@@ -129,6 +137,7 @@ namespace AutoClicker.Models.TM
                 await Task.Delay(10000);
                 await _processService.SetTMWindow(true);
                 _run.Invoke(true);
+                HaveMacrocheck = false;
             }
 
             if (!String.IsNullOrEmpty(status.Error))

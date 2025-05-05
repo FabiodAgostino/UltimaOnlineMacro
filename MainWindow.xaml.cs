@@ -3,11 +3,9 @@ using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using AutoClicker.Utils;
 using LogManager;
-using Microsoft.ML;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -41,10 +39,10 @@ namespace UltimaOnlineMacro
 
         public MainWindow()
         {
+            this.Hide();
             DataContext = this;
             _mainWindowService = new MainWindowService(this);
             InitializeComponent();
-
         }
 
         #region Callback
@@ -137,7 +135,7 @@ namespace UltimaOnlineMacro
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
         }
 
         private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -220,6 +218,10 @@ namespace UltimaOnlineMacro
         private async void Stop_Click(object sender, RoutedEventArgs e) => await Stop();
         public async Task Stop()
         {
+            if(Pg.HaveMacrocheck)
+            {
+                new MacrocheckNotificationWindow(120).Show();
+            }
             _mainWindowService.TimerUltima.Stop();
             Pg.Stop();
             Pg.RunWork = false;
@@ -267,64 +269,28 @@ namespace UltimaOnlineMacro
 
                     SelectedFilePathText.Text = $"File selezionato: {selectedFile}";
                     Pg.Name = characterName;
-                    Pg.PathMacro = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+                    Pg.PathMacro = PathHelper.NormalizePath(selectedFile);
 
-                    // Imposta automaticamente il PathJuornalLog nella cartella JournalLogs
+                    // Usa il nuovo metodo per trovare il journal di oggi
                     try
                     {
-                        // Risali nella gerarchia delle cartelle per trovare la directory Data
-                        DirectoryInfo currentDir = new DirectoryInfo(folderPath);
-                        string dataFolderPath = null;
+                        
+                        string journalFilePath = _mainWindowService.FindTodayJournalFile(selectedFile);
 
-                        while (currentDir != null)
+                        if (!string.IsNullOrEmpty(journalFilePath))
                         {
-                            // Verifica se siamo nella cartella Data
-                            if (currentDir.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
-                            {
-                                dataFolderPath = currentDir.FullName;
-                                break;
-                            }
-
-                            // Vai su di un livello
-                            currentDir = currentDir.Parent;
-                        }
-
-                        if (dataFolderPath != null)
-                        {
-                            // Costruisci il percorso del file journal di oggi
-                            string journalLogsFolder = System.IO.Path.Combine(dataFolderPath, "Client", "JournalLogs");
-                            string expectedFileNameJournal = DateTime.Now.ToString("yyyy_MM_dd") + "_journal.txt";
-                            string journalFilePath = System.IO.Path.Combine(journalLogsFolder, expectedFileNameJournal);
-
-                            // Verifica se la directory esiste
-                            if (Directory.Exists(journalLogsFolder))
-                            {
-                                // Verifica se il file esiste, altrimenti prova a crearlo
-                                if (!File.Exists(journalFilePath))
-                                {
-                                    // Se il file non esiste ma la directory sì, crea un file vuoto
-                                    using (File.Create(journalFilePath)) { }
-                                    Console.WriteLine($"Creato nuovo file journal: {journalFilePath}");
-                                }
-
-                                Pg.PathJuornalLog = journalFilePath;
-                                Console.WriteLine($"Impostato PathJuornalLog: {journalFilePath}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Directory JournalLogs non trovata: {journalLogsFolder}");
-                                Pg.PathJuornalLog = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
-                            }
+                            Pg.PathJuornalLog = journalFilePath;
+                            Logger.Loggin($"Impostato PathJuornalLog: {journalFilePath}");
                         }
                         else
                         {
-                            Console.WriteLine("Directory Data non trovata nella gerarchia delle cartelle");
-                            Pg.PathJuornalLog =PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+                            Pg.PathJuornalLog = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
+                            Logger.Loggin($"Utilizzato fallback per PathJuornalLog: {selectedFile}");
                         }
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Errore nell'impostazione del PathJuornalLog: {ex.Message}");
+                        Logger.Loggin($"Errore nell'impostazione del PathJuornalLog: {ex.Message}");
                         Pg.PathJuornalLog = PathHelper.NormalizePath(selectedFile); // Fallback al file macro
                     }
 

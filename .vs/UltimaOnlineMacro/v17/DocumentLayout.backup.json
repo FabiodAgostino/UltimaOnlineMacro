@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\models\\tm\\pg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\models\\tm\\pg.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\autoclicker\\service\\readlogtmservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28DA9D7D-4197-4464-9967-AC48B77A0702}|AutoClicker\\AutoClicker.csproj|solutionrelative:autoclicker\\service\\readlogtmservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\splashscreen.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|solutionrelative:splashscreen.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -51,27 +51,26 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Pg.cs",
-              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\Pg.cs",
-              "RelativeDocumentMoniker": "AutoClicker\\Models\\TM\\Pg.cs",
-              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Models\\TM\\Pg.cs",
-              "RelativeToolTip": "AutoClicker\\Models\\TM\\Pg.cs",
-              "ViewState": "AgIAALgAAAAAAAAAAAAAALwAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T14:29:27.453Z",
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\App.xaml",
+              "RelativeDocumentMoniker": "App.xaml",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\App.xaml",
+              "RelativeToolTip": "App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-05T15:26:37.542Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ReadLogTMService.cs",
-              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\ReadLogTMService.cs",
-              "RelativeDocumentMoniker": "AutoClicker\\Service\\ReadLogTMService.cs",
-              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\AutoClicker\\Service\\ReadLogTMService.cs",
-              "RelativeToolTip": "AutoClicker\\Service\\ReadLogTMService.cs",
-              "ViewState": "AgIAAGsAAAAAAAAAAAAAAKAAAAABAAAAAAAAAA==",
+              "Title": "SplashScreen.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\SplashScreen.xaml.cs",
+              "RelativeDocumentMoniker": "SplashScreen.xaml.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\SplashScreen.xaml.cs",
+              "RelativeToolTip": "SplashScreen.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-05T13:56:37.413Z",
+              "WhenOpened": "2025-05-05T15:26:09.411Z",
               "EditorCaption": ""
             }
           ]
