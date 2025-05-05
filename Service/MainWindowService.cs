@@ -1,12 +1,15 @@
-﻿using AutoClicker.Models.System;
+﻿using AutoClicker.Const;
+using AutoClicker.Models.System;
 using AutoClicker.Models.System.UltimaOnlineMacro.Models.System;
 using AutoClicker.Models.TM;
+using AutoClicker.Service;
 using AutoClicker.Utils;
 using LogManager;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 
@@ -56,6 +59,17 @@ namespace UltimaOnlineMacro.Service
             var mulo=
             _mainWindow.Muli = new ObservableCollection<Mulo>(_pg.Muli);
             _mainWindow.RaiseChanged();
+            var muloSelezionato = _pg.Muli.FirstOrDefault(m => m.Selected);
+            if (muloSelezionato != null)
+            {
+                double percentualeCarico = (double)muloSelezionato.ActualOre / Mulo.MaxOre * 100;
+
+                if (percentualeCarico > 90)
+                {
+                    SoundsPlayerService.OnePlay(SoundsFile.Notify);
+                    Logger.Loggin($"Attenzione: Mulo carico al {percentualeCarico:F1}%");
+                }
+            }
         }
         private void LoadSettings()
         {

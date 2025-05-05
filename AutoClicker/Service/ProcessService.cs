@@ -1,4 +1,5 @@
 ﻿using AutoClicker.Models.System;
+using LogManager;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,9 +24,9 @@ namespace AutoClicker.Service
             SetTMWindow();
         }
 
-        public async Task SetTMWindow()
+        public async Task SetTMWindow(bool force = false)
         {
-            if (TheMiracleWindow == null)
+            if (TheMiracleWindow == null || force)
             {
                 IntPtr hwnd = IntPtr.Zero;
                 StringBuilder windowText = new StringBuilder(256);
@@ -41,8 +42,6 @@ namespace AutoClicker.Service
                         break;
                     }
                 }
-                //if (TheMiracleWindow != null)
-                //    await FocusWindowReliably();
             }
         }
 
@@ -264,7 +263,7 @@ namespace AutoClicker.Service
                 while (currentDir != null)
                 {
                     // Controlla se la directory corrente contiene TM Updater.exe
-                    if (File.Exists(Path.Combine(currentDir.FullName, "TmClient.exe")))
+                    if (File.Exists(Path.Combine(currentDir.FullName, "ClassicUO.exe")))
                     {
                         tmClientDir = currentDir.FullName;
                         break;
@@ -287,9 +286,9 @@ namespace AutoClicker.Service
 
                 if (tmClientDir != null)
                 {
-                    string tmUpdaterPath = Path.Combine(tmClientDir, "TmClient.exe");
+                    string tmUpdaterPath = Path.Combine(tmClientDir, "ClassicUO.exe");
 
-                    // Verifica se il file TM Updater.exe esiste
+                    // Verifica se il file TM ClassicUO.exe esiste
                     if (File.Exists(tmUpdaterPath))
                     {
                         // Termina tutti i processi che contengono "TM Client" nel nome
@@ -303,12 +302,12 @@ namespace AutoClicker.Service
                                 {
                                     process.Kill();
                                     process.WaitForExit(5000); // Attende fino a 5 secondi che il processo termini
-                                    Console.WriteLine($"Processo terminato: {process.ProcessName}");
+                                    Logger.Loggin($"Processo terminato: {process.ProcessName}");
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine($"Errore nel terminare il processo: {ex.Message}");
+                                Logger.Loggin($"Errore nel terminare il processo: {ex.Message}");
                             }
                         }
                         await Task.Delay(delay);
@@ -321,22 +320,22 @@ namespace AutoClicker.Service
                         };
 
                         Process.Start(startInfo);
-                        Console.WriteLine($"Avviato: {tmUpdaterPath}");
+                        Logger.Loggin($"Avviato: {tmUpdaterPath}");
                         return true;
                     }
                     else
                     {
-                        Console.WriteLine($"TM Updater.exe non trovato in: {tmClientDir}");
+                        Logger.Loggin($"ClassicUO.exe non trovato in: {tmClientDir}",true);
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Non è stato possibile trovare la directory principale di The Miracle");
+                    Logger.Loggin("Non è stato possibile trovare la directory principale di The Miracle");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Errore durante il riavvio del client: {ex.Message}");
+                Logger.Loggin($"Errore durante il riavvio del client: {ex.Message}");
             }
 
             return false;

@@ -170,7 +170,8 @@ namespace UltimaOnlineMacro
 
         private void StopBeep_Click(object sender, RoutedEventArgs e)
         {
-            Pg.StopBeep();
+            SoundsPlayerService.Stop();
+            SoundsPlayerService.Dispose();
         }
 
         private async void Run_Click(object sender, RoutedEventArgs e) => await Run();

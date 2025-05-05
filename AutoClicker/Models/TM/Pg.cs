@@ -1,4 +1,5 @@
-﻿using AutoClicker.Models.System;
+﻿using AutoClicker.Const;
+using AutoClicker.Models.System;
 using AutoClicker.Service;
 using LogManager;
 
@@ -115,28 +116,35 @@ namespace AutoClicker.Models.TM
             return string.Empty;
         }
 
-        public void StopBeep() => _readLogTMService.StopSound();
-        public void PlayBeep() => _readLogTMService._playerBeep.Play();
-
         public async Task Actions(Status status)
         {
-            if (HaveBaseFuria && FuriaChecked)
-                await _sendInputService.RunMacro(Macro.MacroFuria);
-
+            
             if (status.Macrocheck)
             {
-                _readLogTMService._playerBeep.Play();
+                SoundsPlayerService.OnePlay(SoundsFile.Beep);
                 Logger.Loggin("Macrocheck ricevuto... procedo al riavvio (non toccare nulla fino al termine del beep)");
                 _run.Invoke(false);
                 await _processService.HandleRestartClient(this.PathMacro, 120000);
                 await _sendInputService.Login();
                 await Task.Delay(10000);
+                await _processService.SetTMWindow(true);
                 _run.Invoke(true);
             }
+
+            if (!String.IsNullOrEmpty(status.Error))
+            {
+                SoundsPlayerService.OnePlay(SoundsFile.Beep);
+                Logger.Loggin(status.Error,true,true);
+                _run.Invoke(false);
+            }
+
             if (status.PickaxeBroke)
                 await WearPickaxe();
 
-            if (true)
+            if (HaveBaseFuria && FuriaChecked)
+                await _sendInputService.RunMacro(Macro.MacroFuria);
+
+            if (status.Move)
                 await _sendInputService.MoveRandomly(4);
 
 
@@ -166,19 +174,20 @@ namespace AutoClicker.Models.TM
                     var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
                     if(iron.IsFound)
                     {
-                        _readLogTMService._playerBeep.Play();
+                        SoundsPlayerService.OnePlay(SoundsFile.Notify);
                         Logger.Loggin("Hai finito lo spazio nei tuoi muli!");
                         _countForStop++;
                     }
                     if(_countForStop > 5)
                     {
+                        SoundsPlayerService.LoopPlay(SoundsFile.Beep);
                         _countForStop = 0;
                         _run.Invoke(false);
                     }
                 }
                 if (status.Stone.value + 50 >= status.Stone.max)
                 {
-                    _readLogTMService._playerBeep.Play();
+                    SoundsPlayerService.OnePlay(SoundsFile.Beep);
                     Logger.Loggin($"Troppo peso: {status.Stone.value}");
                 }
                 if (status.Stamina.value < 10)
