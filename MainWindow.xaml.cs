@@ -43,6 +43,7 @@ namespace UltimaOnlineMacro
             DataContext = this;
             _mainWindowService = new MainWindowService(this);
             InitializeComponent();
+            Logger.Loggin("Applicazione avviata", false, false);
         }
 
         #region Callback

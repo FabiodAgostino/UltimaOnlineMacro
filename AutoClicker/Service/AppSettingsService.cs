@@ -2,6 +2,7 @@
 using AutoClicker.Models.System.UltimaOnlineMacro.Models.System;
 using AutoClicker.Utils;
 using LogManager;
+using System.Diagnostics;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
@@ -15,7 +16,17 @@ namespace UltimaOnlineMacro.Service
 
         public SettingsService()
         {
-            _settingsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+            string appDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+
+            if (string.IsNullOrEmpty(appDirectory))
+            {
+                appDirectory = AppContext.BaseDirectory;
+            }
+
+            _settingsFilePath = Path.Combine(appDirectory, SettingsFileName);
+
+            // Debug: aggiungi un log per vedere dove viene creato il file
+            Console.WriteLine($"Tentando di creare settings in: {_settingsFilePath}");
         }
 
         public AppSettings LoadSettings()
