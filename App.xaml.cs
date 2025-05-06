@@ -12,30 +12,25 @@ namespace UltimaOnlineMacro
             // Crea e mostra lo splash screen
             SplashScreen splash = new SplashScreen();
             splash.Show();
-            MainWindow mainWindow = new MainWindow();
+            splash.UpdateStatus("Caricamento componenti...");
+            MainWindow mainWindow = new();
+            splash.UpdateStatus("Caricamento servizi...");
+            await mainWindow.LoadServices();
 
-            // Simula caricamento o fai operazioni di inizializzazione
-            await Task.Run(async () =>
-            {
-                splash.UpdateStatus("Caricamento risorse...");
-                await Task.Delay(500); // Simula lavoro
+            splash.UpdateStatus("Caricamento settaggi...");
+            mainWindow.LoadSettings();
 
-                splash.UpdateStatus("Inizializzazione componenti...");
-                await Task.Delay(500); // Simula lavoro
-
-                splash.UpdateStatus("Preparazione interfaccia...");
-                await Task.Delay(500); // Simula lavoro
-            });
+            splash.UpdateStatus("Caricamento strumenti...");
+            mainWindow.LoadTools();
+            mainWindow.LoadMisc();
 
             // Crea la main window
-            
+
             // Chiudi lo splash screen
             await splash.CloseSplashScreen();
             // Mostra la main window
             mainWindow.Show();
             mainWindow.Activate();
-            
-            // Importante: la MainWindow ora è la finestra principale
             this.MainWindow = mainWindow;
 
             base.OnStartup(e);

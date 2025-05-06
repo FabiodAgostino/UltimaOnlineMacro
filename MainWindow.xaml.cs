@@ -35,7 +35,8 @@ namespace UltimaOnlineMacro
                 RaiseChanged();
             }
         }
-
+        private ICommand _svuotaMuloCommand;
+        public ICommand SvuotaMuloCommand => _svuotaMuloCommand ??= new RelayCommand<Mulo>(_mainWindowService.SvuotaMulo);
 
         public MainWindow()
         {
@@ -377,5 +378,13 @@ namespace UltimaOnlineMacro
         }
 
         #endregion ClickEvent
+
+        #region Wizard
+        public async Task LoadServices() => await _mainWindowService.Initialize();
+        public void LoadSettings() => _mainWindowService.LoadSettings();
+        public void LoadTools() => _mainWindowService.LoadingTools();
+        public void LoadMisc() => _mainWindowService.LoadingTools();
+
+        #endregion
     }
 }

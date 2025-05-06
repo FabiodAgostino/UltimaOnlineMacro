@@ -29,7 +29,6 @@ namespace UltimaOnlineMacro.Service
             _mainWindow.Muli = new ObservableCollection<Mulo>();
             _mainWindow.Pg = new Pg(_mainWindow.ProcessService, async (bool run) => await StartStop(run));
             _pg = mainWindow.Pg;
-            Initialize();
         }
 
         public async Task StartStop(bool run)
@@ -39,7 +38,9 @@ namespace UltimaOnlineMacro.Service
             else
                 await _mainWindow.Stop();
         }
-        public async void Initialize()
+
+
+        public async Task Initialize()
         {
             await _mainWindow.ProcessService.FocusWindowReliably();
             Logger._logTextBox = _mainWindow.txtLog;
@@ -47,11 +48,8 @@ namespace UltimaOnlineMacro.Service
             _mainWindow.cmbKey.ItemsSource = AutoClicker.Service.ExtensionMethod.Key.PopolaComboKey();
             _mainWindow.cmbKey.SelectedIndex = 0;
             _settingsService = new SettingsService();
-            LoadSettings();
-            SetTimerUltima();
-            ReadFilesConfiguration();
             _pg.RefreshRisorse += RefreshRisorse;
-            _mainWindow.Activate();
+            SetTimerUltima();
         }
 
         public void RefreshRisorse()
@@ -71,7 +69,7 @@ namespace UltimaOnlineMacro.Service
                 }
             }
         }
-        private void LoadSettings()
+        public void LoadSettings()
         {
             var settings = _settingsService.LoadSettings();
 
@@ -258,7 +256,7 @@ namespace UltimaOnlineMacro.Service
             });
         }
 
-        public void ReadFilesConfiguration()
+        public void LoadingTools()
         {
             ReadMuloDetector();
             ReadTessdata();
@@ -334,6 +332,15 @@ namespace UltimaOnlineMacro.Service
                 if (_mainWindow.chkLamaPortatore.IsChecked.HasValue && _mainWindow.chkLamaPortatore.IsChecked.Value)
                     _pg.Muli.Add(new Mulo(MuloType.LAMA_PORTATORE, false, () => _pg.ChangeMuloOrStop()));
             }
+        }
+
+        public void SvuotaMulo(Mulo mulo)
+        {
+            if (mulo == null) return;
+
+            mulo.RisorseQuantita.Clear();
+
+            RefreshRisorse();
         }
     }
 }
