@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using UltimaOnlineMacro.Service;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -45,6 +46,7 @@ namespace UltimaOnlineMacro
             _mainWindowService = new MainWindowService(this);
             InitializeComponent();
             Logger.Loggin("Applicazione avviata", false, false);
+            this.Loaded += PositionWindowBottomRight;
         }
 
         #region Callback
@@ -109,7 +111,32 @@ namespace UltimaOnlineMacro
         #endregion Callback
 
         #region WindowsHelper
+        private void PositionWindowBottomRight(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Usa il monitor primario
+                var screen = System.Windows.Forms.Screen.PrimaryScreen;
+                var workArea = screen.WorkingArea;
 
+                // Calcola la posizione DPI-aware
+                var dpi = VisualTreeHelper.GetDpi(this);
+                var scale = dpi.DpiScaleX;
+
+                // Posiziona in basso a destra con padding di 20 pixel
+                this.Left = (workArea.Right - this.ActualWidth * scale - 20) / scale;
+                this.Top = (workArea.Bottom - this.ActualHeight * scale - 20) / scale;
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nel posizionamento: {ex.Message}", true, false);
+
+                // Fallback semplice
+                var workArea = SystemParameters.WorkArea;
+                this.Left = workArea.Right - this.ActualWidth - 20;
+                this.Top = workArea.Bottom - this.ActualHeight - 20;
+            }
+        }
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -198,7 +225,6 @@ namespace UltimaOnlineMacro
                     return;
                 }
             }
-
             _mainWindowService.TimerUltima.Start();
             _mainWindowService.CheckMacroButtons();
             _mainWindowService.SetMuli();
@@ -207,7 +233,7 @@ namespace UltimaOnlineMacro
             btnStop.Background = System.Windows.Media.Brushes.Red;
             Pg.FuriaChecked = chkFuria.IsChecked.Value;
             Logger.Loggin("Run!");
-            await Pg.Work(Regions,true);
+            await Pg.Work(Regions, true);
         }
 
 
@@ -220,7 +246,14 @@ namespace UltimaOnlineMacro
         private async void Stop_Click(object sender, RoutedEventArgs e) => await Stop();
         public async Task Stop()
         {
-            if(Pg.HaveMacrocheck)
+            // Se non siamo sul thread UI, dobbiamo invocare il metodo sul thread UI
+            if (!Dispatcher.CheckAccess())
+            {
+                await Dispatcher.InvokeAsync(async () => await Stop());
+                return;
+            }
+
+            if (Pg.HaveMacrocheck)
             {
                 new MacrocheckNotificationWindow(120).Show();
             }

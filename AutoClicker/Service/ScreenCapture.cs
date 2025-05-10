@@ -32,7 +32,7 @@ namespace AutoClicker.Service
         public void Start()
         {
             // Avvia il timer con intervallo di 5 secondi
-            captureTimer.Change(0, 2000);
+            captureTimer.Change(0, 1000);
             Console.WriteLine("Cattura schermo avviata. Le immagini verranno salvate in: " + outputDirectory);
         }
 
@@ -51,7 +51,7 @@ namespace AutoClicker.Service
                 var (bitmap, rectangle) = CaptureCenterScreenshot();
 
                 // Genera un nome file unico basato sulla data/ora
-                string fileName = $"Capture_{DateTime.Now:yyyyMMdd_HHmmss}_{captureCount}.png";
+                string fileName = $"Mulo{Guid.NewGuid()}.png";
                 string filePath = Path.Combine(outputDirectory, fileName);
 
                 // Salva l'immagine

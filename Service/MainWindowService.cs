@@ -36,7 +36,7 @@ namespace UltimaOnlineMacro.Service
             if (run)
                 await _mainWindow.Run();
             else
-                await _mainWindow.Stop();
+                await _mainWindow.Dispatcher.InvokeAsync(async () => await _mainWindow.Stop());
         }
 
 

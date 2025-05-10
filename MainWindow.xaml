@@ -4,7 +4,7 @@
         xmlns:model="clr-namespace:AutoClicker.Models.TM;assembly=AutoClicker"
         xmlns:local="clr-namespace:UltimaOnlineMacro.Service" xmlns:fa="http://schemas.fontawesome.io/icons/"
         Title="UltimaOnlineMacro - Rotiniel Tools" Height="660" Width="470"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         Background="Transparent"
         AllowsTransparency="False"
         Icon="/UltimaOnlineMacro;component/Assets/Images/icon.ico"      

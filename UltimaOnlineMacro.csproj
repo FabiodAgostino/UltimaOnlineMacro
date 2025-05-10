@@ -76,6 +76,9 @@
 		<None Include="Assets\Images\nero.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Include="MacroCheckScreenshots\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<!-- Mantieni l'icona come Resource per l'applicazione -->
 		<Resource Include="Assets\Images\icon.ico" />
 		<Resource Include="Assets\Images\icon.png" />

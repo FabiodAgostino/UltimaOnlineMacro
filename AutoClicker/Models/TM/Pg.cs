@@ -47,6 +47,7 @@ namespace AutoClicker.Models.TM
             _readLogTMService = new(this);
         }
 
+        private int _counterNotFoundPickAxe = 0;
         public async Task WearPickaxe()
         {
             if (!PaperdollHavePickaxeInHand(_regions))
@@ -54,15 +55,26 @@ namespace AutoClicker.Models.TM
                 var pickaxeBackpack = new Pickaxe(_regions.BackpackRegion, SavedImageTemplate.ImageTemplatePickaxe);
                 if(pickaxeBackpack.X == 0 || pickaxeBackpack.Y == 0)
                 {
-                    SoundsPlayerService.LoopPlay(SoundsFile.Beep);
+                    SoundsPlayerService.OnePlay(SoundsFile.Beep);
                     Logger.Loggin("Non riesco a trovare il piccone nello zaino.", true, true);
-                    _run.Invoke(false);
+                    await Task.Delay(500);
+                    await _processService.FocusWindowReliably();
+                    _counterNotFoundPickAxe++;
+                    await WearPickaxe();
+                    if(_counterNotFoundPickAxe > 3)
+                    {
+                        Logger.Loggin("Non trovo il piccone quindi mi fermo.", true, true);
+                        _run.Invoke(false);
+                        _counterNotFoundPickAxe = 0;
+                    }
                 }
-                await _sendInputService.DragAndDrop(pickaxeBackpack.X, pickaxeBackpack.Y, _regions.PaperdollPickaxeRegion.X, _regions.PaperdollPickaxeRegion.Y);
-
-                //controllo per vedere se adesso ha il piccone in mano
-                if (!PaperdollHavePickaxeInHand(_regions))
-                    Logger.Loggin("Qualcosa è andato storto, il pg non ha il piccone in mano dopo WearPickaxe", true);
+                else
+                {
+                    await _sendInputService.DragAndDrop(pickaxeBackpack.X, pickaxeBackpack.Y, _regions.PaperdollPickaxeRegion.X, _regions.PaperdollPickaxeRegion.Y);
+                    //controllo per vedere se adesso ha il piccone in mano
+                    if (!PaperdollHavePickaxeInHand(_regions))
+                        Logger.Loggin("Qualcosa è andato storto, il pg non ha il piccone in mano dopo WearPickaxe", true);
+                }
             }
         }
 
@@ -147,6 +159,12 @@ namespace AutoClicker.Models.TM
                 _run.Invoke(false);
             }
 
+            if(status.Stone)
+            {
+                Logger.Loggin("I tuoi muli da soma sono pieni, mi fermo");
+                _run.Invoke(false);
+            }
+
             if (status.PickaxeBroke)
                 await WearPickaxe();
 
@@ -154,7 +172,7 @@ namespace AutoClicker.Models.TM
                 await _sendInputService.RunMacro(Macro.MacroFuria);
 
             if (status.Move)
-                await _sendInputService.MoveRandomly(4);
+                await _sendInputService.NavigateSmartly(4);
 
 
             if (status.Stamina || StatusForced.Stamina)
@@ -170,6 +188,7 @@ namespace AutoClicker.Models.TM
             Macro.UpdateRepetitionsMethod();
         }
 
+        private int _notUpdated = 0;
         private void OnStatusUpdated(object sender, StatusBar status)
         {
             if (status.Stone != (0, 0) && status.Stamina != (0, 0))
@@ -208,7 +227,21 @@ namespace AutoClicker.Models.TM
                     StatusForced.Stamina = false;
             }
             else
+            {
                 Logger.Loggin("Non sto leggendo correttamente la barra status");
+                _notUpdated++;
+                if(_notUpdated > 5)
+                {
+                    var iron = new Iron(_regions.BackpackRegion, SavedImageTemplate.ImageTemplateIron);
+                    if (iron.IsFound)
+                    {
+                        SoundsPlayerService.OnePlay(SoundsFile.Notify);
+                        Logger.Loggin("Hai finito lo spazio nei tuoi muli!");
+                        _notUpdated = 0;
+                        _run.Invoke(false);
+                    }
+                }
+            }
         }
 
         public void ChangeMuloOrStop()
