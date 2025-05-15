@@ -3,6 +3,8 @@ using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using AutoClicker.Utils;
 using LogManager;
+using MQTT;
+using MQTT.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,6 +13,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using UltimaOnlineMacro.Service;
+using static MQTT.Models.MqttNotificationModel;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace UltimaOnlineMacro
@@ -47,6 +50,85 @@ namespace UltimaOnlineMacro
             InitializeComponent();
             Logger.Loggin("Applicazione avviata", false, false);
             this.Loaded += PositionWindowBottomRight;
+            InitMqttService();
+
+        }
+        private string _deviceId = "default-device-id"; // Da configurare con ID reale
+        private MqttNotificationService _mqttService;
+
+        private void InitMqttService()
+        {
+            try
+            {
+                // Carica l'ID del dispositivo dalle impostazioni, o usa un valore predefinito
+                if (string.IsNullOrEmpty(_deviceId))
+                {
+                    _deviceId = Guid.NewGuid().ToString();
+                }
+
+                // Crea il servizio MQTT
+                _mqttService = new MqttNotificationService(_deviceId);
+
+                Logger.Loggin($"Servizio MQTT inizializzato con Device ID: {_deviceId}", false, false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nell'inizializzazione del servizio MQTT: {ex.Message}", true, true);
+            }
+        }
+
+        private async Task SendNotificationExample()
+        {
+
+            await _mqttService.SendNotificationAsync(
+                "Macrocheck rilevato",
+                "Il client verrà riavviato automaticamente",
+                NotificationSeverity.Warning
+            );
+        }
+
+        private async Task StartSendingNotificationsAsync()
+        {
+            var severities = Enum.GetValues(typeof(MqttNotificationModel.NotificationSeverity));
+            int index = 0;
+
+            while (true)
+            {
+                var severity = (MqttNotificationModel.NotificationSeverity)severities.GetValue(index);
+
+                string title = severity switch
+                {
+                    MqttNotificationModel.NotificationSeverity.Info => "Informazione di sistema",
+                    MqttNotificationModel.NotificationSeverity.Warning => "Attenzione rilevata",
+                    MqttNotificationModel.NotificationSeverity.Error => "Errore critico",
+                    _ => "Notifica"
+                };
+
+                string message = severity switch
+                {
+                    MqttNotificationModel.NotificationSeverity.Info => "Tutto funziona correttamente.",
+                    MqttNotificationModel.NotificationSeverity.Warning => "Controllare lo stato del dispositivo.",
+                    MqttNotificationModel.NotificationSeverity.Error => "Si è verificato un errore irreversibile.",
+                    _ => "Messaggio generico."
+                };
+
+                await _mqttService.SendNotificationAsync(title, message, severity);
+
+                // Passa al prossimo tipo
+                index = (index + 1) % severities.Length;
+
+                await Task.Delay(TimeSpan.FromSeconds(10));
+            }
+        }
+
+
+
+
+        // Assicurati di smaltire correttamente il servizio MQTT
+        protected override void OnClosed(EventArgs e)
+        {
+            _mqttService?.Dispose();
+            base.OnClosed(e);
         }
 
         #region Callback

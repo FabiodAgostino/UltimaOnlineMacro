@@ -20,21 +20,25 @@
 		<Compile Remove="AutoClicker\**" />
 		<Compile Remove="LogManager\**" />
 		<Compile Remove="Logs\**" />
+		<Compile Remove="MQQT\**" />
 		<Compile Remove="tessdata\**" />
 		<Compile Remove="tessdata_fast-main\**" />
 		<EmbeddedResource Remove="AutoClicker\**" />
 		<EmbeddedResource Remove="LogManager\**" />
 		<EmbeddedResource Remove="Logs\**" />
+		<EmbeddedResource Remove="MQQT\**" />
 		<EmbeddedResource Remove="tessdata\**" />
 		<EmbeddedResource Remove="tessdata_fast-main\**" />
 		<None Remove="AutoClicker\**" />
 		<None Remove="LogManager\**" />
 		<None Remove="Logs\**" />
+		<None Remove="MQQT\**" />
 		<None Remove="tessdata\**" />
 		<None Remove="tessdata_fast-main\**" />
 		<Page Remove="AutoClicker\**" />
 		<Page Remove="LogManager\**" />
 		<Page Remove="Logs\**" />
+		<Page Remove="MQQT\**" />
 		<Page Remove="tessdata\**" />
 		<Page Remove="tessdata_fast-main\**" />
 	</ItemGroup>
@@ -87,6 +91,7 @@
 	<ItemGroup>
 		<ProjectReference Include="AutoClicker\AutoClicker.csproj" />
 		<ProjectReference Include="LogManager\LogManager.csproj" />
+		<ProjectReference Include="MQQT\MQTT.csproj" />
 	</ItemGroup>
 	<!-- Aggiungi questa sezione per assicurarti che i file di tessdata siano copiati -->
 	<ItemGroup>
