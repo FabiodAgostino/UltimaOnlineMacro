@@ -3,14 +3,21 @@ using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using AutoClicker.Utils;
 using LogManager;
+using Microsoft.Win32;
+using MQTT;
+using MQTT.Models;
+using QRCoder;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using UltimaOnlineMacro.Service;
+using static MQTT.Models.MqttNotificationModel;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace UltimaOnlineMacro
@@ -47,6 +54,15 @@ namespace UltimaOnlineMacro
             InitializeComponent();
             Logger.Loggin("Applicazione avviata", false, false);
             this.Loaded += PositionWindowBottomRight;
+
+        }
+
+
+        // Assicurati di smaltire correttamente il servizio MQTT
+        protected override void OnClosed(EventArgs e)
+        {
+            _mainWindowService.MqttNotificationService.Dispose();
+            base.OnClosed(e);
         }
 
         #region Callback
@@ -309,7 +325,7 @@ namespace UltimaOnlineMacro
                     // Usa il nuovo metodo per trovare il journal di oggi
                     try
                     {
-                        
+
                         string journalFilePath = _mainWindowService.FindTodayJournalFile(selectedFile);
 
                         if (!string.IsNullOrEmpty(journalFilePath))
@@ -415,9 +431,11 @@ namespace UltimaOnlineMacro
         #region Wizard
         public async Task LoadServices() => await _mainWindowService.Initialize();
         public void LoadSettings() => _mainWindowService.LoadSettings();
-        public void LoadTools() => _mainWindowService.LoadingTools();
-        public void LoadMisc() => _mainWindowService.LoadingTools();
-
+        public async Task LoadTools() => await _mainWindowService.LoadingTools();
         #endregion
+
+
+       
+
     }
 }

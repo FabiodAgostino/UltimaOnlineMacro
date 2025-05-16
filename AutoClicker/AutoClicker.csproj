@@ -64,6 +64,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LogManager\LogManager.csproj" />
+		<ProjectReference Include="..\MQQT\MQTT.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

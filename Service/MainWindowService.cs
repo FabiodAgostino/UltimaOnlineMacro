@@ -5,13 +5,15 @@ using AutoClicker.Models.TM;
 using AutoClicker.Service;
 using AutoClicker.Utils;
 using LogManager;
+using MQTT;
+using MQTT.Models;
+using QRCoder;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Media;
-using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
+using static MQTT.Models.MqttNotificationModel;
 
 namespace UltimaOnlineMacro.Service
 {
@@ -22,12 +24,12 @@ namespace UltimaOnlineMacro.Service
         private bool _initializeMacro { get; set; } = true;
         private MainWindow _mainWindow { get; set; }
         private SettingsService _settingsService;
-
+        public MqttNotificationService MqttNotificationService = new();
         public MainWindowService(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             _mainWindow.Muli = new ObservableCollection<Mulo>();
-            _mainWindow.Pg = new Pg(_mainWindow.ProcessService, async (bool run) => await StartStop(run));
+            _mainWindow.Pg = new Pg(_mainWindow.ProcessService, async (bool run) => await StartStop(run), MqttNotificationService);
             _pg = mainWindow.Pg;
         }
 
@@ -50,9 +52,14 @@ namespace UltimaOnlineMacro.Service
             _settingsService = new SettingsService();
             _pg.RefreshRisorse += RefreshRisorse;
             SetTimerUltima();
+           
+
         }
 
-        public void RefreshRisorse()
+      
+        private bool _notifyOver90 = false;
+        private bool _notifyOver95 = false;
+        public async void RefreshRisorse()
         {
             var mulo=
             _mainWindow.Muli = new ObservableCollection<Mulo>(_pg.Muli);
@@ -64,8 +71,28 @@ namespace UltimaOnlineMacro.Service
 
                 if (percentualeCarico > 90)
                 {
+                    if((percentualeCarico > 90 && !_notifyOver90) || percentualeCarico > 95 && !_notifyOver95)
+                    {
+                        await MqttNotificationService.SendNotificationAsync(new MqttNotificationModel
+                        {
+                            Title = "Mulo quasi pieno",
+                            Message = $"Mulo carico al {percentualeCarico:F1}%\"",
+                            Type = NotificationSeverity.Info,
+                        });
+
+                        if(percentualeCarico > 90)
+                            _notifyOver90 = true;
+                        if (percentualeCarico > 95)
+                            _notifyOver95 = true;
+                    }
+
                     SoundsPlayerService.OnePlay(SoundsFile.Notify);
                     Logger.Loggin($"Attenzione: Mulo carico al {percentualeCarico:F1}%");
+                }
+                else
+                {
+                    _notifyOver90 = false;
+                    _notifyOver95 = false;
                 }
             }
         }
@@ -135,6 +162,9 @@ namespace UltimaOnlineMacro.Service
 
                 if (settings.WaterPosition != null)
                     _mainWindow.Regions.WaterXY = settings.WaterPosition.ToPoint();
+
+                GenerateQrCode();
+
 
                 Logger.Loggin("Impostazioni di default caricate con successo!");
             }
@@ -207,6 +237,7 @@ namespace UltimaOnlineMacro.Service
             }
         }
 
+
         public void SaveSettings()
         {
             var settings = new AppSettings
@@ -256,8 +287,10 @@ namespace UltimaOnlineMacro.Service
             });
         }
 
-        public void LoadingTools()
+        public async Task LoadingTools()
         {
+            await MqttNotificationService.InitializeMqttClientAsync(_pg.Name);
+            MqttNotificationService.Run += OnMqttNotificationReceived;
             ReadMuloDetector();
             ReadTessdata();
         }
@@ -342,5 +375,51 @@ namespace UltimaOnlineMacro.Service
 
             RefreshRisorse();
         }
+
+        private void GenerateQrCode()
+        {
+            if (string.IsNullOrEmpty(_pg?.Name))
+            {
+                _mainWindow.QrCodeInfo.Text = "Codice per: Non disponibile";
+                _mainWindow.QrCodeImage.Source = null;
+                return;
+            }
+
+            try
+            {
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(_pg.Name, QRCodeGenerator.ECCLevel.L); // Livello L = minima correzione errori
+                BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+                byte[] qrCodeBytes = qrCode.GetGraphic(10); // Dimensione pixel ridotta
+
+                // Converti l'array di byte in BitmapImage
+                BitmapImage qrCodeImage = new BitmapImage();
+                using (MemoryStream ms = new MemoryStream(qrCodeBytes))
+                {
+                    qrCodeImage.BeginInit();
+                    qrCodeImage.CacheOption = BitmapCacheOption.OnLoad;
+                    qrCodeImage.StreamSource = ms;
+                    qrCodeImage.EndInit();
+                }
+
+                // Assegna l'immagine al controllo Image
+                _mainWindow.QrCodeImage.Source = qrCodeImage;
+                _mainWindow.QrCodeInfo.Text = $"Codice per: {_pg.Name}";
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nella generazione del QR Code: {ex.Message}", true, true);
+                _mainWindow.QrCodeInfo.Text = "Errore nella generazione del QR Code";
+            }
+        }
+
+        private async void OnMqttNotificationReceived(bool status)
+        {
+            if (status)
+                await _mainWindow.Run();
+            else
+                await _mainWindow.Stop();
+        }
+
     }
 }

@@ -2,6 +2,9 @@
 using AutoClicker.Models.System;
 using AutoClicker.Service;
 using LogManager;
+using MQTT;
+using MQTT.Models;
+using static MQTT.Models.MqttNotificationModel;
 
 namespace AutoClicker.Models.TM
 {
@@ -29,13 +32,15 @@ namespace AutoClicker.Models.TM
         private int _countForStop { get; set; } = 0;
         public bool HaveMacrocheck { get; set; }
         private Action<bool> _run { get; set; }
-        public Pg(ProcessService processService, Action<bool> run)
+        private MqttNotificationService _mqqtService { get; set; }
+        public Pg(ProcessService processService, Action<bool> run, MqttNotificationService mqttService)
         {
             _run = run;
             _processService = processService;
             _sendInputService = new(processService);
             _readLogTMService = new(this);
             _tesserActService = new TesserActService();
+            _mqqtService = mqttService;
             // Registra l'evento di aggiornamento
             _tesserActService.StatusUpdated += OnStatusUpdated;
         }
@@ -63,6 +68,12 @@ namespace AutoClicker.Models.TM
                     await WearPickaxe();
                     if(_counterNotFoundPickAxe > 3)
                     {
+                        await _mqqtService.SendNotificationAsync(new MqttNotificationModel
+                        {
+                            Title = "Arresto",
+                            Message = "Non trovo il piccone quindi mi fermo.",
+                            Type = NotificationSeverity.Error,
+                        });
                         Logger.Loggin("Non trovo il piccone quindi mi fermo.", true, true);
                         _run.Invoke(false);
                         _counterNotFoundPickAxe = 0;
@@ -73,7 +84,16 @@ namespace AutoClicker.Models.TM
                     await _sendInputService.DragAndDrop(pickaxeBackpack.X, pickaxeBackpack.Y, _regions.PaperdollPickaxeRegion.X, _regions.PaperdollPickaxeRegion.Y);
                     //controllo per vedere se adesso ha il piccone in mano
                     if (!PaperdollHavePickaxeInHand(_regions))
+                    {
                         Logger.Loggin("Qualcosa è andato storto, il pg non ha il piccone in mano dopo WearPickaxe", true);
+                        await _mqqtService.SendNotificationAsync(new MqttNotificationModel
+                        {
+                            Title = "Arresto",
+                            Message = "Tentativo di impugnare il piccone fallito.",
+                            Type = NotificationSeverity.Error,
+                        });
+                        _run.Invoke(false);
+                    }
                 }
             }
         }
@@ -144,6 +164,12 @@ namespace AutoClicker.Models.TM
                 SoundsPlayerService.OnePlay(SoundsFile.Beep);
                 Logger.Loggin("Macrocheck ricevuto... procedo al riavvio (non toccare nulla fino al termine del beep)");
                 _run.Invoke(false);
+                await _mqqtService.SendNotificationAsync(new MqttNotificationModel
+                {
+                    Title = "Macrocheck",
+                    Message = "Sto gestendo il riavvio per macrocheck",
+                    Type = NotificationSeverity.Info,
+                });
                 await _processService.HandleRestartClient(this.PathMacro, 120000);
                 await _sendInputService.Login();
                 await Task.Delay(10000);
@@ -162,6 +188,12 @@ namespace AutoClicker.Models.TM
             if(status.Stone)
             {
                 Logger.Loggin("I tuoi muli da soma sono pieni, mi fermo");
+                await _mqqtService.SendNotificationAsync(new MqttNotificationModel
+                {
+                    Title = "Muli pieni",
+                    Message = "I muli sono pieni quindi mi fermo",
+                    Type = NotificationSeverity.Warning,
+                });
                 _run.Invoke(false);
             }
 
@@ -189,7 +221,7 @@ namespace AutoClicker.Models.TM
         }
 
         private int _notUpdated = 0;
-        private void OnStatusUpdated(object sender, StatusBar status)
+        private async void OnStatusUpdated(object sender, StatusBar status)
         {
             if (status.Stone != (0, 0) && status.Stamina != (0, 0))
             {
@@ -211,6 +243,12 @@ namespace AutoClicker.Models.TM
                         SoundsPlayerService.LoopPlay(SoundsFile.Beep);
                         _countForStop = 0;
                         _run.Invoke(false);
+                        await _mqqtService.SendNotificationAsync(new MqttNotificationModel
+                        {
+                            Title = "Muli pieni",
+                            Message = "I muli sono pieni quindi mi fermo",
+                            Type = NotificationSeverity.Warning,
+                        });
                     }
                 }
                 if (status.Stone.value + 50 >= status.Stone.max)
@@ -239,6 +277,12 @@ namespace AutoClicker.Models.TM
                         Logger.Loggin("Hai finito lo spazio nei tuoi muli!");
                         _notUpdated = 0;
                         _run.Invoke(false);
+                        await _mqqtService.SendNotificationAsync(new MqttNotificationModel
+                        {
+                            Title = "Muli pieni",
+                            Message = "I muli sono pieni quindi mi fermo",
+                            Type = NotificationSeverity.Warning,
+                        });
                     }
                 }
             }

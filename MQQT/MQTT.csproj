@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0-windows</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <OutputPath>..\..\..\</OutputPath>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+	  <UseWindowsForms>true</UseWindowsForms>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	  <SelfContained>true</SelfContained>
+	  <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Models\MqttNotificationModel.cs" />
+    <Compile Include="MqttNotificationService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MQTTnet" Version="4.3.3.952" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogManager\LogManager.csproj" />
+  </ItemGroup>
+
+</Project>
