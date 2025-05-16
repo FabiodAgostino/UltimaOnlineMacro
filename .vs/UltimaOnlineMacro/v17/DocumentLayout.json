@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|solutionrelative:app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D3300BB2-52DC-4CFF-B49E-713CF4496BEE}|UltimaOnlineMacro.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AC68CA7A-B27F-4F0B-AB3A-C68BBBF0433C}|MQQT\\MQTT.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\mqqt\\mqttnotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AC68CA7A-B27F-4F0B-AB3A-C68BBBF0433C}|MQQT\\MQTT.csproj|solutionrelative:mqqt\\mqttnotificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AC68CA7A-B27F-4F0B-AB3A-C68BBBF0433C}|MQQT\\MQTT.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\mqqt\\models\\mqttnotificationmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AC68CA7A-B27F-4F0B-AB3A-C68BBBF0433C}|MQQT\\MQTT.csproj|solutionrelative:mqqt\\models\\mqttnotificationmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D6D49647-1C8E-43D6-A52D-1993D5FCBAF2}|LogManager\\LogManager.csproj|c:\\users\\fabio.dagostino\\documents\\github\\ultimaonlinemacro\\logmanager\\logmanager.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{D6D49647-1C8E-43D6-A52D-1993D5FCBAF2}|LogManager\\LogManager.csproj|solutionrelative:logmanager\\logmanager.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -58,54 +54,42 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MqttNotificationModel.cs",
-              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MQQT\\Models\\MqttNotificationModel.cs",
-              "RelativeDocumentMoniker": "MQQT\\Models\\MqttNotificationModel.cs",
-              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MQQT\\Models\\MqttNotificationModel.cs",
-              "RelativeToolTip": "MQQT\\Models\\MqttNotificationModel.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAA3wCoAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\App.xaml.cs",
+              "RelativeDocumentMoniker": "App.xaml.cs",
+              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\App.xaml.cs",
+              "RelativeToolTip": "App.xaml.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAD4vxoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T12:39:19.779Z",
+              "WhenOpened": "2025-05-16T14:45:25.212Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MqttNotificationService.cs",
               "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MQQT\\MqttNotificationService.cs",
               "RelativeDocumentMoniker": "MQQT\\MqttNotificationService.cs",
               "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MQQT\\MqttNotificationService.cs",
               "RelativeToolTip": "MQQT\\MqttNotificationService.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAAAIUAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAqwHoAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-12T09:19:56.762Z",
+              "WhenOpened": "2025-05-16T14:37:54.024Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAGAAAAAAAAAAAAAAAG8AAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAADkAAAAAAAAAAADwv7EBAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-12T09:21:32.892Z",
+              "WhenOpened": "2025-05-16T14:04:28.227Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LogManager.csproj",
-              "DocumentMoniker": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\LogManager\\LogManager.csproj",
-              "RelativeDocumentMoniker": "LogManager\\LogManager.csproj",
-              "ToolTip": "C:\\Users\\fabio.dagostino\\Documents\\GitHub\\UltimaOnlineMacro\\LogManager\\LogManager.csproj",
-              "RelativeToolTip": "LogManager\\LogManager.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-05-12T07:54:07.565Z"
             }
           ]
         }

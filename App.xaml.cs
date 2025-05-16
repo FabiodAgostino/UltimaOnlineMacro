@@ -21,8 +21,7 @@ namespace UltimaOnlineMacro
             mainWindow.LoadSettings();
 
             splash.UpdateStatus("Caricamento strumenti...");
-            mainWindow.LoadTools();
-            mainWindow.LoadMisc();
+            await mainWindow.LoadTools();
 
             // Crea la main window
 

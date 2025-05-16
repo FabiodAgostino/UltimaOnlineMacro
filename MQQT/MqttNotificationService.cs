@@ -1,33 +1,30 @@
-﻿// MqttNotificationService.cs - versione completamente aggiornata
-using LogManager;
+﻿using LogManager;
 using MQTT.Models;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Packets;
 using MQTTnet.Protocol;
 using System.Text;
 using System.Text.Json;
-using static MQTT.Models.MqttNotificationModel;
 
 namespace MQTT
 {
     public class MqttNotificationService : IDisposable
     {
         private IMqttClient _mqttClient;
-        private string _deviceId;
         private bool _isConnected = false;
+        private bool _smartphoneConnected = false;  
         private readonly SemaphoreSlim _connectionSemaphore = new SemaphoreSlim(1, 1);
-
-        public MqttNotificationService(string deviceId)
+        public Action<bool> Run { get; set; }
+        string _deviceId = string.Empty;
+        public MqttNotificationService()
         {
-            _deviceId = deviceId;
-            Task.Run(() => InitializeMqttClientAsync()).Wait();
         }
 
-        private async Task InitializeMqttClientAsync()
+        public async Task InitializeMqttClientAsync(string deviceId)
         {
             try
             {
+                _deviceId = deviceId;
                 // Metodo alternativo per creare il client
                 _mqttClient = new MqttFactory().CreateMqttClient();
 
@@ -40,11 +37,11 @@ namespace MQTT
                     Logger.Loggin($"Disconnesso dal broker MQTT. Motivo: {args.Reason}", false, true);
 
                     await Task.Delay(5000);
-                    await ConnectWithRetryAsync();
+                    await ConnectWithRetryAsync(deviceId);
                 };
 
                 // Connessione iniziale
-                await ConnectWithRetryAsync();
+                await ConnectWithRetryAsync(deviceId);
             }
             catch (Exception ex)
             {
@@ -56,7 +53,7 @@ namespace MQTT
             }
         }
 
-        private async Task ConnectWithRetryAsync()
+        private async Task ConnectWithRetryAsync(string deviceId)
         {
             await _connectionSemaphore.WaitAsync();
             try
@@ -85,7 +82,7 @@ namespace MQTT
 
                         if (_isConnected)
                         {
-                            await SubscribeToTopicAsync(_deviceId);
+                            await SubscribeToTopicAsync(deviceId);
                             Logger.Loggin("Connesso al broker MQTT con successo!", false, false);
                         }
                         else
@@ -109,8 +106,10 @@ namespace MQTT
             }
         }
 
-        public async Task SendNotificationAsync(string title, string message, NotificationSeverity type)
+        public async Task SendNotificationAsync(MqttNotificationModel message)
         {
+           
+            message.DeviceId = _deviceId;
             try
             {
                 if (_mqttClient == null)
@@ -119,10 +118,16 @@ namespace MQTT
                     return;
                 }
 
+                if (!_smartphoneConnected)
+                {
+                    Logger.Loggin("Connessione con smartphone non avvenuta", false, false);
+                    return;
+                }
+
                 if (!_mqttClient.IsConnected)
                 {
                     Logger.Loggin("Client MQTT non connesso. Tentativo di riconnessione...", false, true);
-                    await ConnectWithRetryAsync();
+                    await ConnectWithRetryAsync(message.DeviceId);
 
                     if (!_mqttClient.IsConnected)
                     {
@@ -131,20 +136,12 @@ namespace MQTT
                     }
                 }
 
-                var notification = new MqttNotificationModel()
-                {
-                    DeviceId = "ciao",
-                    Title = title,
-                    Message = message,
-                    Type = type,
-                    Timestamp = DateTime.UtcNow
-                };
 
-                string jsonPayload = JsonSerializer.Serialize(notification);
+                string jsonPayload = JsonSerializer.Serialize(message);
 
                 // Crea il messaggio MQTT
                 var m = new MqttApplicationMessageBuilder()
-                    .WithTopic($"uom/notifications/{notification.DeviceId}")
+                    .WithTopic($"uom/notifications/{message.DeviceId}")
                     .WithPayload(Encoding.UTF8.GetBytes(jsonPayload))
                     .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
                     .WithRetainFlag(false)
@@ -152,18 +149,14 @@ namespace MQTT
 
                 var result = await _mqttClient.PublishAsync(m, CancellationToken.None);
 
-                if (result.IsSuccess)
+                if (!result.IsSuccess)
                 {
-                    Logger.Loggin($"Notifica MQTT inviata a {_deviceId}: {title}", false, false);
-                }
-                else
-                {
-                    Logger.Loggin($"Errore nell'invio della notifica: {result.ReasonString}", true, false);
+                    Logger.Loggin($"Errore nell'invio della notifica: {result.ReasonString}", false, true);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Loggin($"Errore nell'invio della notifica MQTT: {ex.Message}", true, false);
+                Logger.Loggin($"Errore nell'invio della notifica MQTT: {ex.Message}", false, true);
             }
         }
 
@@ -180,7 +173,7 @@ namespace MQTT
                 if (!_mqttClient.IsConnected)
                 {
                     Logger.Loggin("Client MQTT non connesso. Tentativo di riconnessione...", false, true);
-                    await ConnectWithRetryAsync();
+                    await ConnectWithRetryAsync(deviceId);
 
                     if (!_mqttClient.IsConnected)
                     {
@@ -203,6 +196,16 @@ namespace MQTT
                             Logger.Loggin($"Messaggio ricevuto sul topic {topic}: {message}", false, false);
 
                             var notification = JsonSerializer.Deserialize<MqttNotificationModel>(message);
+                            if(notification != null)
+                            {
+                                if (notification.Message.ToLower().Contains("START"))
+                                    Run?.Invoke(true);
+                                else if (notification.Message.ToLower().Contains("STOP"))
+                                    Run?.Invoke(false);
+                                else if (notification.Message.ToLower().Contains("CONNECTION"))
+                                    _smartphoneConnected = true;
+                                    Logger.Loggin($"Messaggio non riconosciuto: {notification.Message}", false, false);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -221,6 +224,18 @@ namespace MQTT
                 var subscribeResult = await _mqttClient.SubscribeAsync(topicFilter);
 
                 Logger.Loggin($"Sottoscrizione al topic uom/startstop/{deviceId} completata con esito: {subscribeResult.ReasonString}", false, false);
+
+
+                var smartphoneConnection = new MqttTopicFilterBuilder()
+                   .WithTopic($"uom/connection/{deviceId}")
+                   .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                   .Build();
+
+                var subscribeConnectionResult = await _mqttClient.SubscribeAsync(smartphoneConnection);
+
+                Logger.Loggin($"Sottoscrizione al topic uom/startstop/{deviceId} completata con esito: {subscribeResult.ReasonString}", false, false);
+                Logger.Loggin($"Sottoscrizione al topic uom/connection/{deviceId} completata con esito: {subscribeResult.ReasonString}", false, false);
+
             }
             catch (Exception ex)
             {

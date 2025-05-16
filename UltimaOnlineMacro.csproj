@@ -48,6 +48,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+		<PackageReference Include="QRCoder" Version="1.6.0" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.0" />
 		<!-- Cambia tutte le Content in None con CopyToOutputDirectory -->
 		<None Include="Assets\Images\Pickaxe.png">
