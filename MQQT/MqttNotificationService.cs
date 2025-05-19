@@ -12,10 +12,25 @@ namespace MQTT
     {
         private IMqttClient _mqttClient;
         private bool _isConnected = false;
-        private bool _smartphoneConnected = false;  
         private readonly SemaphoreSlim _connectionSemaphore = new SemaphoreSlim(1, 1);
         public Action<bool> Run { get; set; }
         string _deviceId = string.Empty;
+        private bool _smartphoneConnected = false;
+        public event EventHandler<bool> SmartphoneConnectionChanged;
+        // Proprietà pubblica per esporre lo stato
+        public bool SmartphoneConnected
+        {
+            get => _smartphoneConnected;
+            private set
+            {
+                if (_smartphoneConnected != value)
+                {
+                    _smartphoneConnected = value;
+                    // Notifica il cambiamento
+                    SmartphoneConnectionChanged?.Invoke(this, value);
+                }
+            }
+        }
         public MqttNotificationService()
         {
         }
@@ -198,12 +213,16 @@ namespace MQTT
                             var notification = JsonSerializer.Deserialize<MqttNotificationModel>(message);
                             if(notification != null)
                             {
-                                if (notification.Message.ToLower().Contains("START"))
+                                if (notification.Title.ToLower().Contains("start"))
                                     Run?.Invoke(true);
-                                else if (notification.Message.ToLower().Contains("STOP"))
+                                else if (notification.Title.ToLower().Contains("stop"))
                                     Run?.Invoke(false);
-                                else if (notification.Message.ToLower().Contains("CONNECTION"))
-                                    _smartphoneConnected = true;
+                                else if (notification.Message.ToLower().Contains("connect"))
+                                {
+                                    SendNotificationAsync(new MqttNotificationModel() { Title = "CONNECT-OK", Message = "CONNECT-OK", Type = MqttNotificationModel.NotificationSeverity.Info });
+                                    SmartphoneConnected = true;
+                                }
+                                else
                                     Logger.Loggin($"Messaggio non riconosciuto: {notification.Message}", false, false);
                             }
                         }
@@ -241,6 +260,11 @@ namespace MQTT
             {
                 Logger.Loggin($"Errore durante la sottoscrizione al topic: {ex.Message}", true, true);
             }
+        }
+
+        public void ResetSmartphoneConnection()
+        {
+            SmartphoneConnected = false;
         }
 
         public void Dispose()

@@ -12,7 +12,9 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using static MQTT.Models.MqttNotificationModel;
 
 namespace UltimaOnlineMacro.Service
@@ -291,6 +293,8 @@ namespace UltimaOnlineMacro.Service
         {
             await MqttNotificationService.InitializeMqttClientAsync(_pg.Name);
             MqttNotificationService.Run += OnMqttNotificationReceived;
+            MqttNotificationService.SmartphoneConnectionChanged += OnSmartphoneConnectionChanged;
+            OnSmartphoneConnectionChanged(null, MqttNotificationService.SmartphoneConnected);
             ReadMuloDetector();
             ReadTessdata();
         }
@@ -378,6 +382,7 @@ namespace UltimaOnlineMacro.Service
 
         private void GenerateQrCode()
         {
+            _pg.Name = "Yoridyon en'Loke";
             if (string.IsNullOrEmpty(_pg?.Name))
             {
                 _mainWindow.QrCodeInfo.Text = "Codice per: Non disponibile";
@@ -419,6 +424,25 @@ namespace UltimaOnlineMacro.Service
                 await _mainWindow.Run();
             else
                 await _mainWindow.Stop();
+        }
+
+    
+
+        private void OnSmartphoneConnectionChanged(object sender, bool isConnected)
+        {
+            // Assicurati di essere sul thread UI
+            _mainWindow.Dispatcher.Invoke(() =>
+            {
+                // Aggiorna l'indicatore visivo
+                _mainWindow.SmartphoneConnectionStatus.Fill = isConnected ?
+                    new SolidColorBrush(Colors.LimeGreen) :
+                    new SolidColorBrush(Colors.Red);
+
+                // Aggiorna il testo di stato
+                _mainWindow.SmartphoneConnectionText.Text = isConnected ?
+                    "Connesso" :
+                    "Non connesso";
+            });
         }
 
     }

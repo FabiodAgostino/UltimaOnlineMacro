@@ -178,6 +178,16 @@ namespace UltimaOnlineMacro
             this.Activate();
         }
 
+        private async void NotificaInfo_Click(object sender, RoutedEventArgs e)
+        {
+            await _mainWindowService.MqttNotificationService.SendNotificationAsync(new MqttNotificationModel() { DeviceId = Pg.Name, Title = "Notifica di Test", Message = "Questo è un test di notifica informativa inviata dall'app desktop.", Type = MQTT.Models.MqttNotificationModel.NotificationSeverity.Info });
+        }
+
+        private async void NotificaWarning_Click(object sender, RoutedEventArgs e)
+        {
+            await _mainWindowService.MqttNotificationService.SendNotificationAsync(new MqttNotificationModel() { DeviceId = Pg.Name, Title = "Avviso di Test", Message = "Questo è un test di notifica di avviso inviata dall'app desktop", Type = MQTT.Models.MqttNotificationModel.NotificationSeverity.Warning });
+        }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();

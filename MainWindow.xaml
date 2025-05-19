@@ -883,14 +883,16 @@
                             </ScrollViewer>
                         </TabItem>
                         <!-- Scheda QR Code -->
-                        <TabItem Header="Connesione Smartphone">
+                        <TabItem Header="Connessione Smartphone">
                             <Border Style="{StaticResource CardStyle}" Margin="5,10">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
+
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
                                         <fa:ImageAwesome Icon="QrCode" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
                                         <TextBlock Text="Generazione QR Code" 
@@ -901,14 +903,39 @@
                            HorizontalAlignment="Center" />
                                     </StackPanel>
 
+                                    <!-- Indicatore di stato della connessione dello smartphone -->
+                                    <Border Grid.Row="1" 
+                    Background="#2A2A30" 
+                    CornerRadius="8" 
+                    Padding="15" 
+                    Margin="0,0,0,15">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="Stato Connessione:" 
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="16"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+                                            <Ellipse x:Name="SmartphoneConnectionStatus" 
+                             Width="16" 
+                             Height="16" 
+                             Fill="Red" 
+                             Margin="0,0,10,0"
+                             VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="SmartphoneConnectionText" 
+                               Text="Non connesso" 
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+
                                     <!-- Contenuto QR Code -->
-                                    <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                                    <StackPanel Grid.Row="2" Margin="0,0,0,15">
                                         <TextBlock Text="Questo QR Code può essere utilizzato per le funzionalità remote." 
                            TextWrapping="Wrap" 
                            Foreground="{StaticResource TextPrimaryBrush}" 
                            Margin="0,0,0,15" 
                            HorizontalAlignment="Center" />
-
                                         <Border Width="300" 
                         Height="300" 
                         Background="White" 
@@ -917,7 +944,6 @@
                         Margin="0,20,0,20">
                                             <Image x:Name="QrCodeImage" Stretch="Uniform" Margin="10" />
                                         </Border>
-
                                         <TextBlock x:Name="QrCodeInfo" 
                            Text="Codice per: Non disponibile" 
                            TextWrapping="Wrap" 
@@ -926,11 +952,10 @@
                            Margin="0,10,0,0" 
                            HorizontalAlignment="Center" />
                                     </StackPanel>
-
                                 </Grid>
                             </Border>
-                        </TabItem>
-                        <!-- Scheda Test (mantenuta nell'ordine originale) -->
+                            </TabItem>
+                            <!-- Scheda Test (mantenuta nell'ordine originale) -->
                         <TabItem Header="Test">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <Border Style="{StaticResource CardStyle}" Margin="5,10">
@@ -1005,17 +1030,63 @@
                                             </StackPanel>
                                         </Border>
 
-                                        <!-- Test Results Section -->
+                                        <!-- Test Notifiche Mobile Section -->
                                         <Border Grid.Row="2" Style="{StaticResource CardStyle}" Background="#2A2A30" Margin="0,15,0,0" Padding="15">
                                             <StackPanel>
-                                                <TextBlock Text="Risultati Test" 
-                                                       Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold"
-                                                       Margin="0,0,0,10" HorizontalAlignment="Center" />
+                                                <TextBlock Text="Test Notifiche Mobile" 
+                   Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold"
+                   Margin="0,0,0,15" HorizontalAlignment="Center" />
 
-                                                <Border Background="#1A1A1A" CornerRadius="6" Padding="12" BorderBrush="#454545" BorderThickness="1" MinHeight="120">
-                                                    <TextBlock Name="TestResultsText" Foreground="{StaticResource TextPrimaryBrush}" 
-                                                           TextWrapping="Wrap" FontFamily="Consolas" />
-                                                </Border>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Bottone Notifica Info -->
+                                                    <Button Name="btnNotificaInfo" Grid.Column="0" Content="Notifica Info" Width="170" Height="50"
+                    Click="NotificaInfo_Click" Style="{StaticResource MyButtonStyle}" Background="#4CAF50" HorizontalAlignment="Center">
+                                                        <Button.ContentTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="ℹ️" FontSize="18" Margin="0,0,10,0"/>
+                                                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </Button.ContentTemplate>
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#43A047"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Resources>
+                                                    </Button>
+
+                                                    <!-- Bottone Notifica Warning -->
+                                                    <Button Name="btnNotificaWarning" Grid.Column="1" Content="Notifica Warning" Width="170" Height="50"
+                    Click="NotificaWarning_Click" Style="{StaticResource MyButtonStyle}" Background="#FFC107" HorizontalAlignment="Center">
+                                                        <Button.ContentTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="⚠️" FontSize="18" Margin="0,0,10,0"/>
+                                                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </Button.ContentTemplate>
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#FFB300"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Resources>
+                                                    </Button>
+                                                </Grid>
                                             </StackPanel>
                                         </Border>
                                     </Grid>
