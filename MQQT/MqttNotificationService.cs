@@ -214,7 +214,12 @@ namespace MQTT
                             if(notification != null)
                             {
                                 if (notification.Title.ToLower().Contains("start"))
-                                    Run?.Invoke(true);
+                                {
+
+                                    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
+                                        Run?.Invoke(true);
+                                    });
+                                }
                                 else if (notification.Title.ToLower().Contains("stop"))
                                     Run?.Invoke(false);
                                 else if (notification.Message.ToLower().Contains("connect"))
