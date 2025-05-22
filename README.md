@@ -137,11 +137,6 @@ UltimaOnlineMacro è un sistema di automazione completo per Ultima Online che ut
 > - **Tesseract** deve essere installato separatamente
 > - **GPU CUDA** opzionale ma consigliata per ML
 
-### Compatibilità Client
-- ✅ **ClassicUO** (raccomandato)
-- ✅ **Enhanced Client** (limitato)
-- ❌ **Classic Client** (non supportato)
-
 ## 🚨 Avvertenze Legali
 
 ⚠️ **Questo software è solo per scopi educativi e di ricerca**
