@@ -99,25 +99,6 @@ UltimaOnlineMacro è un sistema di automazione completo per Ultima Online che ut
 - **Stamina bassa** → Pausa automatica 60 secondi
 - **Piccone rotto** → Equipaggiamento automatico nuovo piccone
 
-## 🏗️ Architettura del Sistema
-
-UltimaOnlineMacro/
-├── MainWindow/                 # Interfaccia WPF principale
-├── AutoClicker/               # Core automazione
-│   ├── Models/                # Modelli dati (Pg, Macro, Regions)
-│   ├── Services/              # Servizi business logic
-│   │   ├── SendInputService   # Simulazione input
-│   │   ├── ProcessService     # Gestione processi
-│   │   ├── TesseractService   # OCR text recognition
-│   │   └── MacroManipulator   # Gestione file macro XML
-│   └── Utils/                 # Utilità e helper
-├── LogManager/                # Sistema logging
-├── OverlayWindow/             # Selezione regioni UI
-└── UltimaOnlineObjectDetector/ # Machine Learning
-├── YoloDetector.cs        # Object detection C#
-├── Trainer/               # Addestramento modelli Python
-└── Analyzer/              # Analisi performance modelli
-
 
 ### Stack Tecnologico
 
