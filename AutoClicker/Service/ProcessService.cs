@@ -245,6 +245,82 @@ namespace AutoClicker.Service
             return false;
         }
 
+        public async Task Logout(string macroFilePath)
+        {
+            string dataDir = Path.GetDirectoryName(macroFilePath); // Ottiene il percorso di "Zaltarish en'Loke"
+            string profilesDir = Directory.GetParent(dataDir)?.FullName; // Ottiene il percorso di "Profiles"
+            string tmClientDir = null;
+            DirectoryInfo currentDir = new DirectoryInfo(dataDir);
+
+            while (currentDir != null)
+            {
+                // Controlla se la directory corrente contiene TM Updater.exe
+                if (File.Exists(Path.Combine(currentDir.FullName, "ClassicUO.exe")))
+                {
+                    tmClientDir = currentDir.FullName;
+                    break;
+                }
+
+                // Verifica se siamo nella cartella Data
+                if (currentDir.Name.Equals("Data", StringComparison.OrdinalIgnoreCase))
+                {
+                    // La cartella principale è probabilmente il genitore
+                    if (currentDir.Parent != null)
+                    {
+                        tmClientDir = currentDir.Parent.FullName;
+                        break;
+                    }
+                }
+
+                // Vai su di un livello
+                currentDir = currentDir.Parent;
+            }
+
+            if (tmClientDir != null)
+            {
+                string tmUpdaterPath = Path.Combine(tmClientDir, "ClassicUO.exe");
+
+                // Verifica se il file TM ClassicUO.exe esiste
+                if (File.Exists(tmUpdaterPath))
+                {
+                    // Termina tutti i processi che contengono "TM Client" nel nome
+                    Process[] processes = Process.GetProcesses();
+                    foreach (Process process in processes)
+                    {
+                        try
+                        {
+                            if (process.ProcessName.Contains("TM Client") ||
+                                (process.MainWindowTitle != null && process.MainWindowTitle.Contains("TM Client")))
+                            {
+                                process.Kill();
+                                process.WaitForExit(5000); // Attende fino a 5 secondi che il processo termini
+                                Logger.Loggin($"Processo terminato: {process.ProcessName}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Loggin($"Errore nel terminare il processo: {ex.Message}");
+                        }
+                    }
+                    await Task.Delay(100);
+                    // Avvia TM Updater.exe
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = tmUpdaterPath,
+                        WorkingDirectory = tmClientDir,
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(startInfo);
+                    Logger.Loggin($"Avviato: {tmUpdaterPath}");
+                }
+                else
+                {
+                    Logger.Loggin($"ClassicUO.exe non trovato in: {tmClientDir}", true);
+                }
+            }
+        }
+
         /// <summary>
         /// Gestisce il riavvio dell'updater
         /// </summary>

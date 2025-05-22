@@ -43,5 +43,23 @@ namespace UltimaOnlineMacro.Service
         {
             throw new NotImplementedException();
         }
+
+        public class WidthToLayoutConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                if (value is double width)
+                {
+                    // Se la larghezza è minore di 500px, usa layout verticale
+                    return width < 500;
+                }
+                return false;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

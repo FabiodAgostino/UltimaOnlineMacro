@@ -14,6 +14,8 @@ namespace MQTT
         private bool _isConnected = false;
         private readonly SemaphoreSlim _connectionSemaphore = new SemaphoreSlim(1, 1);
         public Action<bool> Run { get; set; }
+        public Action Logout { get; set; }
+
         string _deviceId = string.Empty;
         private bool _smartphoneConnected = false;
         public event EventHandler<bool> SmartphoneConnectionChanged;
@@ -222,6 +224,12 @@ namespace MQTT
                                 }
                                 else if (notification.Title.ToLower().Contains("stop"))
                                     Run?.Invoke(false);
+                                else if (notification.Title.ToLower().Contains("logout"))
+                                {
+                                    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => {
+                                        Logout?.Invoke();
+                                    });
+                                }
                                 else if (notification.Message.ToLower().Contains("connect"))
                                 {
                                     SendNotificationAsync(new MqttNotificationModel() { Title = "CONNECT-OK", Message = "CONNECT-OK", Type = MqttNotificationModel.NotificationSeverity.Info });

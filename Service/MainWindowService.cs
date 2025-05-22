@@ -101,7 +101,7 @@ namespace UltimaOnlineMacro.Service
         public void LoadSettings()
         {
             var settings = _settingsService.LoadSettings();
-
+            GenerateDownloadQrCode();
             // Verifica se le impostazioni sono nulle prima di applicarle
             if (settings == null)
                 return;
@@ -293,6 +293,7 @@ namespace UltimaOnlineMacro.Service
         {
             await MqttNotificationService.InitializeMqttClientAsync(_pg.Name);
             MqttNotificationService.Run += OnMqttNotificationReceived;
+            MqttNotificationService.Logout += () => _mainWindow.ProcessService.Logout(_pg.PathMacro);
             MqttNotificationService.SmartphoneConnectionChanged += OnSmartphoneConnectionChanged;
             OnSmartphoneConnectionChanged(null, MqttNotificationService.SmartphoneConnected);
             ReadMuloDetector();
@@ -380,43 +381,59 @@ namespace UltimaOnlineMacro.Service
             RefreshRisorse();
         }
 
-        private void GenerateQrCode()
+        /// <summary>
+        /// Genera QR code per il personaggio (metodo esistente migliorato)
+        /// </summary>
+        public void GenerateQrCode()
         {
-            _pg.Name = "Yoridyon en'Loke";
-            if (string.IsNullOrEmpty(_pg?.Name))
+            if(_pg != null && !String.IsNullOrEmpty(_pg.Name))
             {
-                _mainWindow.QrCodeInfo.Text = "Codice per: Non disponibile";
-                _mainWindow.QrCodeImage.Source = null;
-                return;
-            }
+                var result = QRCodeService.GenerateQRCodeWithInfo(_pg.Name, "Codice per");
 
+                // Aggiorna l'UI con il risultato
+                _mainWindow.QrCodeImage.Source = result.Image;
+                _mainWindow.QrCodeInfo.Text = result.InfoText;
+
+                if (!result.IsSuccess)
+                {
+                    Logger.Loggin($"Problema nella generazione QR: {result.ErrorMessage}", true, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Genera QR code per il download dell'app mobile
+        /// </summary>
+        public void GenerateDownloadQrCode()
+        {
             try
             {
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(_pg.Name, QRCodeGenerator.ECCLevel.L); // Livello L = minima correzione errori
-                BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-                byte[] qrCodeBytes = qrCode.GetGraphic(10); // Dimensione pixel ridotta
+                var qrImage = QRCodeService.GenerateAppDownloadQRCode();
 
-                // Converti l'array di byte in BitmapImage
-                BitmapImage qrCodeImage = new BitmapImage();
-                using (MemoryStream ms = new MemoryStream(qrCodeBytes))
-                {
-                    qrCodeImage.BeginInit();
-                    qrCodeImage.CacheOption = BitmapCacheOption.OnLoad;
-                    qrCodeImage.StreamSource = ms;
-                    qrCodeImage.EndInit();
-                }
+                _mainWindow.DownloadQRCodeImage.Source = qrImage;
+                _mainWindow.DownloadQRCodeInfo.Text = "Scansiona per scaricare ROTMobile";
 
-                // Assegna l'immagine al controllo Image
-                _mainWindow.QrCodeImage.Source = qrCodeImage;
-                _mainWindow.QrCodeInfo.Text = $"Codice per: {_pg.Name}";
+                Logger.Loggin("QR code per download app generato con successo");
             }
             catch (Exception ex)
             {
-                Logger.Loggin($"Errore nella generazione del QR Code: {ex.Message}", true, true);
-                _mainWindow.QrCodeInfo.Text = "Errore nella generazione del QR Code";
+                Logger.Loggin($"Errore nella generazione del QR code download: {ex.Message}", true, true);
+
+                _mainWindow.DownloadQRCodeImage.Source = null;
+                _mainWindow.DownloadQRCodeInfo.Text = "Errore nella generazione del QR Code";
             }
         }
+
+        /// <summary>
+        /// Rigenera entrambi i QR code
+        /// </summary>
+        public void RegenerateAllQRCodes()
+        {
+            GenerateQrCode(); 
+            GenerateDownloadQrCode(); 
+        }
+
+
 
         private async void OnMqttNotificationReceived(bool status)
         {
@@ -444,6 +461,11 @@ namespace UltimaOnlineMacro.Service
                     "Non connesso";
             });
         }
+
+
+
+
+
 
     }
 }

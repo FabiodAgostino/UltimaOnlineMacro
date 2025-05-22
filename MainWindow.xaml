@@ -172,7 +172,8 @@
             </Setter>
         </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
+        <local:MaterialToColorConverter x:Key="WidthToLayoutConverter"/>
+        
         <!-- Stile per TabControl -->
         <Style x:Key="ModernTabControlStyle" TargetType="TabControl">
             <Setter Property="Background" Value="{StaticResource BackgroundMediumBrush}" />
@@ -884,78 +885,293 @@
                         </TabItem>
                         <!-- Scheda QR Code -->
                         <TabItem Header="Connessione Smartphone">
-                            <Border Style="{StaticResource CardStyle}" Margin="5,10">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <Border Style="{StaticResource CardStyle}" Margin="5,10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
-                                        <fa:ImageAwesome Icon="QrCode" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
-                                        <TextBlock Text="Generazione QR Code" 
-                           Foreground="{StaticResource TextPrimaryBrush}" 
-                           FontSize="20" 
-                           FontWeight="Bold"
-                           Margin="0,0,0,0" 
-                           HorizontalAlignment="Center" />
-                                    </StackPanel>
-
-                                    <!-- Indicatore di stato della connessione dello smartphone -->
-                                    <Border Grid.Row="1" 
-                    Background="#2A2A30" 
-                    CornerRadius="8" 
-                    Padding="15" 
-                    Margin="0,0,0,15">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <TextBlock Text="Stato Connessione:" 
-                               Foreground="{StaticResource TextPrimaryBrush}"
-                               FontSize="16"
-                               VerticalAlignment="Center"
-                               Margin="0,0,10,0"/>
-                                            <Ellipse x:Name="SmartphoneConnectionStatus" 
-                             Width="16" 
-                             Height="16" 
-                             Fill="Red" 
-                             Margin="0,0,10,0"
-                             VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="SmartphoneConnectionText" 
-                               Text="Non connesso" 
-                               Foreground="{StaticResource TextPrimaryBrush}"
-                               FontWeight="SemiBold"
-                               VerticalAlignment="Center"/>
+                                        <!-- Titolo principale -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                            <fa:ImageAwesome Icon="QrCode" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                            <TextBlock Text="Connessione Smartphone" 
+       Foreground="{StaticResource TextPrimaryBrush}" 
+       FontSize="20" 
+       FontWeight="Bold"
+       Margin="0,0,0,0" 
+       HorizontalAlignment="Center" />
                                         </StackPanel>
-                                    </Border>
 
-                                    <!-- Contenuto QR Code -->
-                                    <StackPanel Grid.Row="2" Margin="0,0,0,15">
-                                        <TextBlock Text="Questo QR Code può essere utilizzato per le funzionalità remote." 
-                           TextWrapping="Wrap" 
-                           Foreground="{StaticResource TextPrimaryBrush}" 
-                           Margin="0,0,0,15" 
-                           HorizontalAlignment="Center" />
-                                        <Border Width="300" 
-                        Height="300" 
-                        Background="White" 
-                        HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Margin="0,20,0,20">
-                                            <Image x:Name="QrCodeImage" Stretch="Uniform" Margin="10" />
+                                        <!-- Indicatore di stato della connessione dello smartphone -->
+                                        <Border Grid.Row="1" 
+Background="#2A2A30" 
+CornerRadius="8" 
+Padding="15" 
+Margin="0,0,0,15">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="Stato Connessione:" 
+           Foreground="{StaticResource TextPrimaryBrush}"
+           FontSize="16"
+           VerticalAlignment="Center"
+           Margin="0,0,10,0"/>
+                                                <Ellipse x:Name="SmartphoneConnectionStatus" 
+         Width="16" 
+         Height="16" 
+         Fill="Red" 
+         Margin="0,0,10,0"
+         VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="SmartphoneConnectionText" 
+           Text="Non connesso" 
+           Foreground="{StaticResource TextPrimaryBrush}"
+           FontWeight="SemiBold"
+           VerticalAlignment="Center"/>
+                                            </StackPanel>
                                         </Border>
-                                        <TextBlock x:Name="QrCodeInfo" 
-                           Text="Codice per: Non disponibile" 
-                           TextWrapping="Wrap" 
-                           Foreground="{StaticResource TextPrimaryBrush}" 
-                           FontWeight="SemiBold"
-                           Margin="0,10,0,0" 
-                           HorizontalAlignment="Center" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-                            </TabItem>
-                            <!-- Scheda Test (mantenuta nell'ordine originale) -->
+
+                                        <!-- Sezione QR Code Personaggio -->
+                                        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Background="#2A2A30" Padding="20" Margin="0,0,0,15">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                                    <fa:ImageAwesome Icon="User" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                                    <TextBlock Text="QR Code Personaggio" 
+               Foreground="{StaticResource TextPrimaryBrush}" 
+               FontSize="18" FontWeight="Bold"/>
+                                                </StackPanel>
+
+                                                <TextBlock Text="Usa questo QR Code per connettere l'app mobile al personaggio corrente." 
+           TextWrapping="Wrap" 
+           Foreground="{StaticResource TextSecondaryBrush}" 
+           Margin="0,0,0,20" 
+           HorizontalAlignment="Center" 
+           TextAlignment="Center"/>
+
+                                                <!-- Layout verticale sempre -->
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <!-- QR Code Image del personaggio -->
+                                                    <Border Width="200" 
+            Height="200" 
+            Background="White" 
+            HorizontalAlignment="Center" 
+            Margin="0,0,0,20"
+            CornerRadius="8">
+                                                        <Image x:Name="QrCodeImage" Stretch="Uniform" Margin="10" />
+                                                    </Border>
+
+                                                    <!-- Info e controlli personaggio -->
+                                                    <StackPanel HorizontalAlignment="Center">
+                                                        <TextBlock x:Name="QrCodeInfo" 
+                   Text="Codice per: Non disponibile" 
+                   TextWrapping="Wrap" 
+                   Foreground="{StaticResource TextPrimaryBrush}" 
+                   FontWeight="Bold"
+                   FontSize="16"
+                   Margin="0,0,0,20" 
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"/>
+
+                                                        <Button Content="🔄"
+                Width="40"
+                Height="40"
+                Style="{StaticResource MyButtonStyle}"
+                Background="{StaticResource PrimaryBrush}"
+                Click="RegenerateCharacterQR_Click"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- Sezione Download App Mobile -->
+                                        <Border Grid.Row="3" Style="{StaticResource CardStyle}" Background="#2A2A30" Padding="20">
+                                            <StackPanel>
+                                                <!-- Header con toggle -->
+                                                <Grid Margin="0,0,0,15">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <fa:ImageAwesome Icon="Mobile" Width="16" Height="16" Margin="0,0,8,0" Foreground="White"/>
+                                                        <TextBlock Text="Scarica App ROTMobile" 
+                   Foreground="{StaticResource TextPrimaryBrush}" 
+                   FontSize="18" FontWeight="Bold"
+                   VerticalAlignment="Center"/>
+                                                    </StackPanel>
+
+                                                    <ToggleButton x:Name="toggleDownloadQRVisibility" Grid.Column="1" 
+                  Content="📱" Width="40" Height="40"
+                  IsChecked="False" Background="Transparent" BorderThickness="0" 
+                  Foreground="{StaticResource TextPrimaryBrush}"
+                  VerticalAlignment="Center"
+                  ToolTip="Mostra/Nascondi sezione download">
+                                                        <ToggleButton.Style>
+                                                            <Style TargetType="ToggleButton">
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate TargetType="ToggleButton">
+                                                                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="8" 
+                                    BorderBrush="#555555" 
+                                    BorderThickness="1">
+                                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                            </Border>
+                                                                            <ControlTemplate.Triggers>
+                                                                                <Trigger Property="IsChecked" Value="True">
+                                                                                    <Setter Property="Content" Value="📲" />
+                                                                                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                                                                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                                                                                </Trigger>
+                                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                                    <Setter Property="Background" Value="#3E3E42" />
+                                                                                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                                                                                </Trigger>
+                                                                            </ControlTemplate.Triggers>
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ToggleButton.Style>
+                                                    </ToggleButton>
+                                                </Grid>
+
+                                                <!-- Info sempre visibile -->
+                                                <TextBlock Text="Scarica l'app mobile per controllare remotamente l'applicazione e ricevere notifiche."
+           Foreground="{StaticResource TextSecondaryBrush}"
+           TextWrapping="Wrap"
+           FontSize="14"
+           HorizontalAlignment="Center"
+           TextAlignment="Center"
+           Margin="20,0,20,15"/>
+
+                                                <!-- Contenuto espandibile -->
+                                                <Border Background="#1A1A1A" 
+        CornerRadius="8" 
+        Padding="20" 
+        BorderBrush="#454545" 
+        BorderThickness="1"
+        Visibility="{Binding IsChecked, ElementName=toggleDownloadQRVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                                    <!-- Layout verticale sempre -->
+                                                    <StackPanel HorizontalAlignment="Center">
+                                                        <!-- QR Code per download -->
+                                                        <Border Width="180" 
+                Height="180" 
+                Background="White" 
+                CornerRadius="8"
+                Margin="0,0,0,20"
+                HorizontalAlignment="Center">
+                                                            <Image x:Name="DownloadQRCodeImage" 
+                   Stretch="Uniform" 
+                   Margin="15"/>
+                                                        </Border>
+
+                                                        <!-- Info e controlli download -->
+                                                        <StackPanel HorizontalAlignment="Center">
+                                                            <TextBlock x:Name="DownloadQRCodeInfo" 
+                       Text="Scansiona per scaricare ROTMobile"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Margin="0,0,0,15"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"/>
+
+                                                            <StackPanel Margin="0,0,0,20" HorizontalAlignment="Center">
+                                                                <TextBlock Text="• Scansiona il QR code con lo smartphone"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           FontSize="13"
+                           Margin="0,0,0,5"
+                           HorizontalAlignment="Center"/>
+
+                                                                <TextBlock Text="• Compatibile con Android 5.0 o superiore"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           FontSize="13"
+                           Margin="0,0,0,5"
+                           HorizontalAlignment="Center"/>
+
+                                                                <TextBlock Text="• Controllo remoto e notifiche in tempo reale"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           FontSize="13"
+                           Margin="0,0,0,5"
+                           HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+
+                                                            <!-- Pulsante di azione -->
+                                                            <Button Content="🌐"
+                    Width="40"
+                    Height="40"
+                    Style="{StaticResource MyButtonStyle}"
+                    Background="#FF9800"
+                    Click="OpenDownloadLink_Click"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,20">
+                                                                <Button.Resources>
+                                                                    <Style TargetType="Border">
+                                                                        <Style.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Background" Value="#F57C00"/>
+                                                                            </Trigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Resources>
+                                                            </Button>
+
+                                                            <!-- URL di riferimento - Ora selezionabile -->
+                                                            <Border Background="#333333" 
+                    CornerRadius="4" 
+                    Padding="10" 
+                    BorderBrush="#555555"
+                    BorderThickness="1"
+                    MaxWidth="400">
+                                                                <TextBox Text="https://github.com/FabiodAgostino/UOMacroMobile/releases/download/1.2/UoMacroMobileV1.2.apk"
+                         Foreground="{StaticResource TextSecondaryBrush}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontSize="11"
+                         FontFamily="Consolas"
+                         TextWrapping="Wrap"
+                         IsReadOnly="True"
+                         Cursor="IBeam"
+                         CaretBrush="{StaticResource TextSecondaryBrush}"
+                         HorizontalAlignment="Stretch"
+                         TextAlignment="Center">
+                                                                    <TextBox.Style>
+                                                                        <Style TargetType="TextBox">
+                                                                            <Setter Property="Template">
+                                                                                <Setter.Value>
+                                                                                    <ControlTemplate TargetType="TextBox">
+                                                                                        <ScrollViewer x:Name="PART_ContentHost" 
+                                                      Background="Transparent"
+                                                      Focusable="False" 
+                                                      HorizontalScrollBarVisibility="Hidden" 
+                                                      VerticalScrollBarVisibility="Hidden"/>
+                                                                                    </ControlTemplate>
+                                                                                </Setter.Value>
+                                                                            </Setter>
+                                                                            <Style.Triggers>
+                                                                                <Trigger Property="IsFocused" Value="True">
+                                                                                    <Setter Property="SelectionBrush" Value="{StaticResource PrimaryBrush}"/>
+                                                                                </Trigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBox.Style>
+                                                                </TextBox>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </ScrollViewer>
+                        </TabItem>
+                        <!-- Scheda Test (mantenuta nell'ordine originale) -->
                         <TabItem Header="Test">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <Border Style="{StaticResource CardStyle}" Margin="5,10">

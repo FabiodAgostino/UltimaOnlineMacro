@@ -16,8 +16,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using UltimaOnlineMacro.Service;
 using static MQTT.Models.MqttNotificationModel;
+using static System.Net.WebRequestMethods;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace UltimaOnlineMacro
@@ -445,7 +447,128 @@ namespace UltimaOnlineMacro
         #endregion
 
 
-       
+        #region QR Code Event Handlers
+
+        /// <summary>
+        /// Event handler per rigenerare il QR del personaggio
+        /// </summary>
+        private void RegenerateCharacterQR_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Chiama il metodo esistente del MainWindowService
+                _mainWindowService.GenerateQrCode();
+                Logger.Loggin("QR code personaggio rigenerato");
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nella rigenerazione QR personaggio: {ex.Message}", true);
+            }
+        }
+
+        /// <summary>
+        /// Event handler per aprire il link di download diretto
+        /// </summary>
+        private void OpenDownloadLink_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                const string downloadUrl = "https://github.com/FabiodAgostino/UOMacroMobile/releases/download/1.2/UoMacroMobileV1.2.apk";
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = downloadUrl,
+                    UseShellExecute = true
+                });
+
+                Logger.Loggin("Link di download aperto nel browser");
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nell'apertura del link: {ex.Message}", true);
+            }
+        }
+
+
+        #endregion
+
+        #region QR Code Generation Methods
+
+        /// <summary>
+        /// Genera QR code per il download dell'app mobile
+        /// </summary>
+        private void GenerateDownloadQrCode()
+        {
+            try
+            {
+                var qrImage = QRCodeService.GenerateAppDownloadQRCode();
+
+                // Aggiorna l'elemento UI per il download
+                DownloadQRCodeImage.Source = qrImage;
+                DownloadQRCodeInfo.Text = "Scansiona per scaricare ROTMobile";
+
+                Logger.Loggin("QR code per download app generato con successo");
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nella generazione del QR code download: {ex.Message}", true);
+
+                // Gestisci l'errore nell'UI
+                DownloadQRCodeImage.Source = null;
+                DownloadQRCodeInfo.Text = "Errore nella generazione del QR Code";
+            }
+        }
+
+        /// <summary>
+        /// Metodo helper per copiare il link negli appunti
+        /// </summary>
+        private void CopyDownloadLinkToClipboard()
+        {
+            try
+            {
+                const string downloadUrl = "https://drive.google.com/file/d/1sT4oOYhntRGbd2QebdU--Cppi9TjHLGR/view";
+                Clipboard.SetText(downloadUrl);
+                Logger.Loggin("Link di download copiato negli appunti");
+
+                // Feedback visivo temporaneo
+                ShowTemporaryMessage("Link copiato negli appunti!");
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nella copia del link: {ex.Message}", true);
+            }
+        }
+
+        /// <summary>
+        /// Mostra un messaggio temporaneo nell'UI
+        /// </summary>
+        private void ShowTemporaryMessage(string message)
+        {
+            try
+            {
+                var originalText = DownloadQRCodeInfo.Text;
+                var originalBrush = DownloadQRCodeInfo.Foreground;
+
+                DownloadQRCodeInfo.Text = message;
+                DownloadQRCodeInfo.Foreground = System.Windows.Media.Brushes.LimeGreen;
+
+                // Ripristina dopo 3 secondi
+                Task.Delay(3000).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        DownloadQRCodeInfo.Text = originalText;
+                        DownloadQRCodeInfo.Foreground = originalBrush;
+                    });
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.Loggin($"Errore nel mostrare messaggio temporaneo: {ex.Message}", true);
+            }
+        }
+
+        #endregion
 
     }
 }
